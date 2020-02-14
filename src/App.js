@@ -1,26 +1,70 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import Map from './components/map';
+import * as sensorData from "./data/sensors.json";
+const { ipcRenderer } = window.require('electron');
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      sensors: sensorData.sensors,
+      selected_sensor: null
+    };
+
+    this.markerClickHandler = this.markerClickHandler.bind(this);
+    this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
+  } 
+
+  markerClickHandler(sensor) {
+    this.setState({
+      selected_sensor: sensor
+    })
+  }
+
+  viewDataClickHandler(sensor) {
+    ipcRenderer.send('asynchronous-message', sensor.name)
+  }
+
+  renderSideBar(sensor) {
+    if (this.state.sensors.length === 0) {
+      return (<p id="title">No data imported</p>)
+    } else if (sensor == null) {
+      return (<p id="title">No sensor selected</p>)
+    } else {
+    const listItems = sensor.data.map((d) => <li className="datum" key={Object.keys(d)[0]}>{Object.keys(d)[0]}: {Object.values(d)[0]}</li>);
+    return (
+      <>
+        <p id="title">{sensor.name}</p>
+        <ul className='data' >
+          {listItems}
+        </ul>
+        <button className="sidebar-button" type="button"
+          onClick={(e) => {
+            this.viewDataClickHandler(sensor);
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+          View Data
+        </button>
+      </>
+    )
+    }
+  }
+
+  render() {
+    return (
+      <div className="container">
+        <div className="map">
+          <Map sensors={this.state.sensors} selected_sensor={this.state.selected_sensor} markerClickHandler={this.markerClickHandler} />
+        </div>
+        <aside>
+          <div className="sensor-data">
+            {this.renderSideBar(this.state.selected_sensor)}
+          </div>
+        </aside>
+      </div>
+    );
+  }
 }
 
 export default App;

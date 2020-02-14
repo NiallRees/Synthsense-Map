@@ -1,38 +1,80 @@
-.App {
+.container {
+	display: flex;
+	flex-flow: row nowrap;
+	width: 100vw;
+	height: 100vh;
+}
+
+aside {
+	width: 300px;
+	height: 100%;
+	transition: width 0.2s ease;
+}
+
+aside.collapsed {
+	 width: 0px;
+}
+
+.map {
+	flex: 1 1 auto;
+}
+
+.sensor-data {
+  width: 100%;
+  height: 100%;
+  background-color: whitesmoke;
   text-align: center;
+  display: inline-block;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.pin-object {
+  position: relative;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.dot {
+  height: 80px;
+  width: 80px;
+  background-color: #484848;
+  border-radius: 50%;
+  position: absolute;
+  float: left;
+  left: -40px;
+  top: -50px;
+  opacity: 0.18;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+#pin-label {
+  padding: 5px;
+  border-radius: 2px;
+  background-color: whitesmoke;
+  float: left;
+  position: absolute;
+  bottom: -4px;
+  left: 20px;
+  white-space: nowrap;
 }
 
-.App-link {
-  color: #61dafb;
+.data {
+  list-style-type: none;
+  display: inline-block;
+  padding: 5px;
+  border-radius: 2px;
+  background-color: white;
+  width: 80%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#title {
+  margin-top: 2em;
+  margin-bottom: 0;
+}
+
+.datum {
+  padding: 2px;
+}
+
+.sidebar-button {
+  margin-top: 1em;
+  width: 8em;
+  height: 3em;
+  font-size: 18px;
 }
