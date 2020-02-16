@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Map from './components/map';
+import Switch from './components/switch';
 import * as sensorData from "./data/sensors.json";
 const { ipcRenderer } = window.require('electron');
 
@@ -26,7 +27,7 @@ class App extends Component {
     ipcRenderer.send('asynchronous-message', sensor.name)
   }
 
-  renderSideBar(sensor) {
+  renderMarkerData(sensor) {
     if (this.state.sensors.length === 0) {
       return (<p id="title">No data imported</p>)
     } else if (sensor == null) {
@@ -49,6 +50,19 @@ class App extends Component {
       </>
     )
     }
+  }
+
+  renderSideBar(sensor) {
+    return (
+      <>
+        {this.renderMarkerData(sensor)}
+        <div className="mode-container">
+            <div className="mode-element" id="mode-left">View</div>
+            <div className="mode-element"><Switch/></div>
+            <div className="mode-element" id="mode-right">Plan</div>
+        </div>
+      </>
+    );
   }
 
   render() {

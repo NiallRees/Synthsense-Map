@@ -73,6 +73,10 @@ class Map extends Component {
           width='100%'
           height='100%'
           onViewportChange={viewport => this.onViewportChange(viewport)}
+          onContextMenu={(e) => {
+            console.log(e.lngLat);
+            e.preventDefault();
+          }}
           onClick={(e) => {
             this.props.markerClickHandler(null);
           }}
