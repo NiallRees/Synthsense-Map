@@ -63,7 +63,7 @@ class App extends Component {
             <div className="mode-element">
               <Switch
                 isOn={state.switchIsOn}
-                handleToggle={() => this.setState({ switchIsOn: !state.switchIsOn })}
+                handleToggle={() => this.setState({ switchIsOn: !state.switchIsOn,  mode: (state.switchIsOn ? 'view' : 'plan')})}
               />
             </div>
             <div className="mode-element" id="mode-right">Plan</div>
@@ -76,7 +76,12 @@ class App extends Component {
     return (
       <div className="container">
         <div className="map">
-          <Map sensors={this.state.sensors} selected_sensor={this.state.selected_sensor} markerClickHandler={this.markerClickHandler} />
+          <Map 
+            sensors={this.state.sensors}
+            selected_sensor={this.state.selected_sensor} 
+            markerClickHandler={this.markerClickHandler} 
+            mode={this.state.mode}
+          />
         </div>
         <aside>
           <div className="sensor-data">

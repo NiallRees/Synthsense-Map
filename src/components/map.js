@@ -55,7 +55,7 @@ class Map extends Component {
     const selected = (sensor === this.props.selected_sensor);
     return (
       <Marker key={sensor.id} latitude={sensor.latitude} longitude={sensor.longitude}>
-        <Pin size={20} sensor={sensor} selected={selected} clickHandler={this.props.markerClickHandler}/>
+        <Pin size={20} sensor={sensor} selected={selected} clickHandler={this.props.markerClickHandler} mode = {this.props.mode}/>
       </Marker>
     )
   }
