@@ -10,7 +10,9 @@ class App extends Component {
     super();
     this.state = {
       sensors: sensorData.sensors,
-      selected_sensor: null
+      selected_sensor: null,
+      switchIsOn: false,
+      mode: "view"
     };
 
     this.markerClickHandler = this.markerClickHandler.bind(this);
@@ -52,13 +54,18 @@ class App extends Component {
     }
   }
 
-  renderSideBar(sensor) {
+  renderSideBar(state) {
     return (
       <>
-        {this.renderMarkerData(sensor)}
+        {this.renderMarkerData(state.selected_sensor)}
         <div className="mode-container">
             <div className="mode-element" id="mode-left">View</div>
-            <div className="mode-element"><Switch/></div>
+            <div className="mode-element">
+              <Switch
+                isOn={state.switchIsOn}
+                handleToggle={() => this.setState({ switchIsOn: !state.switchIsOn })}
+              />
+            </div>
             <div className="mode-element" id="mode-right">Plan</div>
         </div>
       </>
@@ -73,7 +80,7 @@ class App extends Component {
         </div>
         <aside>
           <div className="sensor-data">
-            {this.renderSideBar(this.state.selected_sensor)}
+            {this.renderSideBar(this.state)}
           </div>
         </aside>
       </div>
