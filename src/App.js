@@ -12,16 +12,34 @@ class App extends Component {
       sensors: sensorData.sensors,
       selected_sensor: null,
       switchIsOn: false,
-      mode: "view"
+      mode: "view",
+      pinPrompt: {
+        'enabled': false,
+        'lng': 0,
+        'lat': 0
+      }
     };
 
     this.markerClickHandler = this.markerClickHandler.bind(this);
+    this.mapClickHandler = this.mapClickHandler.bind(this);
+    this.renderPinPrompt = this.renderPinPrompt.bind(this);
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
   } 
 
   markerClickHandler(sensor) {
     this.setState({
       selected_sensor: sensor
+    })
+  }
+
+  mapClickHandler() {
+    this.setState({
+      selected_sensor: null,
+      pinPrompt: {
+        'enabled': false,
+        'lng': 0,
+        'lat': 0
+      }
     })
   }
 
@@ -54,6 +72,12 @@ class App extends Component {
     }
   }
 
+  renderPinPrompt(lngLat) {
+    this.state.pinPrompt.enabled = true;
+    this.state.pinPrompt.lng = lngLat[0];
+    this.state.pinPrompt.lng = lngLat[1];
+  }
+
   renderSideBar(state) {
     return (
       <>
@@ -80,6 +104,8 @@ class App extends Component {
             sensors={this.state.sensors}
             selected_sensor={this.state.selected_sensor} 
             markerClickHandler={this.markerClickHandler} 
+            mapClickHandler={this.mapClickHandler}
+            renderPinPrompt={this.renderPinPrompt}
             mode={this.state.mode}
           />
         </div>

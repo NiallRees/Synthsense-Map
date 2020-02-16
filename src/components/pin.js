@@ -9,6 +9,7 @@ const pinStyle = {
   stroke: 'none'
 };
 
+const size = 20;
 
 export default class Pin extends PureComponent {
 
@@ -25,7 +26,7 @@ export default class Pin extends PureComponent {
   }
 
   render() {
-    const {size = 20, sensor = null, clickHandler = null, mode = 'view'} = this.props;
+    const {sensor = null, clickHandler = null, mode = 'view'} = this.props;
 
     return (
       <div className="pin-object">

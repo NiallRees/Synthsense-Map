@@ -21,6 +21,10 @@ class Map extends Component {
     };
   }
 
+  state = {
+    viewport: defaultViewport
+  };
+
   calculateDefaultZoom(coords) {
     var max_distance = 0;
     for (let a of coords) {
@@ -42,10 +46,6 @@ class Map extends Component {
     return [middle_lat, middle_long];
   }
 
-  state = {
-    viewport: defaultViewport,
-  };
-
   onViewportChange = viewport => { 
     const {width, height, ...etc} = viewport
     this.setState({viewport: etc})
@@ -55,7 +55,12 @@ class Map extends Component {
     const selected = (sensor === this.props.selected_sensor);
     return (
       <Marker key={sensor.id} latitude={sensor.latitude} longitude={sensor.longitude}>
-        <Pin size={20} sensor={sensor} selected={selected} clickHandler={this.props.markerClickHandler} mode = {this.props.mode}/>
+        <Pin
+          sensor={sensor}
+          selected={selected}
+          clickHandler={this.props.markerClickHandler}
+          mode = {this.props.mode}
+        />
       </Marker>
     )
   }
@@ -74,11 +79,11 @@ class Map extends Component {
           height='100%'
           onViewportChange={viewport => this.onViewportChange(viewport)}
           onContextMenu={(e) => {
-            console.log(e.lngLat);
+            this.props.renderPinPrompt(e.lngLat);
             e.preventDefault();
           }}
           onClick={(e) => {
-            this.props.markerClickHandler(null);
+            this.props.mapClickHandler();
           }}
         >
           {this.props.sensors.map(sensor => 
