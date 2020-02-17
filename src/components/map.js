@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactMapGL, {Marker} from "react-map-gl";
 import config from '../config';
 import Pin from './pin';
+import PinPrompt from './pinPrompt';
 
 const TOKEN=config.REACT_APP_TOKEN
 
@@ -22,7 +23,12 @@ class Map extends Component {
   }
 
   state = {
-    viewport: defaultViewport
+    viewport: defaultViewport,
+    PinPrompt: {
+      'enabled': false,
+      'lng': 0,
+      'lat': 0
+    }
   };
 
   calculateDefaultZoom(coords) {
@@ -49,10 +55,20 @@ class Map extends Component {
   onViewportChange = viewport => { 
     const {width, height, ...etc} = viewport
     this.setState({viewport: etc})
-  } 
+  }
+
+  setPinPrompt(lngLat) {
+    this.setState({
+      PinPrompt: {
+        'enabled': true,
+        'lng': lngLat[0],
+        'lat': lngLat[1]
+      }
+    })
+  }
 
   renderSensorPin({ sensor }) {
-    const selected = (sensor === this.props.selected_sensor);
+    const selected = (sensor === this.props.selectedSensor);
     return (
       <Marker key={sensor.id} latitude={sensor.latitude} longitude={sensor.longitude}>
         <Pin
@@ -63,6 +79,29 @@ class Map extends Component {
         />
       </Marker>
     )
+  }
+
+  renderPinPrompt() {
+    if (this.state.PinPrompt.enabled) {
+      return (
+        <Marker key={99} latitude={this.state.PinPrompt.lat} longitude={this.state.PinPrompt.lng}>
+          MARKER
+        </Marker>
+      )
+    }
+  }
+
+  mapClickHandler(e) {
+    if(e.leftButton) {
+      this.props.resetSelectedSensor();
+      this.setState({
+        PinPrompt: {
+          'enabled': false,
+          'lng': 0,
+          'lat': 0
+        }
+      })
+    }
   }
 
   render() {
@@ -79,16 +118,17 @@ class Map extends Component {
           height='100%'
           onViewportChange={viewport => this.onViewportChange(viewport)}
           onContextMenu={(e) => {
-            this.props.renderPinPrompt(e.lngLat);
+            this.setPinPrompt(e.lngLat);
             e.preventDefault();
           }}
           onClick={(e) => {
-            this.props.mapClickHandler();
+            this.mapClickHandler(e);
           }}
         >
           {this.props.sensors.map(sensor => 
             this.renderSensorPin({sensor}),
           )}
+          {this.renderPinPrompt()}
         </ReactMapGL>
       </>
     );

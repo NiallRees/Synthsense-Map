@@ -9,11 +9,12 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      sensors: sensorData.sensors,
-      selected_sensor: null,
+      viewSensors: sensorData.sensors,
+      planSensors: [],
+      selectedSensor: null,
       switchIsOn: false,
       mode: "view",
-      pinPrompt: {
+      PinPrompt: {
         'enabled': false,
         'lng': 0,
         'lat': 0
@@ -21,25 +22,20 @@ class App extends Component {
     };
 
     this.markerClickHandler = this.markerClickHandler.bind(this);
-    this.mapClickHandler = this.mapClickHandler.bind(this);
-    this.renderPinPrompt = this.renderPinPrompt.bind(this);
+    this.resetSelectedSensor = this.resetSelectedSensor.bind(this);
+    this.setPinPrompt = this.setPinPrompt.bind(this);
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
   } 
 
   markerClickHandler(sensor) {
     this.setState({
-      selected_sensor: sensor
+      selectedSensor: sensor
     })
   }
 
-  mapClickHandler() {
+  resetSelectedSensor() {
     this.setState({
-      selected_sensor: null,
-      pinPrompt: {
-        'enabled': false,
-        'lng': 0,
-        'lat': 0
-      }
+      selectedSensor: null
     })
   }
 
@@ -48,7 +44,7 @@ class App extends Component {
   }
 
   renderMarkerData(sensor) {
-    if (this.state.sensors.length === 0) {
+    if (this.state.viewSensors.length === 0) {
       return (<p id="title">No data imported</p>)
     } else if (sensor == null) {
       return (<p id="title">No sensor selected</p>)
@@ -72,22 +68,26 @@ class App extends Component {
     }
   }
 
-  renderPinPrompt(lngLat) {
-    this.state.pinPrompt.enabled = true;
-    this.state.pinPrompt.lng = lngLat[0];
-    this.state.pinPrompt.lng = lngLat[1];
+  setPinPrompt(lngLat) {
+    this.state.PinPrompt.enabled = true;
+    this.state.PinPrompt.lng = lngLat[0];
+    this.state.PinPrompt.lat = lngLat[1];
   }
 
   renderSideBar(state) {
     return (
       <>
-        {this.renderMarkerData(state.selected_sensor)}
+        {this.renderMarkerData(state.selectedSensor)}
         <div className="mode-container">
             <div className="mode-element" id="mode-left">View</div>
             <div className="mode-element">
               <Switch
                 isOn={state.switchIsOn}
-                handleToggle={() => this.setState({ switchIsOn: !state.switchIsOn,  mode: (state.switchIsOn ? 'view' : 'plan')})}
+                handleToggle={() => this.setState({
+                  switchIsOn: !state.switchIsOn,
+                  mode: (state.switchIsOn ? 'view' : 'plan'),
+                  planSensors: state.viewSensors
+                })}
               />
             </div>
             <div className="mode-element" id="mode-right">Plan</div>
@@ -101,11 +101,12 @@ class App extends Component {
       <div className="container">
         <div className="map">
           <Map 
-            sensors={this.state.sensors}
-            selected_sensor={this.state.selected_sensor} 
+            sensors={this.state.switchIsOn ? this.state.planSensors : this.state.viewSensors}
+            selectedSensor={this.state.selectedSensor} 
             markerClickHandler={this.markerClickHandler} 
-            mapClickHandler={this.mapClickHandler}
-            renderPinPrompt={this.renderPinPrompt}
+            resetSelectedSensor={this.resetSelectedSensor}
+            setPinPrompt={this.setPinPrompt}
+            PinPrompt={this.state.PinPrompt}
             mode={this.state.mode}
           />
         </div>

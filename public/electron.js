@@ -3,15 +3,6 @@ const {app, BrowserWindow, Menu, dialog, ipcMain, shell} = require('electron')
 const fs = require('fs-extra');
 const path = require('path')
 const isDev = require('electron-is-dev');
-const contextMenu = require('electron-context-menu');
-
-// contextMenu({
-// 	prepend: (params, browserWindow) => [{
-// 		label: 'Rainbow',
-// 		// Only show it when right-clicking images
-// 		visible: true
-// 	}]
-// });
 
 let mainWindow;
 
