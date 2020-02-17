@@ -20,6 +20,7 @@ class Map extends Component {
       this.state.viewport.zoom = this.calculateDefaultZoom(coords);
       [this.state.viewport.latitude, this.state.viewport.longitude] = this.calculateLatLong(coords);
     };
+    this.pinPromptClickHandler = this.pinPromptClickHandler.bind(this);
   }
 
   state = {
@@ -58,13 +59,15 @@ class Map extends Component {
   }
 
   setPinPrompt(lngLat) {
-    this.setState({
-      PinPrompt: {
-        'enabled': true,
-        'lng': lngLat[0],
-        'lat': lngLat[1]
-      }
-    })
+    if (this.props.mode === "plan") {
+      this.setState({
+        PinPrompt: {
+          'enabled': true,
+          'lng': lngLat[0],
+          'lat': lngLat[1]
+        }
+      })
+    }
   }
 
   renderSensorPin({ sensor }) {
@@ -85,10 +88,21 @@ class Map extends Component {
     if (this.state.PinPrompt.enabled) {
       return (
         <Marker key={99} latitude={this.state.PinPrompt.lat} longitude={this.state.PinPrompt.lng}>
-          MARKER
+          <PinPrompt PinPrompt={this.state.PinPrompt} pinPromptClickHandler={this.pinPromptClickHandler}/>
         </Marker>
       )
     }
+  }
+
+  pinPromptClickHandler(pinPrompt, pinType) {
+    this.setState({
+      PinPrompt: {
+        'enabled': false,
+        'lng': 0,
+        'lat': 0
+      }
+    })
+    this.props.addPlanSensor(pinPrompt, pinType)
   }
 
   mapClickHandler(e) {

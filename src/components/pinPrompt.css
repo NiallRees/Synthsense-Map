@@ -1,0 +1,19 @@
+.pin-prompt {
+    background-color: white;
+    margin: 2px 2px;
+    border-radius: 4px;
+}
+
+.menu-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-item {
+    padding: 5px 10px;
+}
+
+.menu-item:hover {
+    background-color: pink;
+}

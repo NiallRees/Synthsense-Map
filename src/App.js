@@ -25,6 +25,8 @@ class App extends Component {
     this.resetSelectedSensor = this.resetSelectedSensor.bind(this);
     this.setPinPrompt = this.setPinPrompt.bind(this);
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
+    this.addPlanSensor = this.addPlanSensor.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
   } 
 
   markerClickHandler(sensor) {
@@ -41,6 +43,19 @@ class App extends Component {
 
   viewDataClickHandler(sensor) {
     ipcRenderer.send('asynchronous-message', sensor.name)
+  }
+
+  addPlanSensor(pinPrompt, pinType) {
+    const newSensor = {
+      "id": "New Sensor", // Make this a generated id
+      "name": "New Sensor",
+      "longitude": pinPrompt.lng,
+      "latitude": pinPrompt.lat,
+      "data": []
+    }
+    this.setState(prevState => ({
+      planSensors: [...prevState.planSensors, newSensor]
+    }))
   }
 
   renderMarkerData(sensor) {
@@ -67,6 +82,27 @@ class App extends Component {
     )
     }
   }
+  
+  handleToggle() {
+    if (!this.state.switchIsOn) {
+      this.setState({
+        switchIsOn: true,
+        mode: 'plan'
+      })
+      if (this.state.planSensors.length === 0) {
+        this.setState({
+          planSensors: this.state.viewSensors
+        })
+      }
+    }
+
+    if (this.state.switchIsOn) {
+      this.setState({
+        switchIsOn: false,
+        mode: 'view'
+      })
+    }
+  }
 
   setPinPrompt(lngLat) {
     this.state.PinPrompt.enabled = true;
@@ -83,11 +119,7 @@ class App extends Component {
             <div className="mode-element">
               <Switch
                 isOn={state.switchIsOn}
-                handleToggle={() => this.setState({
-                  switchIsOn: !state.switchIsOn,
-                  mode: (state.switchIsOn ? 'view' : 'plan'),
-                  planSensors: state.viewSensors
-                })}
+                handleToggle={this.handleToggle}
               />
             </div>
             <div className="mode-element" id="mode-right">Plan</div>
@@ -103,7 +135,8 @@ class App extends Component {
           <Map 
             sensors={this.state.switchIsOn ? this.state.planSensors : this.state.viewSensors}
             selectedSensor={this.state.selectedSensor} 
-            markerClickHandler={this.markerClickHandler} 
+            markerClickHandler={this.markerClickHandler}
+            addPlanSensor={this.addPlanSensor}
             resetSelectedSensor={this.resetSelectedSensor}
             setPinPrompt={this.setPinPrompt}
             PinPrompt={this.state.PinPrompt}
