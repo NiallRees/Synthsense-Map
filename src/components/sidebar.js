@@ -35,9 +35,9 @@ class Sidebar extends Component {
         } else {
             return(
                 <>
-                    <p id="title">Name: {sensor.name}</p>
-                    <p id="title">Latitude: {sensor.latitude}</p>
-                    <p id="title">Longitude: {sensor.longitude}</p>
+                    <p id="title">Name: <input type="text" name="name" onChange={this.props.updateSensor.bind(this)} value={sensor.name}></input></p>
+                    <p id="title">Latitude: <input type="text" name="latitude" onChange={this.props.updateSensor.bind(this)} value={sensor.latitude}></input></p>
+                    <p id="title">Longitude: <input type="text" name="longitude" onChange={this.props.updateSensor.bind(this)} value={sensor.longitude}></input></p>
                     <button className="sidebar-button" type="button"
                     onClick={(e) => {
                         this.props.removeSensorClickHandler(sensor);

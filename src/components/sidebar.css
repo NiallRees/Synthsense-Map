@@ -1,41 +1,46 @@
 .sidebar {
-width: 100%;
-height: 100%;
-background-color: whitesmoke;
-text-align: center;
-display: inline-block;
+    width: 100%;
+    height: 100%;
+    background-color: whitesmoke;
+    text-align: center;
+    display: inline-block;
 }
 
 .datum {
-padding: 2px;
+    padding: 2px;
 }
 
 .sidebar-button {
-margin-top: 1em;
-width: 8em;
-height: 3em;
-font-size: 18px;
+    margin-top: 1em;
+    width: 8em;
+    height: 3em;
+    font-size: 18px;
 }
 
 .mode-container {
-position: absolute;
-bottom: 2em;
-display: table;
-width: 300px;
-table-layout: fixed;
+    position: absolute;
+    bottom: 2em;
+    display: table;
+    width: 300px;
+    table-layout: fixed;
 }
 
 .mode-element {
-display: table-cell;
-vertical-align: middle;
-text-align: center;
-margin: 5px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    margin: 5px;
+}
+
+input {
+    font-size: 1em;
+    width: 30%;
 }
 
 #mode-left {
-padding-left: 40px;
+    padding-left: 40px;
 }
 
 #mode-right {
-padding-right: 40px;
+    padding-right: 40px;
 }

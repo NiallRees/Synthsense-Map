@@ -26,6 +26,7 @@ class App extends Component {
     this.setPinPrompt = this.setPinPrompt.bind(this);
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
     this.removeSensorClickHandler = this.removeSensorClickHandler.bind(this);
+    this.updateSensor = this.updateSensor.bind(this);
     this.addPlanSensor = this.addPlanSensor.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
   } 
@@ -34,6 +35,16 @@ class App extends Component {
     this.setState({
       selectedSensor: sensor
     })
+  }
+
+  updateSensor(input) {
+    var updatedSensor = this.state.selectedSensor;
+    const newValue = input.target.name === 'name' ? input.target.value : parseFloat(input.target.value);
+    updatedSensor[input.target.name] = newValue;
+    this.setState(prevState => ({
+      planSensors: [...prevState.planSensors.filter(sensor => sensor['id'] !== this.state.selectedSensor['id']), updatedSensor],
+      selectedSensor: updatedSensor
+    }))
   }
 
   resetSelectedSensor() {
@@ -101,7 +112,11 @@ class App extends Component {
         switchIsOn: false,
         mode: 'view'
       })
-    }
+    }      
+    
+    this.setState({
+      selectedSensor: null
+    })
   }
 
   render() {
@@ -125,6 +140,7 @@ class App extends Component {
             handleToggle={this.handleToggle}
             viewDataClickHandler={this.viewDataClickHandler}
             removeSensorClickHandler={this.removeSensorClickHandler}
+            updateSensor={this.updateSensor}
           />
         </aside>
       </div>
