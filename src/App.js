@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Map from './components/map';
-import Switch from './components/switch';
+import Sidebar from './components/sidebar';
 import * as sensorData from "./data/sensors.json";
 const { ipcRenderer } = window.require('electron');
 
@@ -58,31 +58,12 @@ class App extends Component {
     }))
   }
 
-  renderMarkerData(sensor) {
-    if (this.state.viewSensors.length === 0) {
-      return (<p id="title">No data imported</p>)
-    } else if (sensor == null) {
-      return (<p id="title">No sensor selected</p>)
-    } else {
-    const listItems = sensor.data.map((d) => <li className="datum" key={Object.keys(d)[0]}>{Object.keys(d)[0]}: {Object.values(d)[0]}</li>);
-    return (
-      <>
-        <p id="title">{sensor.name}</p>
-        <ul className='data' >
-          {listItems}
-        </ul>
-        <button className="sidebar-button" type="button"
-          onClick={(e) => {
-            this.viewDataClickHandler(sensor);
-          }}
-        >
-          View Data
-        </button>
-      </>
-    )
-    }
+  setPinPrompt(lngLat) {
+    this.state.PinPrompt.enabled = true;
+    this.state.PinPrompt.lng = lngLat[0];
+    this.state.PinPrompt.lat = lngLat[1];
   }
-  
+
   handleToggle() {
     if (!this.state.switchIsOn) {
       this.setState({
@@ -104,30 +85,6 @@ class App extends Component {
     }
   }
 
-  setPinPrompt(lngLat) {
-    this.state.PinPrompt.enabled = true;
-    this.state.PinPrompt.lng = lngLat[0];
-    this.state.PinPrompt.lat = lngLat[1];
-  }
-
-  renderSideBar(state) {
-    return (
-      <>
-        {this.renderMarkerData(state.selectedSensor)}
-        <div className="mode-container">
-            <div className="mode-element" id="mode-left">View</div>
-            <div className="mode-element">
-              <Switch
-                isOn={state.switchIsOn}
-                handleToggle={this.handleToggle}
-              />
-            </div>
-            <div className="mode-element" id="mode-right">Plan</div>
-        </div>
-      </>
-    );
-  }
-
   render() {
     return (
       <div className="container">
@@ -144,9 +101,11 @@ class App extends Component {
           />
         </div>
         <aside>
-          <div className="sensor-data">
-            {this.renderSideBar(this.state)}
-          </div>
+          <Sidebar
+            state={this.state}
+            handleToggle={this.handleToggle}
+            viewDataClickHandler={this.viewDataClickHandler}
+          />
         </aside>
       </div>
     );
