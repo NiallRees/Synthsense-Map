@@ -48,13 +48,24 @@ class App extends Component {
 
   removeSensorClickHandler(selectedSensor) {
     this.setState(prevState => ({
-      planSensors: prevState.planSensors.filter(sensor => sensor['name'] !== selectedSensor['name'])
+      planSensors: prevState.planSensors.filter(sensor => sensor['id'] !== selectedSensor['id'])
     }))
   }
 
+  makeid(length) {
+    // Taken from https://stackoverflow.com/a/1349426
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+ }
+
   addPlanSensor(pinPrompt, pinType) {
     const newSensor = {
-      "id": "New Sensor", // Make this a generated id
+      "id": this.makeid(8), // Make this a generated id
       "name": "New Sensor",
       "longitude": pinPrompt.lng,
       "latitude": pinPrompt.lat,
