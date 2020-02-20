@@ -30,17 +30,24 @@ class Sidebar extends Component {
     }
 
     planSideBar(sensor) {
-        return(
-            <>
-                <button className="sidebar-button" type="button"
-                onClick={(e) => {
-                    this.props.removeSensorClickHandler(sensor);
-                }}
-                >
-                Remove Sensor
-                </button>
-            </>
-        )
+        if (sensor == null) {
+            return (<p id="title">No sensor selected</p>)
+        } else {
+            return(
+                <>
+                    <p id="title">Name: {sensor.name}</p>
+                    <p id="title">Latitude: {sensor.latitude}</p>
+                    <p id="title">Longitude: {sensor.longitude}</p>
+                    <button className="sidebar-button" type="button"
+                    onClick={(e) => {
+                        this.props.removeSensorClickHandler(sensor);
+                    }}
+                    >
+                    Remove Sensor
+                    </button>
+                </>
+            )
+        }
     }
 
     sidebar() {

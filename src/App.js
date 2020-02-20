@@ -48,7 +48,8 @@ class App extends Component {
 
   removeSensorClickHandler(selectedSensor) {
     this.setState(prevState => ({
-      planSensors: prevState.planSensors.filter(sensor => sensor['id'] !== selectedSensor['id'])
+      planSensors: prevState.planSensors.filter(sensor => sensor['id'] !== selectedSensor['id']),
+      selectedSensor: null
     }))
   }
 
