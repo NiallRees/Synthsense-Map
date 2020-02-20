@@ -29,9 +29,16 @@ class Sidebar extends Component {
         }
     }
 
-    planSideBar() {
+    planSideBar(sensor) {
         return(
             <>
+                <button className="sidebar-button" type="button"
+                onClick={(e) => {
+                    this.props.removeSensorClickHandler(sensor);
+                }}
+                >
+                Remove Sensor
+                </button>
             </>
         )
     }
@@ -45,7 +52,7 @@ class Sidebar extends Component {
 
         if (this.props.state.mode === "plan") {
             return(
-                this.planSideBar()
+                this.planSideBar(this.props.state.selectedSensor)
             )
         }
     }  

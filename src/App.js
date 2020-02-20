@@ -25,6 +25,7 @@ class App extends Component {
     this.resetSelectedSensor = this.resetSelectedSensor.bind(this);
     this.setPinPrompt = this.setPinPrompt.bind(this);
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
+    this.removeSensorClickHandler = this.removeSensorClickHandler.bind(this);
     this.addPlanSensor = this.addPlanSensor.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
   } 
@@ -43,6 +44,12 @@ class App extends Component {
 
   viewDataClickHandler(sensor) {
     ipcRenderer.send('asynchronous-message', sensor.name)
+  }
+
+  removeSensorClickHandler(selectedSensor) {
+    this.setState(prevState => ({
+      planSensors: prevState.planSensors.filter(sensor => sensor['name'] !== selectedSensor['name'])
+    }))
   }
 
   addPlanSensor(pinPrompt, pinType) {
@@ -105,6 +112,7 @@ class App extends Component {
             state={this.state}
             handleToggle={this.handleToggle}
             viewDataClickHandler={this.viewDataClickHandler}
+            removeSensorClickHandler={this.removeSensorClickHandler}
           />
         </aside>
       </div>
