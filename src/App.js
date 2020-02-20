@@ -38,7 +38,7 @@ class App extends Component {
   }
 
   updateSensor(input) {
-    var updatedSensor = this.state.selectedSensor;
+    var updatedSensor = { ...this.state.selectedSensor};
     const newValue = input.target.name === 'name' ? input.target.value : parseFloat(input.target.value);
     updatedSensor[input.target.name] = newValue;
     this.setState(prevState => ({
