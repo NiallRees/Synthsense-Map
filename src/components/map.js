@@ -138,6 +138,9 @@ class Map extends Component {
           onClick={(e) => {
             this.mapClickHandler(e);
           }}
+          onMouseMove={(e) => {
+            this.props.updateMouseCoords(e.lngLat)
+          }}
         >
           {this.props.sensors.map(sensor => 
             this.renderSensorPin({sensor}),

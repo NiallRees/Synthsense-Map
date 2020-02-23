@@ -14,6 +14,10 @@ class App extends Component {
       selectedSensor: null,
       switchIsOn: false,
       mode: "view",
+      mouseCoords: {
+        lat: null,
+        lng: null
+      },
       PinPrompt: {
         'enabled': false,
         'lng': 0,
@@ -27,6 +31,7 @@ class App extends Component {
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
     this.removeSensorClickHandler = this.removeSensorClickHandler.bind(this);
     this.updateSensor = this.updateSensor.bind(this);
+    this.updateMouseCoords = this.updateMouseCoords.bind(this);
     this.addPlanSensor = this.addPlanSensor.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
   } 
@@ -45,6 +50,15 @@ class App extends Component {
       planSensors: [...prevState.planSensors.filter(sensor => sensor['id'] !== this.state.selectedSensor['id']), updatedSensor],
       selectedSensor: updatedSensor
     }))
+  }
+
+  updateMouseCoords(lngLat) {
+    this.setState({
+      mouseCoords: {
+        lng: lngLat[0],
+        lat: lngLat[1]
+      }
+    })
   }
 
   resetSelectedSensor() {
@@ -131,8 +145,11 @@ class App extends Component {
             resetSelectedSensor={this.resetSelectedSensor}
             setPinPrompt={this.setPinPrompt}
             PinPrompt={this.state.PinPrompt}
+            updateMouseCoords={this.updateMouseCoords}
             mode={this.state.mode}
           />
+          <div id="coords-box"></div>
+          <pre id="coords">Latitude: {this.state.mouseCoords.lat} Longitude: {this.state.mouseCoords.lng}</pre>
         </div>
         <aside>
           <Sidebar
