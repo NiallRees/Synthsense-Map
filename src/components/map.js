@@ -21,6 +21,8 @@ class Map extends Component {
       [this.state.viewport.latitude, this.state.viewport.longitude] = this.calculateLatLong(coords);
     };
     this.pinPromptClickHandler = this.pinPromptClickHandler.bind(this);
+    const lngLat = [this.state.viewport.longitude, this.state.viewport.latitude];
+    this.props.updateMouseCoords(lngLat);
   }
 
   state = {
