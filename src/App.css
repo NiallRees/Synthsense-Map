@@ -23,7 +23,7 @@ aside.collapsed {
   position: relative;
 }
 
-.dot {
+.sensor-dot {
   height: 80px;
   width: 80px;
   background-color: #484848;
@@ -32,6 +32,18 @@ aside.collapsed {
   float: left;
   left: -40px;
   top: -50px;
+  opacity: 0.18;
+}
+
+.takeoff-dot {
+  height: 80px;
+  width: 80px;
+  background-color: #484848;
+  border-radius: 50%;
+  position: absolute;
+  float: left;
+  left: -40px;
+  top: -40px;
   opacity: 0.18;
 }
 

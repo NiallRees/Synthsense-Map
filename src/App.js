@@ -11,7 +11,8 @@ class App extends Component {
     this.state = {
       viewSensors: sensorData.sensors,
       planSensors: [],
-      selectedSensor: null,
+      planTakeoff: null,
+      selectedMarker: null,
       switchIsOn: false,
       mode: "view",
       mouseCoords: {
@@ -26,30 +27,37 @@ class App extends Component {
     };
 
     this.markerClickHandler = this.markerClickHandler.bind(this);
-    this.resetSelectedSensor = this.resetSelectedSensor.bind(this);
+    this.resetselectedMarker = this.resetselectedMarker.bind(this);
     this.setPinPrompt = this.setPinPrompt.bind(this);
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
-    this.removeSensorClickHandler = this.removeSensorClickHandler.bind(this);
-    this.updateSensor = this.updateSensor.bind(this);
+    this.removeMarkerClickHandler = this.removeMarkerClickHandler.bind(this);
+    this.updateMarker = this.updateMarker.bind(this);
     this.updateMouseCoords = this.updateMouseCoords.bind(this);
-    this.addPlanSensor = this.addPlanSensor.bind(this);
+    this.addPlanPin = this.addPlanPin.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
   } 
 
-  markerClickHandler(sensor) {
+  markerClickHandler(marker) {
     this.setState({
-      selectedSensor: sensor
+      selectedMarker: marker
     })
   }
 
-  updateSensor(input) {
-    var updatedSensor = { ...this.state.selectedSensor};
+  updateMarker(input) {
+    var updatedMarker = { ...this.state.selectedMarker};
     const newValue = input.target.name === 'name' ? input.target.value : parseFloat(input.target.value);
-    updatedSensor[input.target.name] = newValue;
-    this.setState(prevState => ({
-      planSensors: [...prevState.planSensors.filter(sensor => sensor['id'] !== this.state.selectedSensor['id']), updatedSensor],
-      selectedSensor: updatedSensor
-    }))
+    updatedMarker[input.target.name] = newValue;
+    if (this.state.selectedMarker === this.state.planTakeoff) {
+      this.setState({
+        planTakeoff: updatedMarker,
+        selectedMarker: updatedMarker
+      })
+    } else {
+      this.setState(prevState => ({
+        planSensors: [...prevState.planSensors.filter(sensor => sensor['id'] !== this.state.selectedMarker['id']), updatedMarker],
+        selectedMarker: updatedMarker
+      }))
+    }
   }
 
   updateMouseCoords(lngLat) {
@@ -61,9 +69,9 @@ class App extends Component {
     })
   }
 
-  resetSelectedSensor() {
+  resetselectedMarker() {
     this.setState({
-      selectedSensor: null
+      selectedMarker: null
     })
   }
 
@@ -71,11 +79,18 @@ class App extends Component {
     ipcRenderer.send('asynchronous-message', sensor.name)
   }
 
-  removeSensorClickHandler(selectedSensor) {
-    this.setState(prevState => ({
-      planSensors: prevState.planSensors.filter(sensor => sensor['id'] !== selectedSensor['id']),
-      selectedSensor: null
-    }))
+  removeMarkerClickHandler(selectedMarker) {
+    if (selectedMarker === this.state.planTakeoff) {
+      this.setState({
+        planTakeoff: null,
+        selectedMarker: null
+      })
+    } else {
+      this.setState(prevState => ({
+        planSensors: prevState.planSensors.filter(sensor => sensor['id'] !== selectedMarker['id']),
+        selectedMarker: null
+      }))
+    }
   }
 
   makeid(length) {
@@ -89,17 +104,31 @@ class App extends Component {
     return result;
  }
 
-  addPlanSensor(pinPrompt, pinType) {
-    const newSensor = {
-      "id": this.makeid(8), // Make this a generated id
-      "name": "New Sensor",
-      "longitude": pinPrompt.lng,
-      "latitude": pinPrompt.lat,
-      "data": []
+  addPlanPin(pinPrompt, pinType) {
+    if (pinType === "sensor") {
+      const newSensor = {
+        "id": this.makeid(8),
+        "name": "New Sensor",
+        "longitude": pinPrompt.lng,
+        "latitude": pinPrompt.lat,
+        "data": []
+      }
+      this.setState(prevState => ({
+        planSensors: [...prevState.planSensors, newSensor]
+      }))
     }
-    this.setState(prevState => ({
-      planSensors: [...prevState.planSensors, newSensor]
-    }))
+
+    if (pinType === "takeoff") {
+      const takeoff = {
+        "id": this.makeid(8),
+        "name": "Takeoff",
+        "longitude": pinPrompt.lng,
+        "latitude": pinPrompt.lat,
+      }
+      this.setState({
+        planTakeoff: takeoff
+      })
+    }
   }
 
   setPinPrompt(lngLat) {
@@ -129,7 +158,7 @@ class App extends Component {
     }      
     
     this.setState({
-      selectedSensor: null
+      selectedMarker: null
     })
   }
 
@@ -139,10 +168,11 @@ class App extends Component {
         <div className="map">
           <Map 
             sensors={this.state.switchIsOn ? this.state.planSensors : this.state.viewSensors}
-            selectedSensor={this.state.selectedSensor} 
+            takeoff={this.state.switchIsOn ? this.state.planTakeoff : null}
+            selectedMarker={this.state.selectedMarker} 
             markerClickHandler={this.markerClickHandler}
-            addPlanSensor={this.addPlanSensor}
-            resetSelectedSensor={this.resetSelectedSensor}
+            addPlanPin={this.addPlanPin}
+            resetselectedMarker={this.resetselectedMarker}
             setPinPrompt={this.setPinPrompt}
             PinPrompt={this.state.PinPrompt}
             updateMouseCoords={this.updateMouseCoords}
@@ -157,8 +187,8 @@ class App extends Component {
             state={this.state}
             handleToggle={this.handleToggle}
             viewDataClickHandler={this.viewDataClickHandler}
-            removeSensorClickHandler={this.removeSensorClickHandler}
-            updateSensor={this.updateSensor}
+            removeMarkerClickHandler={this.removeMarkerClickHandler}
+            updateMarker={this.updateMarker}
           />
         </aside>
       </div>

@@ -29,21 +29,21 @@ class Sidebar extends Component {
         }
     }
 
-    planSideBar(sensor) {
-        if (sensor == null) {
-            return (<p id="title">No sensor selected</p>)
+    planSideBar(marker) {
+        if (marker == null) {
+            return (<p id="title">No marker selected</p>)
         } else {
             return(
                 <>
-                    <p id="title">Name: <input type="text" name="name" onChange={this.props.updateSensor.bind(this)} value={sensor.name}></input></p>
-                    <p id="title">Latitude: <input type="text" name="latitude" onChange={this.props.updateSensor.bind(this)} value={sensor.latitude}></input></p>
-                    <p id="title">Longitude: <input type="text" name="longitude" onChange={this.props.updateSensor.bind(this)} value={sensor.longitude}></input></p>
+                    <p id="title">Name: <input type="text" name="name" onChange={this.props.updateMarker.bind(this)} value={marker.name}></input></p>
+                    <p id="title">Latitude: <input type="text" name="latitude" onChange={this.props.updateMarker.bind(this)} value={marker.latitude}></input></p>
+                    <p id="title">Longitude: <input type="text" name="longitude" onChange={this.props.updateMarker.bind(this)} value={marker.longitude}></input></p>
                     <button className="sidebar-button" type="button"
                     onClick={(e) => {
-                        this.props.removeSensorClickHandler(sensor);
+                        this.props.removeMarkerClickHandler(marker);
                     }}
                     >
-                    Remove Sensor
+                    Delete
                     </button>
                 </>
             )
@@ -53,13 +53,13 @@ class Sidebar extends Component {
     sidebar() {
         if (this.props.state.mode === "view") {
             return(
-                this.viewSideBar(this.props.state.selectedSensor)
+                this.viewSideBar(this.props.state.selectedMarker)
             )
         }
 
         if (this.props.state.mode === "plan") {
             return(
-                this.planSideBar(this.props.state.selectedSensor)
+                this.planSideBar(this.props.state.selectedMarker)
             )
         }
     }  

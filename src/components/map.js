@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import ReactMapGL, {Marker} from "react-map-gl";
 import config from '../config';
-import Pin from './pin';
+import SensorPin from './sensorPin';
+import TakeoffPin from './takeoffPin';
 import PinPrompt from './pinPrompt';
 
 const TOKEN=config.REACT_APP_TOKEN
@@ -73,10 +74,10 @@ class Map extends Component {
   }
 
   renderSensorPin({ sensor }) {
-    const selected = (sensor === this.props.selectedSensor);
+    const selected = (sensor === this.props.selectedMarker);
     return (
       <Marker key={sensor.id} latitude={sensor.latitude} longitude={sensor.longitude}>
-        <Pin
+        <SensorPin
           sensor={sensor}
           selected={selected}
           clickHandler={this.props.markerClickHandler}
@@ -84,6 +85,23 @@ class Map extends Component {
         />
       </Marker>
     )
+  }
+
+  renderTakeoffPin() {
+  const selected = (this.props.takeoff === this.props.selectedMarker);
+  const takeoff = this.props.takeoff;
+  if (takeoff != null) {
+      return (
+        <Marker key={takeoff.id} latitude={takeoff.latitude} longitude={takeoff.longitude}>
+          <TakeoffPin
+            takeoff={takeoff}
+            selected={selected}
+            clickHandler={this.props.markerClickHandler}
+            mode = {this.props.mode}
+          />
+        </Marker>
+      )
+    }
   }
 
   renderPinPrompt() {
@@ -104,12 +122,12 @@ class Map extends Component {
         'lat': 0
       }
     })
-    this.props.addPlanSensor(pinPrompt, pinType)
+    this.props.addPlanPin(pinPrompt, pinType)
   }
 
   mapClickHandler(e) {
     if(e.leftButton) {
-      this.props.resetSelectedSensor();
+      this.props.resetselectedMarker();
       this.setState({
         PinPrompt: {
           'enabled': false,
@@ -147,6 +165,7 @@ class Map extends Component {
           {this.props.sensors.map(sensor => 
             this.renderSensorPin({sensor}),
           )}
+          {this.renderTakeoffPin()}
           {this.renderPinPrompt()}
         </ReactMapGL>
       </>

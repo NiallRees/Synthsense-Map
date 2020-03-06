@@ -11,7 +11,7 @@ const pinStyle = {
 
 const size = 20;
 
-export default class Pin extends PureComponent {
+export default class sensorPin extends PureComponent {
 
   state = {
     hovered: false,
@@ -31,7 +31,7 @@ export default class Pin extends PureComponent {
     return (
       <div className="pin-object">
         <div style={{float:'left'}}>
-        {(this.props.selected) ? <span className="dot"></span> : <></>}
+        {(this.props.selected) ? <span className="sensor-dot"></span> : <></>}
         <svg
           height={size}
           viewBox="0 0 24 24"
