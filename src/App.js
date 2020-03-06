@@ -15,8 +15,8 @@ class App extends Component {
       switchIsOn: false,
       mode: "view",
       mouseCoords: {
-        lat: null,
-        lng: null
+        lat: 52.405436044104256,
+        lng: -0.32935776356134167
       },
       PinPrompt: {
         'enabled': false,
@@ -148,8 +148,9 @@ class App extends Component {
             updateMouseCoords={this.updateMouseCoords}
             mode={this.state.mode}
           />
-          <div id="coords-box"></div>
-          <pre id="coords">Latitude: {this.state.mouseCoords.lat} Longitude: {this.state.mouseCoords.lng}</pre>
+          <div id="coords-box">
+            <pre id="coord">Latitude: {this.state.mouseCoords.lat}</pre><pre id="coord">Longitude: {this.state.mouseCoords.lng}</pre>
+          </div>
         </div>
         <aside>
           <Sidebar

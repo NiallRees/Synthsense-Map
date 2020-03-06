@@ -62,19 +62,17 @@ aside.collapsed {
 
 #coords-box {
   position: absolute;
-  height: 1em;
-  width: 29.5em;
+  height: 1rem;
+  width: 30rem;
   top: 0;
   left: 0;
-  padding: 5px;
+  padding: 0.2rem 0.4rem;
   background-color: white;
   opacity: 0.8;
 }
 
-#coords {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 5px;
+#coord {
+  width: 15rem;
   margin: 0;
+  float:left;
 }
