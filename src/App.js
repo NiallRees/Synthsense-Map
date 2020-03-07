@@ -5,24 +5,38 @@ import Sidebar from './components/sidebar';
 import * as sensorData from "./data/sensors.json";
 const { ipcRenderer } = window.require('electron');
 
+function containsObject(obj, list) {
+  var i;
+  for (i = 0; i < list.length; i++) {
+      if (list[i] === obj) {
+          return true;
+      }
+  }
+
+  return false;
+}
+
 class App extends Component {
   constructor() {
     super();
     this.state = {
       viewSensors: sensorData.sensors,
       planSensors: [],
+      planRouteSensors: [],
+      planRouteLineCoords: [],
       planTakeoff: null,
       selectedMarker: null,
       switchIsOn: false,
       mode: "view",
+      buildRouteMode: false,
       mouseCoords: {
-        lat: 52.405436044104256,
-        lng: -0.32935776356134167
+        latitude: 52.405436044104256,
+        longitude: -0.32935776356134167
       },
       PinPrompt: {
         'enabled': false,
-        'lng': 0,
-        'lat': 0
+        'longitude': 0,
+        'latitude': 0
       }
     };
 
@@ -30,6 +44,8 @@ class App extends Component {
     this.resetselectedMarker = this.resetselectedMarker.bind(this);
     this.setPinPrompt = this.setPinPrompt.bind(this);
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
+    this.buildRouteClickHandler = this.buildRouteClickHandler.bind(this);
+    this.exitBuildRouteClickHandler = this.exitBuildRouteClickHandler.bind(this);
     this.removeMarkerClickHandler = this.removeMarkerClickHandler.bind(this);
     this.updateMarker = this.updateMarker.bind(this);
     this.updateMouseCoords = this.updateMouseCoords.bind(this);
@@ -38,9 +54,18 @@ class App extends Component {
   } 
 
   markerClickHandler(marker) {
-    this.setState({
-      selectedMarker: marker
-    })
+    if (this.state.buildRouteMode === false) {
+      this.setState({
+        selectedMarker: marker
+      })
+    } else {
+      if (!containsObject(marker, this.state.planRouteSensors)) {
+        this.setState(prevState => ({
+          planRouteSensors: [...prevState.planRouteSensors, marker],
+          planRouteLineCoords: [...prevState.planRouteLineCoords, [marker['longitude'], marker['latitude']]]
+        }))
+      }
+    }
   }
 
   updateMarker(input) {
@@ -63,8 +88,8 @@ class App extends Component {
   updateMouseCoords(lngLat) {
     this.setState({
       mouseCoords: {
-        lng: lngLat[0],
-        lat: lngLat[1]
+        longitude: lngLat[0],
+        latitude: lngLat[1]
       }
     })
   }
@@ -77,6 +102,23 @@ class App extends Component {
 
   viewDataClickHandler(sensor) {
     ipcRenderer.send('asynchronous-message', sensor.name)
+  }
+
+  exitBuildRouteClickHandler() {
+    this.setState({
+      buildRouteMode: false
+    })
+  }
+
+  buildRouteClickHandler() {
+    this.setState({
+      buildRouteMode: true
+    })
+    if (this.state.planTakeoff !== null) {
+      this.setState({
+        planRouteLineCoords: [[this.state.planTakeoff['longitude'], this.state.planTakeoff['latitude']]]
+      })
+    }
   }
 
   removeMarkerClickHandler(selectedMarker) {
@@ -109,8 +151,8 @@ class App extends Component {
       const newSensor = {
         "id": this.makeid(8),
         "name": "New Sensor",
-        "longitude": pinPrompt.lng,
-        "latitude": pinPrompt.lat,
+        "longitude": pinPrompt.longitude,
+        "latitude": pinPrompt.latitude,
         "data": []
       }
       this.setState(prevState => ({
@@ -122,19 +164,24 @@ class App extends Component {
       const takeoff = {
         "id": this.makeid(8),
         "name": "Takeoff",
-        "longitude": pinPrompt.lng,
-        "latitude": pinPrompt.lat,
+        "longitude": pinPrompt.longitude,
+        "latitude": pinPrompt.latitude,
       }
       this.setState({
         planTakeoff: takeoff
       })
+      if (this.state.planRouteLineCoords.length < 1) {
+        this.setState({
+          planRouteLineCoords: [[takeoff['longitude'], takeoff['latitude']]]
+        })
+      }
     }
   }
 
   setPinPrompt(lngLat) {
     this.state.PinPrompt.enabled = true;
-    this.state.PinPrompt.lng = lngLat[0];
-    this.state.PinPrompt.lat = lngLat[1];
+    this.state.PinPrompt.longitude = lngLat[0];
+    this.state.PinPrompt.latitude = lngLat[1];
   }
 
   handleToggle() {
@@ -168,6 +215,8 @@ class App extends Component {
         <div className="map">
           <Map 
             sensors={this.state.switchIsOn ? this.state.planSensors : this.state.viewSensors}
+            planRouteSensors={this.state.planRouteSensors}
+            planRouteLineCoords={this.state.planRouteLineCoords}
             takeoff={this.state.switchIsOn ? this.state.planTakeoff : null}
             selectedMarker={this.state.selectedMarker} 
             markerClickHandler={this.markerClickHandler}
@@ -179,7 +228,7 @@ class App extends Component {
             mode={this.state.mode}
           />
           <div id="coords-box">
-            <pre id="coord">Latitude: {this.state.mouseCoords.lat}</pre><pre id="coord">Longitude: {this.state.mouseCoords.lng}</pre>
+            <pre id="coord">Latitude: {this.state.mouseCoords.latitude}</pre><pre id="coord">Longitude: {this.state.mouseCoords.longitude}</pre>
           </div>
         </div>
         <aside>
@@ -187,6 +236,8 @@ class App extends Component {
             state={this.state}
             handleToggle={this.handleToggle}
             viewDataClickHandler={this.viewDataClickHandler}
+            buildRouteClickHandler={this.buildRouteClickHandler}
+            exitBuildRouteClickHandler={this.exitBuildRouteClickHandler}
             removeMarkerClickHandler={this.removeMarkerClickHandler}
             updateMarker={this.updateMarker}
           />

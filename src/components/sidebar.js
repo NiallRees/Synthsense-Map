@@ -29,18 +29,69 @@ class Sidebar extends Component {
         }
     }
 
-    planSideBar(marker) {
-        if (marker == null) {
-            return (<p id="title">No marker selected</p>)
+    buildRouteSideBar() {
+        if (this.props.state.planTakeoff == null) {
+            return (
+                    <p id="title">Add a Takeoff Point</p>
+            )
+        } else if (this.props.state.planRouteSensors.length < 1) {
+            return (
+                    <p id="title">Select the First Sensor</p>
+            )
+        } else { 
+            return (
+                <>
+                <p id="title">Select the Next Sensor</p>
+                        <button className="sidebar-button" type="button"
+                        onClick={(e) => {
+                        }}
+                        >
+                        Complete
+                </button>
+                </>
+            )
+        }
+    }
+
+    planSideBar() {
+        const selectedMarker = this.props.state.selectedMarker;
+        const buildRouteMode = this.props.state.buildRouteMode;
+        if (buildRouteMode) {
+            return (
+                <>
+                    <p id="title">Build Route</p>
+                    {this.buildRouteSideBar()}
+                    <button className="sidebar-button" type="button"
+                    onClick={(e) => {
+                        this.props.exitBuildRouteClickHandler();
+                    }}
+                    >
+                    Exit
+                    </button>
+                </>
+            )
+        } else if (selectedMarker == null) {
+            return (
+                <>
+                    <p id="title">No Marker Selected</p>
+                    <button className="sidebar-button" id="build-route-button" type="button"
+                    onClick={(e) => {
+                        this.props.buildRouteClickHandler();
+                    }}
+                    >
+                    Build Route
+                    </button>
+                </>
+            )
         } else {
             return(
                 <>
-                    <p id="title">Name: <input type="text" name="name" onChange={this.props.updateMarker.bind(this)} value={marker.name}></input></p>
-                    <p id="title">Latitude: <input type="text" name="latitude" onChange={this.props.updateMarker.bind(this)} value={marker.latitude}></input></p>
-                    <p id="title">Longitude: <input type="text" name="longitude" onChange={this.props.updateMarker.bind(this)} value={marker.longitude}></input></p>
+                    <p id="title">Name: <input type="text" name="name" onChange={this.props.updateMarker.bind(this)} value={selectedMarker.name}></input></p>
+                    <p id="title">Latitude: <input type="text" name="latitude" onChange={this.props.updateMarker.bind(this)} value={selectedMarker.latitude}></input></p>
+                    <p id="title">Longitude: <input type="text" name="longitude" onChange={this.props.updateMarker.bind(this)} value={selectedMarker.longitude}></input></p>
                     <button className="sidebar-button" type="button"
                     onClick={(e) => {
-                        this.props.removeMarkerClickHandler(marker);
+                        this.props.removeMarkerClickHandler(selectedMarker);
                     }}
                     >
                     Delete
@@ -53,7 +104,7 @@ class Sidebar extends Component {
     sidebar() {
         if (this.props.state.mode === "view") {
             return(
-                this.viewSideBar(this.props.state.selectedMarker)
+                this.viewSideBar()
             )
         }
 

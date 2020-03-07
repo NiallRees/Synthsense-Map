@@ -4,6 +4,7 @@ import config from '../config';
 import SensorPin from './sensorPin';
 import TakeoffPin from './takeoffPin';
 import PinPrompt from './pinPrompt';
+import PolylineOverlay from './polylineOverlay';
 
 const TOKEN=config.REACT_APP_TOKEN
 
@@ -30,8 +31,8 @@ class Map extends Component {
     viewport: defaultViewport,
     PinPrompt: {
       'enabled': false,
-      'lng': 0,
-      'lat': 0
+      'longitude': 0,
+      'latitude': 0
     }
   };
 
@@ -66,8 +67,8 @@ class Map extends Component {
       this.setState({
         PinPrompt: {
           'enabled': true,
-          'lng': lngLat[0],
-          'lat': lngLat[1]
+          'longitude': lngLat[0],
+          'latitude': lngLat[1]
         }
       })
     }
@@ -107,7 +108,7 @@ class Map extends Component {
   renderPinPrompt() {
     if (this.state.PinPrompt.enabled) {
       return (
-        <Marker key={99} latitude={this.state.PinPrompt.lat} longitude={this.state.PinPrompt.lng}>
+        <Marker key={99} latitude={this.state.PinPrompt.latitude} longitude={this.state.PinPrompt.longitude}>
           <PinPrompt PinPrompt={this.state.PinPrompt} pinPromptClickHandler={this.pinPromptClickHandler}/>
         </Marker>
       )
@@ -118,8 +119,8 @@ class Map extends Component {
     this.setState({
       PinPrompt: {
         'enabled': false,
-        'lng': 0,
-        'lat': 0
+        'longitude': 0,
+        'latitude': 0
       }
     })
     this.props.addPlanPin(pinPrompt, pinType)
@@ -131,8 +132,8 @@ class Map extends Component {
       this.setState({
         PinPrompt: {
           'enabled': false,
-          'lng': 0,
-          'lat': 0
+          'longitude': 0,
+          'latitude': 0
         }
       })
     }
@@ -162,6 +163,7 @@ class Map extends Component {
             this.props.updateMouseCoords(e.lngLat)
           }}
         >
+          <PolylineOverlay points={this.props.mode === "plan" ? this.props.planRouteLineCoords : []} />
           {this.props.sensors.map(sensor => 
             this.renderSensorPin({sensor}),
           )}
