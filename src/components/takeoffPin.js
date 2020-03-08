@@ -14,7 +14,7 @@ export default class TakeoffPin extends PureComponent {
   };
 
   render() {
-    const {takeoff = null, clickHandler = null, mode = 'view'} = this.props;
+    const {takeoff = null, clickHandler = null} = this.props;
 
     return (
       <div className="pin-object">

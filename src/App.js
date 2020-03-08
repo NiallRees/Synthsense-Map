@@ -51,7 +51,21 @@ class App extends Component {
     this.updateMouseCoords = this.updateMouseCoords.bind(this);
     this.addPlanPin = this.addPlanPin.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
-  } 
+  }
+
+  planRouteMarkerClickHandler(marker) {
+    if (this.state.planRouteLineCoords.length < 1) {
+      this.setState({
+        planRouteLineCoords: [[this.state.planTakeoff['longitude'], this.state.planTakeoff['latitude']]]
+      })
+    }
+    if (!containsObject(marker, this.state.planRouteSensors)) {
+      this.setState(prevState => ({
+        planRouteSensors: [...prevState.planRouteSensors, marker],
+        planRouteLineCoords: [...prevState.planRouteLineCoords, [marker['longitude'], marker['latitude']]]
+      }))
+    }
+  }
 
   markerClickHandler(marker) {
     if (this.state.buildRouteMode === false) {
@@ -59,12 +73,7 @@ class App extends Component {
         selectedMarker: marker
       })
     } else {
-      if (!containsObject(marker, this.state.planRouteSensors)) {
-        this.setState(prevState => ({
-          planRouteSensors: [...prevState.planRouteSensors, marker],
-          planRouteLineCoords: [...prevState.planRouteLineCoords, [marker['longitude'], marker['latitude']]]
-        }))
-      }
+      this.planRouteMarkerClickHandler(marker);
     }
   }
 
@@ -114,11 +123,6 @@ class App extends Component {
     this.setState({
       buildRouteMode: true
     })
-    if (this.state.planTakeoff !== null) {
-      this.setState({
-        planRouteLineCoords: [[this.state.planTakeoff['longitude'], this.state.planTakeoff['latitude']]]
-      })
-    }
   }
 
   removeMarkerClickHandler(selectedMarker) {
@@ -170,11 +174,6 @@ class App extends Component {
       this.setState({
         planTakeoff: takeoff
       })
-      if (this.state.planRouteLineCoords.length < 1) {
-        this.setState({
-          planRouteLineCoords: [[takeoff['longitude'], takeoff['latitude']]]
-        })
-      }
     }
   }
 
@@ -226,6 +225,7 @@ class App extends Component {
             PinPrompt={this.state.PinPrompt}
             updateMouseCoords={this.updateMouseCoords}
             mode={this.state.mode}
+            buildRouteMode={this.state.buildRouteMode}
           />
           <div id="coords-box">
             <pre id="coord">Latitude: {this.state.mouseCoords.latitude}</pre><pre id="coord">Longitude: {this.state.mouseCoords.longitude}</pre>

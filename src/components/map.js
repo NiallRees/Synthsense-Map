@@ -139,6 +139,14 @@ class Map extends Component {
     }
   }
 
+  planPath() {
+    if (this.props.buildRouteMode) {
+      return(
+        <PolylineOverlay points={this.props.planRouteLineCoords} />
+      )
+    }
+  }
+
   render() {
     const { 
       viewport,
@@ -163,7 +171,7 @@ class Map extends Component {
             this.props.updateMouseCoords(e.lngLat)
           }}
         >
-          <PolylineOverlay points={this.props.mode === "plan" ? this.props.planRouteLineCoords : []} />
+          {this.planPath()}
           {this.props.sensors.map(sensor => 
             this.renderSensorPin({sensor}),
           )}
