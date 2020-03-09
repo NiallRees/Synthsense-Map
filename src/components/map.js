@@ -140,7 +140,7 @@ class Map extends Component {
   }
 
   planPath() {
-    if (this.props.buildRouteMode) {
+    if (this.props.buildRouteMode && this.props.planRouteSensors.length > 0) {
       var lineCoords = this.props.planRouteSensors.map(sensor =>
         [sensor['longitude'], sensor['latitude']]
       )

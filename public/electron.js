@@ -7,8 +7,21 @@ const isDev = require('electron-is-dev');
 let mainWindow;
 
 // Open the enclosing data folder
-ipcMain.on('asynchronous-message', (event, arg) => {
+ipcMain.on('open_data_folder', (event, arg) => {
   shell.openItem('./src/data/'.concat(arg))
+})
+
+// Export route
+ipcMain.on('export_route', (event, route) => {
+  const path = dialog.showSaveDialogSync(mainWindow, {
+    defaultPath: "Route.json",
+    properties: ['createDirectory']
+  });
+  if (!path) return;
+
+  fs.writeJson(path, route, err => {
+    if (err) return console.error(err);
+  })
 })
 
 function createWindow() {

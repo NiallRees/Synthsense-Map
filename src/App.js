@@ -46,6 +46,7 @@ class App extends Component {
     this.buildRouteClickHandler = this.buildRouteClickHandler.bind(this);
     this.exitBuildRouteClickHandler = this.exitBuildRouteClickHandler.bind(this);
     this.resetBuildRouteClickHandler = this.resetBuildRouteClickHandler.bind(this);
+    this.exportBuildRouteClickHandler = this.exportBuildRouteClickHandler.bind(this);
     this.undoBuildRouteClickHandler = this.undoBuildRouteClickHandler.bind(this);
     this.removeMarkerClickHandler = this.removeMarkerClickHandler.bind(this);
     this.updateMarker = this.updateMarker.bind(this);
@@ -105,7 +106,7 @@ class App extends Component {
   }
 
   viewDataClickHandler(sensor) {
-    ipcRenderer.send('asynchronous-message', sensor.name)
+    ipcRenderer.send('open_data_folder', sensor.name)
   }
 
   exitBuildRouteClickHandler() {
@@ -118,6 +119,10 @@ class App extends Component {
     this.setState({
       planRouteSensors: []
     })
+  }
+
+  exportBuildRouteClickHandler() {
+    ipcRenderer.send('export_route', this.state.planRouteSensors)
   }
 
   undoBuildRouteClickHandler() {
@@ -206,7 +211,15 @@ class App extends Component {
       })
       if (this.state.planSensors.length === 0) {
         this.setState({
-          planSensors: this.state.viewSensors
+          planSensors: this.state.viewSensors.map(sensor => (
+            {
+              id: sensor.id,
+              type: sensor.type,
+              name: sensor.name,
+              longitude: sensor.longitude,
+              latitude: sensor.latitude
+            }
+          ))
         })
       }
     }
@@ -252,6 +265,7 @@ class App extends Component {
             viewDataClickHandler={this.viewDataClickHandler}
             buildRouteClickHandler={this.buildRouteClickHandler}
             exitBuildRouteClickHandler={this.exitBuildRouteClickHandler}
+            exportBuildRouteClickHandler={this.exportBuildRouteClickHandler}
             resetBuildRouteClickHandler={this.resetBuildRouteClickHandler}
             undoBuildRouteClickHandler={this.undoBuildRouteClickHandler}
             removeMarkerClickHandler={this.removeMarkerClickHandler}
