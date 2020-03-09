@@ -55,7 +55,7 @@ class Sidebar extends Component {
                     {this.buildRouteSideBar()}
                     <button className="sidebar-button" type="button"
                     onClick={(e) => {
-                        this.props.exitBuildRouteClickHandler();
+                        this.props.undoBuildRouteClickHandler();
                     }}
                     >
                     Undo

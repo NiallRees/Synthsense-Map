@@ -6,7 +6,7 @@ import TakeoffPin from './takeoffPin';
 import PinPrompt from './pinPrompt';
 import PolylineOverlay from './polylineOverlay';
 
-const TOKEN=config.REACT_APP_TOKEN
+const TOKEN=config.REACT_APP_TOKEN;
 
 const defaultViewport = {
   width: 800,

@@ -46,6 +46,7 @@ class App extends Component {
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
     this.buildRouteClickHandler = this.buildRouteClickHandler.bind(this);
     this.exitBuildRouteClickHandler = this.exitBuildRouteClickHandler.bind(this);
+    this.undoBuildRouteClickHandler = this.undoBuildRouteClickHandler.bind(this);
     this.removeMarkerClickHandler = this.removeMarkerClickHandler.bind(this);
     this.updateMarker = this.updateMarker.bind(this);
     this.updateMouseCoords = this.updateMouseCoords.bind(this);
@@ -116,6 +117,17 @@ class App extends Component {
   exitBuildRouteClickHandler() {
     this.setState({
       buildRouteMode: false
+    })
+  }
+
+  undoBuildRouteClickHandler() {
+    const planRouteSensors = [...this.state.planRouteSensors];
+    planRouteSensors.pop();
+    const planRouteLineCoords = [...this.state.planRouteLineCoords];
+    planRouteLineCoords.pop();
+    this.setState({
+      planRouteSensors: planRouteSensors,
+      planRouteLineCoords: planRouteLineCoords
     })
   }
 
@@ -238,6 +250,7 @@ class App extends Component {
             viewDataClickHandler={this.viewDataClickHandler}
             buildRouteClickHandler={this.buildRouteClickHandler}
             exitBuildRouteClickHandler={this.exitBuildRouteClickHandler}
+            undoBuildRouteClickHandler={this.undoBuildRouteClickHandler}
             removeMarkerClickHandler={this.removeMarkerClickHandler}
             updateMarker={this.updateMarker}
           />
