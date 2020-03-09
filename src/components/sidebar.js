@@ -62,7 +62,7 @@ class Sidebar extends Component {
                     </button>
                     <button className="sidebar-button" type="button"
                     onClick={(e) => {
-                        this.props.exitBuildRouteClickHandler();
+                        this.props.resetBuildRouteClickHandler();
                     }}
                     >
                     Reset

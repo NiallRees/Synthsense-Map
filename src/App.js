@@ -45,6 +45,7 @@ class App extends Component {
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
     this.buildRouteClickHandler = this.buildRouteClickHandler.bind(this);
     this.exitBuildRouteClickHandler = this.exitBuildRouteClickHandler.bind(this);
+    this.resetBuildRouteClickHandler = this.resetBuildRouteClickHandler.bind(this);
     this.undoBuildRouteClickHandler = this.undoBuildRouteClickHandler.bind(this);
     this.removeMarkerClickHandler = this.removeMarkerClickHandler.bind(this);
     this.updateMarker = this.updateMarker.bind(this);
@@ -249,6 +250,7 @@ class App extends Component {
             viewDataClickHandler={this.viewDataClickHandler}
             buildRouteClickHandler={this.buildRouteClickHandler}
             exitBuildRouteClickHandler={this.exitBuildRouteClickHandler}
+            resetBuildRouteClickHandler={this.resetBuildRouteClickHandler}
             undoBuildRouteClickHandler={this.undoBuildRouteClickHandler}
             removeMarkerClickHandler={this.removeMarkerClickHandler}
             updateMarker={this.updateMarker}
