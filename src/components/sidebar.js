@@ -40,15 +40,7 @@ class Sidebar extends Component {
             )
         } else { 
             return (
-                <>
                 <p id="title">Select the Next Sensor</p>
-                        <button className="sidebar-button" type="button"
-                        onClick={(e) => {
-                        }}
-                        >
-                        Complete
-                </button>
-                </>
             )
         }
     }
@@ -61,6 +53,27 @@ class Sidebar extends Component {
                 <>
                     <p id="title">Build Route</p>
                     {this.buildRouteSideBar()}
+                    <button className="sidebar-button" type="button"
+                    onClick={(e) => {
+                        this.props.exitBuildRouteClickHandler();
+                    }}
+                    >
+                    Undo
+                    </button>
+                    <button className="sidebar-button" type="button"
+                    onClick={(e) => {
+                        this.props.exitBuildRouteClickHandler();
+                    }}
+                    >
+                    Reset
+                    </button>
+                    <button className="sidebar-button" type="button"
+                    onClick={(e) => {
+                        this.props.exitBuildRouteClickHandler();
+                    }}
+                    >
+                    Export
+                    </button>
                     <button className="sidebar-button" type="button"
                     onClick={(e) => {
                         this.props.exitBuildRouteClickHandler();
@@ -103,13 +116,13 @@ class Sidebar extends Component {
 
     sidebar() {
         if (this.props.state.mode === "view") {
-            return(
-                this.viewSideBar()
+            return (
+                this.viewSideBar(this.props.state.selectedMarker)
             )
         }
 
         if (this.props.state.mode === "plan") {
-            return(
+            return (
                 this.planSideBar(this.props.state.selectedMarker)
             )
         }
