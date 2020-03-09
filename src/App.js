@@ -23,7 +23,6 @@ class App extends Component {
       viewSensors: sensorData.sensors,
       planSensors: [],
       planRouteSensors: [],
-      planRouteLineCoords: [],
       planTakeoff: null,
       selectedMarker: null,
       switchIsOn: false,
@@ -55,15 +54,9 @@ class App extends Component {
   }
 
   planRouteMarkerClickHandler(marker) {
-    if (this.state.planRouteLineCoords.length < 1) {
-      this.setState({
-        planRouteLineCoords: [[this.state.planTakeoff['longitude'], this.state.planTakeoff['latitude']]]
-      })
-    }
     if (!containsObject(marker, this.state.planRouteSensors)) {
       this.setState(prevState => ({
-        planRouteSensors: [...prevState.planRouteSensors, marker],
-        planRouteLineCoords: [...prevState.planRouteLineCoords, [marker['longitude'], marker['latitude']]]
+        planRouteSensors: [...prevState.planRouteSensors, marker]
       }))
     }
   }
@@ -120,14 +113,17 @@ class App extends Component {
     })
   }
 
+  resetBuildRouteClickHandler() {
+    this.setState({
+      planRouteSensors: []
+    })
+  }
+
   undoBuildRouteClickHandler() {
     const planRouteSensors = [...this.state.planRouteSensors];
     planRouteSensors.pop();
-    const planRouteLineCoords = [...this.state.planRouteLineCoords];
-    planRouteLineCoords.pop();
     this.setState({
-      planRouteSensors: planRouteSensors,
-      planRouteLineCoords: planRouteLineCoords
+      planRouteSensors: planRouteSensors
     })
   }
 
@@ -190,9 +186,13 @@ class App extends Component {
   }
 
   setPinPrompt(lngLat) {
-    this.state.PinPrompt.enabled = true;
-    this.state.PinPrompt.longitude = lngLat[0];
-    this.state.PinPrompt.latitude = lngLat[1];
+    this.setState({
+      PinPrompt: {
+        enabled: true,
+        longitude: lngLat[0],
+        latitude: lngLat[1]
+      }
+    })
   }
 
   handleToggle() {
@@ -227,7 +227,6 @@ class App extends Component {
           <Map 
             sensors={this.state.switchIsOn ? this.state.planSensors : this.state.viewSensors}
             planRouteSensors={this.state.planRouteSensors}
-            planRouteLineCoords={this.state.planRouteLineCoords}
             takeoff={this.state.switchIsOn ? this.state.planTakeoff : null}
             selectedMarker={this.state.selectedMarker} 
             markerClickHandler={this.markerClickHandler}

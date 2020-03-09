@@ -141,8 +141,12 @@ class Map extends Component {
 
   planPath() {
     if (this.props.buildRouteMode) {
-      return(
-        <PolylineOverlay points={this.props.planRouteLineCoords} />
+      var lineCoords = this.props.planRouteSensors.map(sensor =>
+        [sensor['longitude'], sensor['latitude']]
+      )
+      lineCoords.unshift([this.props.takeoff['longitude'], this.props.takeoff['latitude']])
+      return (
+        <PolylineOverlay points={lineCoords} />
       )
     }
   }
