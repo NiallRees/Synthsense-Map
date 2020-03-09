@@ -163,6 +163,7 @@ class App extends Component {
     if (pinType === "sensor") {
       const newSensor = {
         "id": this.makeid(8),
+        "type": "Sensor",
         "name": "New Sensor",
         "longitude": pinPrompt.longitude,
         "latitude": pinPrompt.latitude,
@@ -176,6 +177,7 @@ class App extends Component {
     if (pinType === "takeoff") {
       const takeoff = {
         "id": this.makeid(8),
+        "type": "Takeoff",
         "name": "Takeoff",
         "longitude": pinPrompt.longitude,
         "latitude": pinPrompt.latitude,
