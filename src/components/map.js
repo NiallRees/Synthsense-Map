@@ -146,7 +146,7 @@ class Map extends Component {
   searchResultClickHandler(result) {
     console.log(result)
     const {longitude, latitude, zoom} = new WebMercatorViewport(defaultViewport)
-    .fitBounds([[result.bbox[0], result.bbox[1]], [result.bbox[2], result.bbox[3]]], {
+    .fitBounds([[result.bbox[0], result.bbox[1]], [result.bbox[2], result.bbox[3]]], { //TODO streets don't have a bbox so just use the center
       padding: 20,
       offset: [0, -100]
     });
