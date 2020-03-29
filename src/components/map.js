@@ -22,18 +22,12 @@ class Map extends Component {
       this.state.viewport.zoom = this.calculateDefaultZoom(coords);
       [this.state.viewport.latitude, this.state.viewport.longitude] = this.calculateLatLong(coords);
     };
-    this.pinPromptClickHandler = this.pinPromptClickHandler.bind(this);
     const lngLat = [this.state.viewport.longitude, this.state.viewport.latitude];
     this.props.updateMouseCoords(lngLat);
   }
 
   state = {
-    viewport: defaultViewport,
-    PinPrompt: {
-      'enabled': false,
-      'longitude': 0,
-      'latitude': 0
-    }
+    viewport: defaultViewport
   };
 
   calculateDefaultZoom(coords) {
@@ -60,18 +54,6 @@ class Map extends Component {
   onViewportChange = viewport => { 
     const {width, height, ...etc} = viewport
     this.setState({viewport: etc})
-  }
-
-  setPinPrompt(lngLat) {
-    if (this.props.mode === "plan") {
-      this.setState({
-        PinPrompt: {
-          'enabled': true,
-          'longitude': lngLat[0],
-          'latitude': lngLat[1]
-        }
-      })
-    }
   }
 
   renderSensorPin({ sensor }) {
@@ -106,36 +88,12 @@ class Map extends Component {
   }
 
   renderPinPrompt() {
-    if (this.state.PinPrompt.enabled) {
+    if (this.props.pinPrompt.enabled) {
       return (
-        <Marker key={99} latitude={this.state.PinPrompt.latitude} longitude={this.state.PinPrompt.longitude}>
-          <PinPrompt PinPrompt={this.state.PinPrompt} pinPromptClickHandler={this.pinPromptClickHandler}/>
+        <Marker key={99} latitude={this.props.pinPrompt.latitude} longitude={this.props.pinPrompt.longitude}>
+          <PinPrompt PinPrompt={this.props.pinPrompt} pinPromptClickHandler={this.props.pinPromptClickHandler}/>
         </Marker>
       )
-    }
-  }
-
-  pinPromptClickHandler(pinPrompt, pinType) {
-    this.setState({
-      PinPrompt: {
-        'enabled': false,
-        'longitude': 0,
-        'latitude': 0
-      }
-    })
-    this.props.addPlanPin(pinPrompt, pinType)
-  }
-
-  mapClickHandler(e) {
-    if(e.leftButton) {
-      this.props.resetselectedMarker();
-      this.setState({
-        PinPrompt: {
-          'enabled': false,
-          'longitude': 0,
-          'latitude': 0
-        }
-      })
     }
   }
 
@@ -165,11 +123,11 @@ class Map extends Component {
           height='100%'
           onViewportChange={viewport => this.onViewportChange(viewport)}
           onContextMenu={(e) => {
-            this.setPinPrompt(e.lngLat);
+            this.props.setPinPrompt(e.lngLat);
             e.preventDefault();
           }}
           onClick={(e) => {
-            this.mapClickHandler(e);
+            this.props.mapClickHandler(e);
           }}
           onMouseMove={(e) => {
             this.props.updateMouseCoords(e.lngLat)
@@ -181,6 +139,13 @@ class Map extends Component {
           )}
           {this.renderTakeoffPin()}
           {this.renderPinPrompt()}
+          <div id="coords-box">
+            <pre id="coord">Latitude: {this.props.mouseCoords.latitude}</pre><pre id="coord">Longitude: {this.props.mouseCoords.longitude}</pre>
+          </div>
+
+          <div id="search-box">
+            <input id="search-input" placeholder="Search for location"></input>
+          </div>
         </ReactMapGL>
       </>
     );

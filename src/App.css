@@ -88,3 +88,29 @@ aside.collapsed {
   margin: 0;
   float:left;
 }
+
+#search-box {
+  position: absolute;
+  height: 1rem;
+  width: 20rem;
+  top: 0;
+  right: 0;
+  padding: 0.2rem 0.4rem;
+  background-color: white;
+  opacity: 0.8;
+}
+
+#search-input {
+  margin: 0;
+  float:left;
+  height: 1rem;
+  border: 0;
+  padding: 0;
+  width: 100%;
+  font-family: monospace;
+  background-color: white;
+}
+
+::placeholder {
+  color: black;
+}

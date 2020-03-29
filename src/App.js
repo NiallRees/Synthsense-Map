@@ -32,7 +32,7 @@ class App extends Component {
         latitude: 52.405436044104256,
         longitude: -0.32935776356134167
       },
-      PinPrompt: {
+      pinPrompt: {
         'enabled': false,
         'longitude': 0,
         'latitude': 0
@@ -40,8 +40,10 @@ class App extends Component {
     };
 
     this.markerClickHandler = this.markerClickHandler.bind(this);
-    this.resetselectedMarker = this.resetselectedMarker.bind(this);
+    this.resetSelectedMarker = this.resetSelectedMarker.bind(this);
     this.setPinPrompt = this.setPinPrompt.bind(this);
+    this.pinPromptClickHandler = this.pinPromptClickHandler.bind(this);
+    this.mapClickHandler = this.mapClickHandler.bind(this);
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
     this.buildRouteClickHandler = this.buildRouteClickHandler.bind(this);
     this.exitBuildRouteClickHandler = this.exitBuildRouteClickHandler.bind(this);
@@ -90,6 +92,19 @@ class App extends Component {
     }
   }
 
+  mapClickHandler(e) {
+    if(e.leftButton) {
+      this.resetSelectedMarker();
+      this.setState({
+        pinPrompt: {
+          'enabled': false,
+          'longitude': 0,
+          'latitude': 0
+        }
+      })
+    }
+  }
+
   updateMouseCoords(lngLat) {
     this.setState({
       mouseCoords: {
@@ -99,7 +114,7 @@ class App extends Component {
     })
   }
 
-  resetselectedMarker() {
+  resetSelectedMarker() {
     this.setState({
       selectedMarker: null
     })
@@ -194,13 +209,26 @@ class App extends Component {
   }
 
   setPinPrompt(lngLat) {
+    if (this.state.mode === "plan") {
+      this.setState({
+        pinPrompt: {
+          'enabled': true,
+          'longitude': lngLat[0],
+          'latitude': lngLat[1]
+        }
+      })
+    }
+  }
+
+  pinPromptClickHandler(pinPrompt, pinType) {
     this.setState({
-      PinPrompt: {
-        enabled: true,
-        longitude: lngLat[0],
-        latitude: lngLat[1]
+      pinPrompt: {
+        'enabled': false,
+        'longitude': 0,
+        'latitude': 0
       }
     })
+    this.addPlanPin(pinPrompt, pinType)
   }
 
   handleToggle() {
@@ -247,16 +275,17 @@ class App extends Component {
             selectedMarker={this.state.selectedMarker} 
             markerClickHandler={this.markerClickHandler}
             addPlanPin={this.addPlanPin}
-            resetselectedMarker={this.resetselectedMarker}
+            resetSelectedMarker={this.resetSelectedMarker}
             setPinPrompt={this.setPinPrompt}
-            PinPrompt={this.state.PinPrompt}
+            pinPrompt={this.state.PinPrompt}
             updateMouseCoords={this.updateMouseCoords}
             mode={this.state.mode}
             buildRouteMode={this.state.buildRouteMode}
+            mouseCoords={this.state.mouseCoords}
+            pinPrompt={this.state.pinPrompt}
+            pinPromptClickHandler={this.pinPromptClickHandler}
+            mapClickHandler={this.mapClickHandler}
           />
-          <div id="coords-box">
-            <pre id="coord">Latitude: {this.state.mouseCoords.latitude}</pre><pre id="coord">Longitude: {this.state.mouseCoords.longitude}</pre>
-          </div>
         </div>
         <aside>
           <Sidebar
