@@ -182,7 +182,7 @@ class App extends Component {
   addPlanPin(pinPrompt, pinType) {
     if (pinType === "sensor") {
       const newSensor = {
-        "id": this.makeid(8),
+        "id": this.makeid(8), // TODO add collision prevention
         "type": "Sensor",
         "name": "New Sensor",
         "longitude": pinPrompt.longitude,

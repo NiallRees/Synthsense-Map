@@ -7,6 +7,8 @@ import PinPrompt from './pinPrompt';
 import PolylineOverlay from './polylineOverlay';
 
 const TOKEN=config.REACT_APP_TOKEN;
+const GEOCODEURL='https://api.mapbox.com/geocoding/v5/mapbox.places/'
+const MAPSEARCHINTERVAL=1500
 
 const defaultViewport = {
   width: 800,
@@ -24,10 +26,21 @@ class Map extends Component {
     };
     const lngLat = [this.state.viewport.longitude, this.state.viewport.latitude];
     this.props.updateMouseCoords(lngLat);
+    this.searchForLocation = this.searchForLocation.bind(this);
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      this.searchForLocation()
+    }, MAPSEARCHINTERVAL)
   }
 
   state = {
-    viewport: defaultViewport
+    viewport: defaultViewport,
+    searchLocation: null,
+    lastSearchLocation: null,
+    searchResults: [],
+    showResults: false
   };
 
   calculateDefaultZoom(coords) {
@@ -109,6 +122,27 @@ class Map extends Component {
     }
   }
 
+  searchForLocation() {
+    const searchLocation = this.state.searchLocation;
+    if ((searchLocation != this.state.lastSearchLocation) && searchLocation != '') {
+      console.log('Searching for ', searchLocation)
+
+      fetch(GEOCODEURL.concat(searchLocation, '.json?access_token=', TOKEN))
+      .then(res => res.json())
+      .then((data) => {
+        this.setState({
+          searchResults: data.features
+        })
+        console.log(data.features)
+      })
+      .catch(console.log)
+
+      this.setState({
+        lastSearchLocation: searchLocation
+      })
+    }
+  }
+
   render() {
     const { 
       viewport,
@@ -142,9 +176,32 @@ class Map extends Component {
           <div id="coords-box">
             <pre id="coord">Latitude: {this.props.mouseCoords.latitude}</pre><pre id="coord">Longitude: {this.props.mouseCoords.longitude}</pre>
           </div>
-
           <div id="search-box">
-            <input id="search-input" placeholder="Search for location"></input>
+            <input
+              id="search-input"
+              placeholder="Search for location"
+              onInput={(e) => {
+                this.setState({
+                  searchLocation: e.target.value
+                })
+              }}
+              onFocus={(e) => {
+                this.setState({
+                  showResults: true
+                })
+              }}
+              onBlur={(e) => {
+                this.setState({
+                  showResults: false
+                })
+              }}
+            >
+            </input>
+            <ol>
+              {this.state.searchResults.map(result =>
+                <li key={result.id}>{result.place_name}</li>
+              )}
+            </ol>
           </div>
         </ReactMapGL>
       </>
