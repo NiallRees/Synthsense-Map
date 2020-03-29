@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import ReactMapGL, {Marker} from "react-map-gl";
+import ReactMapGL, {Marker, WebMercatorViewport, FlyToInterpolator} from "react-map-gl";
+import * as d3 from 'd3-ease';
 import config from '../config';
 import SensorPin from './sensorPin';
 import TakeoffPin from './takeoffPin';
 import PinPrompt from './pinPrompt';
 import PolylineOverlay from './polylineOverlay';
+
 
 const TOKEN=config.REACT_APP_TOKEN;
 const GEOCODEURL='https://api.mapbox.com/geocoding/v5/mapbox.places/'
@@ -86,7 +88,7 @@ class Map extends Component {
   renderTakeoffPin() {
   const selected = (this.props.takeoff === this.props.selectedMarker);
   const takeoff = this.props.takeoff;
-  if (takeoff != null) {
+  if (takeoff !== null) {
       return (
         <Marker key={takeoff.id} latitude={takeoff.latitude} longitude={takeoff.longitude}>
           <TakeoffPin
@@ -124,8 +126,7 @@ class Map extends Component {
 
   searchForLocation() {
     const searchLocation = this.state.searchLocation;
-    if ((searchLocation != this.state.lastSearchLocation) && searchLocation != '') {
-      console.log('Searching for ', searchLocation)
+    if ((searchLocation !== this.state.lastSearchLocation) && searchLocation !== '') {
 
       fetch(GEOCODEURL.concat(searchLocation, '.json?access_token=', TOKEN))
       .then(res => res.json())
@@ -133,7 +134,6 @@ class Map extends Component {
         this.setState({
           searchResults: data.features
         })
-        console.log(data.features)
       })
       .catch(console.log)
 
@@ -141,6 +141,73 @@ class Map extends Component {
         lastSearchLocation: searchLocation
       })
     }
+  }
+
+  searchResultClickHandler(result) {
+    console.log(result)
+    const {longitude, latitude, zoom} = new WebMercatorViewport(defaultViewport)
+    .fitBounds([[result.bbox[0], result.bbox[1]], [result.bbox[2], result.bbox[3]]], {
+      padding: 20,
+      offset: [0, -100]
+    });
+    const viewport = {
+      ...this.state.viewport,
+      longitude,
+      latitude,
+      zoom: zoom+1,
+      transitionDuration: 2000,
+      transitionInterpolator: new FlyToInterpolator(),
+      transitionEasing: d3.easeCubic
+    }
+    this.setState({
+      viewport,
+      showResults: false
+    });
+  }
+
+  renderSearchResults() {
+    if(this.state.showResults) {
+      return (
+        <div id="search-results">
+          <ol id="search-results-list">
+            {this.state.searchResults.map(result =>
+              <li
+                id="search-result-item"
+                key={result.id}
+                onClick={() => {
+                  this.searchResultClickHandler(result)
+                }}
+              >
+                {result.place_name}
+              </li>
+            )}
+          </ol>
+        </div>
+      )
+    }
+  }
+
+  renderSearchBox() {
+    return(
+      <div id="search-box">
+        <input
+          id="search-input"
+          placeholder="Search"
+          onInput={(e) => {
+            this.setState({
+              searchLocation: e.target.value
+            })
+          }}
+          onFocus={(e) => {
+            this.setState({
+              showResults: true
+            })
+          }}
+        >
+        </input>
+        {this.renderSearchResults()}
+      </div>
+    )
   }
 
   render() {
@@ -162,6 +229,9 @@ class Map extends Component {
           }}
           onClick={(e) => {
             this.props.mapClickHandler(e);
+            this.setState({
+              showResults: false // Todo add this state to the parent
+            })
           }}
           onMouseMove={(e) => {
             this.props.updateMouseCoords(e.lngLat)
@@ -174,36 +244,11 @@ class Map extends Component {
           {this.renderTakeoffPin()}
           {this.renderPinPrompt()}
           <div id="coords-box">
-            <pre id="coord">Latitude: {this.props.mouseCoords.latitude}</pre><pre id="coord">Longitude: {this.props.mouseCoords.longitude}</pre>
-          </div>
-          <div id="search-box">
-            <input
-              id="search-input"
-              placeholder="Search for location"
-              onInput={(e) => {
-                this.setState({
-                  searchLocation: e.target.value
-                })
-              }}
-              onFocus={(e) => {
-                this.setState({
-                  showResults: true
-                })
-              }}
-              onBlur={(e) => {
-                this.setState({
-                  showResults: false
-                })
-              }}
-            >
-            </input>
-            <ol>
-              {this.state.searchResults.map(result =>
-                <li key={result.id}>{result.place_name}</li>
-              )}
-            </ol>
+            <pre id="coord">Latitude: {this.props.mouseCoords.latitude}</pre>
+            <pre id="coord">Longitude: {this.props.mouseCoords.longitude}</pre>
           </div>
         </ReactMapGL>
+        {this.renderSearchBox()}
       </>
     );
   }

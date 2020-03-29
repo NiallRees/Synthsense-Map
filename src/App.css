@@ -6,7 +6,7 @@
 }
 
 aside {
-	width: 300px;
+	width: 20rem;
 	height: 100%;
 	transition: width 0.2s ease;
 }
@@ -90,11 +90,12 @@ aside.collapsed {
 }
 
 #search-box {
+  cursor: default;
   position: absolute;
   height: 1rem;
   width: 20rem;
   top: 0;
-  right: 0;
+  right: 20rem;
   padding: 0.2rem 0.4rem;
   background-color: white;
   opacity: 0.8;
@@ -109,6 +110,42 @@ aside.collapsed {
   width: 100%;
   font-family: monospace;
   background-color: white;
+  outline: none;
+}
+
+#search-results {
+  cursor: default;
+  position: absolute;
+  top: 1.4rem;
+  right: 0;
+  margin: 0;
+  font-family: monospace;
+  list-style-type: none;
+  padding-inline-start: 0;
+  width: 20rem;
+  background-color: white;
+}
+
+#search-results {
+  position: absolute;
+  width: 20.8rem;
+  top: 1.4rem;
+}
+
+#search-results-list {
+  margin: 0;
+  font-family: monospace;
+  list-style-type: none;
+  padding-inline-start: 0;
+}
+
+#search-result-item {
+  width: 20rem;
+  padding: 0.2rem 0.4rem;
+}
+
+#search-result-item:hover {
+  background-color: pink;
 }
 
 ::placeholder {

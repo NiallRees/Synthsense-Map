@@ -38,13 +38,13 @@ export default class sensorPin extends PureComponent {
           style={{...pinStyle, fill: this.pinColour(mode), transform: `translate(${-size/2}px,${-size}px)`}}
           onMouseOver={(e) => {
             this.setState({ hovered: true});
-            }}
+          }}
           onMouseOut={(e) => {
             this.setState({ hovered: false});
-            }}
+          }}
           onClick={(e) => {
             clickHandler(sensor);
-            }}
+          }}
         >
           <path d={ICON}/>
         </svg>

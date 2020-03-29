@@ -277,12 +277,11 @@ class App extends Component {
             addPlanPin={this.addPlanPin}
             resetSelectedMarker={this.resetSelectedMarker}
             setPinPrompt={this.setPinPrompt}
-            pinPrompt={this.state.PinPrompt}
+            pinPrompt={this.state.pinPrompt}
             updateMouseCoords={this.updateMouseCoords}
             mode={this.state.mode}
             buildRouteMode={this.state.buildRouteMode}
             mouseCoords={this.state.mouseCoords}
-            pinPrompt={this.state.pinPrompt}
             pinPromptClickHandler={this.pinPromptClickHandler}
             mapClickHandler={this.mapClickHandler}
           />
