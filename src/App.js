@@ -234,8 +234,8 @@ class App extends Component {
   handleToggle() {
     if (!this.state.switchIsOn) {
       this.setState({
-        switchIsOn: true,
-        mode: 'plan'
+        mode: 'plan',
+        switchIsOn: true
       })
       if (this.state.planSensors.length === 0) {
         this.setState({
@@ -254,8 +254,9 @@ class App extends Component {
 
     if (this.state.switchIsOn) {
       this.setState({
-        switchIsOn: false,
-        mode: 'view'
+        mode: 'view',
+        buildRouteMode: false,
+        switchIsOn: false
       })
     }      
     
