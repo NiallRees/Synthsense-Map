@@ -23,8 +23,10 @@ class Map extends Component {
     super(props);
     if (props.sensors.length > 0) {
       let coords = props.sensors.map(a => ({latitude: a.latitude, longitude: a.longitude}));
-      this.state.viewport.zoom = this.calculateDefaultZoom(coords);
-      [this.state.viewport.latitude, this.state.viewport.longitude] = this.calculateLatLong(coords);
+      const {longitude, latitude, zoom} = this.recenterViewportFromCoords(coords);
+      this.state.viewport.longitude = longitude;
+      this.state.viewport.latitude = latitude;
+      this.state.viewport.zoom = zoom;
     };
     const lngLat = [this.state.viewport.longitude, this.state.viewport.latitude];
     this.props.updateMouseCoords(lngLat);
@@ -45,17 +47,28 @@ class Map extends Component {
     showResults: false
   };
 
-  calculateDefaultZoom(coords) {
-    var max_distance = 0;
+  recenterViewport(a_lat, a_lng, b_lat, b_lng) {
+    const viewport = new WebMercatorViewport(defaultViewport)
+    .fitBounds([[a_lng, a_lat], [b_lng, b_lat]], {
+      padding: 20,
+      offset: [0, -100]
+    });
+    return viewport;
+  }
+
+  recenterViewportFromCoords(coords) {
+    var lat_min = coords[0].latitude
+    var lat_max = coords[0].latitude
+    var lng_min = coords[0].longitude
+    var lng_max = coords[0].longitude
     for (let a of coords) {
-      for (let b of coords) {
-        var latitude_diff = Math.abs(a.latitude - b.latitude);
-        var longitude_diff = Math.abs(a.longitude - b.longitude);
-        max_distance = Math.max(max_distance, latitude_diff, longitude_diff);
-      }
+      lat_min = Math.min(lat_min, a.latitude)
+      lat_max = Math.max(lat_max, a.latitude)
+      lng_min = Math.min(lng_min, a.longitude)
+      lng_max = Math.max(lng_max, a.longitude)
     }
-    let zoom = 258*Math.pow(max_distance, 2) - 119*max_distance + 15;
-    return zoom;
+    const viewport = this.recenterViewport(lat_min, lng_min, lat_max, lng_max)
+    return viewport;
   }
 
   calculateLatLong(coords) {
@@ -126,6 +139,11 @@ class Map extends Component {
 
   searchForLocation() {
     const searchLocation = this.state.searchLocation;
+    if(searchLocation === '') { // Removes the results when search box is cleared
+      this.setState({
+        searchResults: []
+      })
+    }
     if ((searchLocation !== this.state.lastSearchLocation) && searchLocation !== '') {
 
       fetch(GEOCODEURL.concat(searchLocation, '.json?access_token=', TOKEN))
@@ -144,12 +162,13 @@ class Map extends Component {
   }
 
   searchResultClickHandler(result) {
-    console.log(result)
-    const {longitude, latitude, zoom} = new WebMercatorViewport(defaultViewport)
-    .fitBounds([[result.bbox[0], result.bbox[1]], [result.bbox[2], result.bbox[3]]], { //TODO streets don't have a bbox so just use the center
-      padding: 20,
-      offset: [0, -100]
-    });
+    if (result.bbox) {
+      var {longitude, latitude, zoom} = this.recenterViewport(result.bbox[1], result.bbox[0], result.bbox[3], result.bbox[2])
+    } else { // In case the result doesn't have a bbox eg a street
+      var longitude = result.center[0]
+      var latitude = result.center[1]
+      var zoom = 16
+    }
     const viewport = {
       ...this.state.viewport,
       longitude,
