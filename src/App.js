@@ -46,6 +46,7 @@ class App extends Component {
     this.mapClickHandler = this.mapClickHandler.bind(this);
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
     this.buildRouteClickHandler = this.buildRouteClickHandler.bind(this);
+    this.clearMarkersClickHandler = this.clearMarkersClickHandler.bind(this);
     this.exitBuildRouteClickHandler = this.exitBuildRouteClickHandler.bind(this);
     this.resetBuildRouteClickHandler = this.resetBuildRouteClickHandler.bind(this);
     this.exportBuildRouteClickHandler = this.exportBuildRouteClickHandler.bind(this);
@@ -75,18 +76,32 @@ class App extends Component {
     }
   }
 
+  editPlanSensorsInPlace(updatedMarker) {
+    var updatedPlanRouteSensors = [...this.state.planRouteSensors]
+    for (var i = 0; i < this.state.planRouteSensors.length; i++) {
+      if (this.state.planRouteSensors[i]['id'] === updatedMarker['id']) {
+        updatedPlanRouteSensors.splice(i, 1, updatedMarker)
+        return updatedPlanRouteSensors
+      }
+    }
+  }
+
   updateMarker(input) {
     var updatedMarker = { ...this.state.selectedMarker};
     const newValue = input.target.name === 'name' ? input.target.value : parseFloat(input.target.value);
     updatedMarker[input.target.name] = newValue;
     if (this.state.selectedMarker === this.state.planTakeoff) {
+      this.editPlanSensorsInPlace(updatedMarker)
       this.setState({
         planTakeoff: updatedMarker,
+        planRouteSensors: this.editPlanSensorsInPlace(updatedMarker),
         selectedMarker: updatedMarker
       })
     } else {
+      this.editPlanSensorsInPlace(updatedMarker)
       this.setState(prevState => ({
         planSensors: [...prevState.planSensors.filter(sensor => sensor['id'] !== this.state.selectedMarker['id']), updatedMarker],
+        planRouteSensors: this.editPlanSensorsInPlace(updatedMarker),
         selectedMarker: updatedMarker
       }))
     }
@@ -154,6 +169,13 @@ class App extends Component {
     })
   }
 
+  clearMarkersClickHandler() {
+    this.setState({
+      planSensors: [],
+      planRouteSensors: []
+    })
+  }
+
   removeMarkerClickHandler(selectedMarker) {
     this.setState({
       planRouteSensors: []
@@ -166,6 +188,7 @@ class App extends Component {
     } else {
       this.setState(prevState => ({
         planSensors: prevState.planSensors.filter(sensor => sensor['id'] !== selectedMarker['id']),
+        planRouteSensors: prevState.planSensors.filter(sensor => sensor['id'] !== selectedMarker['id']),
         selectedMarker: null
       }))
     }
@@ -296,6 +319,7 @@ class App extends Component {
             handleToggle={this.handleToggle}
             viewDataClickHandler={this.viewDataClickHandler}
             buildRouteClickHandler={this.buildRouteClickHandler}
+            clearMarkersClickHandler={this.clearMarkersClickHandler}
             exitBuildRouteClickHandler={this.exitBuildRouteClickHandler}
             exportBuildRouteClickHandler={this.exportBuildRouteClickHandler}
             resetBuildRouteClickHandler={this.resetBuildRouteClickHandler}

@@ -87,13 +87,24 @@ class Sidebar extends Component {
             return (
                 <>
                     <p id="title">No Marker Selected</p>
-                    <button className="sidebar-button" id="build-route-button" type="button"
-                    onClick={(e) => {
-                        this.props.buildRouteClickHandler();
-                    }}
-                    >
-                    Build Route
-                    </button>
+                    <div>
+                        <button className="sidebar-button" type="button"
+                        onClick={(e) => {
+                            this.props.buildRouteClickHandler();
+                        }}
+                        >
+                        Build Route
+                        </button>
+                    </div>
+                    <div>
+                        <button className="sidebar-button" type="button"
+                        onClick={(e) => {
+                            this.props.clearMarkersClickHandler();
+                        }}
+                        >
+                        Clear Markers
+                        </button>
+                    </div>
                 </>
             )
         } else {
