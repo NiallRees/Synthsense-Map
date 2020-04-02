@@ -26,7 +26,7 @@ class App extends Component {
       planTakeoff: null,
       selectedMarker: null,
       switchIsOn: false,
-      mode: "view",
+      mode: 'view',
       buildRouteMode: false,
       mouseCoords: {
         latitude: 52.405436044104256,
@@ -58,7 +58,7 @@ class App extends Component {
   }
 
   planRouteMarkerClickHandler(marker) {
-    if (!containsObject(marker, this.state.planRouteSensors)) {
+    if (!containsObject(marker, this.state.planRouteSensors) && this.state.planTakeoff) {
       this.setState(prevState => ({
         planRouteSensors: [...prevState.planRouteSensors, marker]
       }))
@@ -155,6 +155,9 @@ class App extends Component {
   }
 
   removeMarkerClickHandler(selectedMarker) {
+    this.setState({
+      planRouteSensors: []
+    })
     if (selectedMarker === this.state.planTakeoff) {
       this.setState({
         planTakeoff: null,
