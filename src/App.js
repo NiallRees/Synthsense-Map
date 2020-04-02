@@ -188,7 +188,7 @@ class App extends Component {
     } else {
       this.setState(prevState => ({
         planSensors: prevState.planSensors.filter(sensor => sensor['id'] !== selectedMarker['id']),
-        planRouteSensors: prevState.planSensors.filter(sensor => sensor['id'] !== selectedMarker['id']),
+        planRouteSensors: prevState.planRouteSensors.filter(sensor => sensor['id'] !== selectedMarker['id']),
         selectedMarker: null
       }))
     }
