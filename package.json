@@ -1,7 +1,31 @@
 {
-  "name": "my-app",
+  "name": "synthsense-map",
+  "description": "Accompanying application to the Synthsense project of the Wireless Power Lab at Imperial College London",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "Niall Rees Woodward",
+    "email": "niall@niallrees.com",
+    "url": "www.niallrees.com"
+  },
+  "build": {
+    "appId": "com.niallrees.synthsense-map",
+    "productName": "Synthsense Map",
+    "copyright": "Copyright © 2020 ${author}",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
+  "fileAssociations": {
+    "icon": "assets/synthsense.icns"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
@@ -14,13 +38,19 @@
     "react-map-gl": "^5.2.3",
     "react-scripts": "3.3.1"
   },
+  "homepage": "./",
   "main": "public/electron.js",
   "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\""
+    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "postinstall": "electron-builder install-app-deps",
+    "preelectron-pack": "yarn build",
+    "electron-pack": "./node_modules/.bin/electron-builder build -mw"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -40,7 +70,7 @@
   "devDependencies": {
     "concurrently": "^5.1.0",
     "electron": "^8.0.0",
-    "electron-builder": "^22.3.2",
+    "electron-builder": "^22.4.1",
     "electron-context-menu": "^0.16.0",
     "wait-on": "^4.0.0"
   }

@@ -4,6 +4,12 @@ const fs = require('fs-extra');
 const path = require('path')
 const isDev = require('electron-is-dev');
 
+// Insert blank data file
+// const data = new Uint8Array(Buffer.from('\{"sensors": [\]\}'));
+// fs.writeFile('./src/data/sensors.json', data, (err) => {
+//   if (err) throw err;
+// });
+
 let mainWindow;
 
 // Open the enclosing data folder
@@ -25,12 +31,6 @@ ipcMain.on('export_route', (event, route) => {
 })
 
 function createWindow() {
-  // Insert blank data file
-  const data = new Uint8Array(Buffer.from('\{"sensors": [\]\}'));
-  fs.writeFile('./src/data/sensors.json', data, (err) => {
-    if (err) throw err;
-  });
-
   mainWindow = new BrowserWindow({
     width: 1500, 
     height: 1000,
