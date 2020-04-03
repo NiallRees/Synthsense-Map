@@ -5,11 +5,13 @@ const path = require('path')
 const isDev = require('electron-is-dev');
 
 
+const isMac = process.platform === 'darwin'
 let mainWindow;
 
 // Open the enclosing data folder
 ipcMain.on('open_data_folder', (event, arg) => {
-  shell.openItem(arg)
+  const separator = isMac ? '/' : '\\'
+  shell.openItem(arg[0].concat(separator, arg[1]))
 })
 
 // Export route
@@ -41,8 +43,6 @@ function createWindow() {
     //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
     // mainWindow.webContents.openDevTools();
   }
-
-  const isMac = process.platform === 'darwin'
 
   const template = [
     // { role: 'appMenu' }
@@ -178,12 +178,13 @@ function loadData() {
   if (!selections) return;
   // Can only pick one folder
   const folderPath = selections[0];
-  const folderPathSplit = folderPath.split('/')
+  const separator = isMac ? '/' : '\\'
+  const folderPathSplit = folderPath.split(separator)
   const folderName = folderPathSplit[folderPathSplit.length-1]
-  destinationPath = app.getPath('home').concat('/Synthsense Data/', folderName);
+  destinationPath = app.getPath('home').concat(separator, 'Synthsense Data', separator, folderName);
   console.log('Destination: ', destinationPath)
   fs.copySync(folderPath, destinationPath);
-  sensorsJson = fs.readFileSync(destinationPath.concat('/sensors.json'))
+  sensorsJson = fs.readFileSync(destinationPath.concat(separator, 'sensors.json'))
   sensors = JSON.parse(sensorsJson)
   mainWindow.webContents.send('imported-data', [sensors, destinationPath])
 }

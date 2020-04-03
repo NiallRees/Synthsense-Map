@@ -146,7 +146,7 @@ class App extends Component {
   }
 
   viewDataClickHandler(sensor) {
-    ipcRenderer.send('open_data_folder', this.state.dataFolderPath.concat('/', sensor.name))
+    ipcRenderer.send('open_data_folder', [this.state.dataFolderPath, sensor.name])
   }
 
   exitBuildRouteClickHandler() {
