@@ -21,13 +21,6 @@ class Map extends Component {
 
   constructor(props) {
     super(props);
-    if (props.sensors.length > 0) {
-      let coords = props.sensors.map(a => ({latitude: a.latitude, longitude: a.longitude}));
-      const {longitude, latitude, zoom} = this.recenterViewportFromCoords(coords);
-      this.state.viewport.longitude = longitude;
-      this.state.viewport.latitude = latitude;
-      this.state.viewport.zoom = zoom;
-    };
     const lngLat = [this.state.viewport.longitude, this.state.viewport.latitude];
     this.props.updateMouseCoords(lngLat);
     this.searchForLocation = this.searchForLocation.bind(this);
@@ -47,7 +40,7 @@ class Map extends Component {
     showResults: false
   };
 
-  recenterViewport(a_lat, a_lng, b_lat, b_lng) {
+  centeredViewport(a_lat, a_lng, b_lat, b_lng) {
     const viewport = new WebMercatorViewport(defaultViewport)
     .fitBounds([[a_lng, a_lat], [b_lng, b_lat]], {
       padding: 20,
@@ -56,7 +49,11 @@ class Map extends Component {
     return viewport;
   }
 
-  recenterViewportFromCoords(coords) {
+  centerViewportFromCoords(coords) {
+    if (coords.length === 0 ) {
+      return
+    }
+    console.log("Called")
     var lat_min = coords[0].latitude
     var lat_max = coords[0].latitude
     var lng_min = coords[0].longitude
@@ -67,8 +64,19 @@ class Map extends Component {
       lng_min = Math.min(lng_min, a.longitude)
       lng_max = Math.max(lng_max, a.longitude)
     }
-    const viewport = this.recenterViewport(lat_min, lng_min, lat_max, lng_max)
-    return viewport;
+    var {longitude, latitude, zoom} = this.centeredViewport(lat_min, lng_min, lat_max, lng_max)
+    const viewport = {
+      ...this.state.viewport,
+      longitude,
+      latitude,
+      zoom: zoom+1,
+      transitionDuration: 2000,
+      transitionInterpolator: new FlyToInterpolator(),
+      transitionEasing: d3.easeCubic
+    }
+    this.setState({
+      viewport
+    });
   }
 
   calculateLatLong(coords) {
@@ -163,7 +171,7 @@ class Map extends Component {
 
   searchResultClickHandler(result) {
     if (result.bbox) {
-      var {longitude, latitude, zoom} = this.recenterViewport(result.bbox[1], result.bbox[0], result.bbox[3], result.bbox[2])
+      var {longitude, latitude, zoom} = this.centeredViewport(result.bbox[1], result.bbox[0], result.bbox[3], result.bbox[2])
     } else { // In case the result doesn't have a bbox eg a street
       var longitude = result.center[0]
       var latitude = result.center[1]

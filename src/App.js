@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 import Map from './components/map';
 import Sidebar from './components/sidebar';
-import * as sensorData from "./data/sensors.json";
 const { ipcRenderer } = window.require('electron');
 
 function containsObject(obj, list) {
@@ -20,7 +19,8 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      viewSensors: sensorData.sensors,
+      dataFolderPath: null,
+      viewSensors: [],
       planSensors: [],
       planRouteSensors: [],
       planTakeoff: null,
@@ -38,6 +38,16 @@ class App extends Component {
         'latitude': 0
       }
     };
+
+    ipcRenderer.on('imported-data', (event, arg) => {
+      console.log(arg)
+
+      this.setState({
+        viewSensors: arg[0].sensors,
+        dataFolderPath: arg[1]
+      })
+      this.refs.map.centerViewportFromCoords(arg[0].sensors)
+    })
 
     this.markerClickHandler = this.markerClickHandler.bind(this);
     this.resetSelectedMarker = this.resetSelectedMarker.bind(this);
@@ -136,7 +146,7 @@ class App extends Component {
   }
 
   viewDataClickHandler(sensor) {
-    ipcRenderer.send('open_data_folder', sensor.name)
+    ipcRenderer.send('open_data_folder', this.state.dataFolderPath.concat('/', sensor.name))
   }
 
   exitBuildRouteClickHandler() {
@@ -295,7 +305,8 @@ class App extends Component {
     return (
       <div className="container">
         <div className="map">
-          <Map 
+          <Map
+            ref="map"
             sensors={this.state.switchIsOn ? this.state.planSensors : this.state.viewSensors}
             planRouteSensors={this.state.planRouteSensors}
             takeoff={this.state.switchIsOn ? this.state.planTakeoff : null}

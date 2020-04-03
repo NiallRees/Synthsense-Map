@@ -4,17 +4,12 @@ const fs = require('fs-extra');
 const path = require('path')
 const isDev = require('electron-is-dev');
 
-// Insert blank data file
-// const data = new Uint8Array(Buffer.from('\{"sensors": [\]\}'));
-// fs.writeFile('./src/data/sensors.json', data, (err) => {
-//   if (err) throw err;
-// });
 
 let mainWindow;
 
 // Open the enclosing data folder
 ipcMain.on('open_data_folder', (event, arg) => {
-  shell.openItem('./src/data/'.concat(arg))
+  shell.openItem(arg)
 })
 
 // Export route
@@ -182,7 +177,13 @@ function loadData() {
   // If no folder
   if (!selections) return;
   // Can only pick one folder
-  const folder = selections[0];
-  const sensorJsonPath = folder.concat('/sensors.json');
-  fs.copy(sensorJsonPath, './src/data/sensors.json');
+  const folderPath = selections[0];
+  const folderPathSplit = folderPath.split('/')
+  const folderName = folderPathSplit[folderPathSplit.length-1]
+  destinationPath = app.getPath('home').concat('/Synthsense Data/', folderName);
+  console.log('Destination: ', destinationPath)
+  fs.copySync(folderPath, destinationPath);
+  sensorsJson = fs.readFileSync(destinationPath.concat('/sensors.json'))
+  sensors = JSON.parse(sensorsJson)
+  mainWindow.webContents.send('imported-data', [sensors, destinationPath])
 }
