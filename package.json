@@ -6,7 +6,7 @@
   "author": {
     "name": "Niall Rees Woodward",
     "email": "niall@niallrees.com",
-    "url": "www.niallrees.com"
+    "url": "https://www.niallrees.com"
   },
   "build": {
     "appId": "com.niallrees.synthsense-map",
@@ -20,11 +20,8 @@
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "buildResources"
     }
-  },
-  "fileAssociations": {
-    "icon": "assets/synthsense.icns"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
