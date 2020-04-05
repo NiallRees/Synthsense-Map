@@ -91,9 +91,9 @@ class App extends Component {
     for (var i = 0; i < this.state.planRouteSensors.length; i++) {
       if (this.state.planRouteSensors[i]['id'] === updatedMarker['id']) {
         updatedPlanRouteSensors.splice(i, 1, updatedMarker)
-        return updatedPlanRouteSensors
       }
     }
+    return(updatedPlanRouteSensors)
   }
 
   updateMarker(input) {
