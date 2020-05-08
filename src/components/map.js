@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactMapGL, {Marker, WebMercatorViewport, FlyToInterpolator} from "react-map-gl";
+import ReactMapGL, {Marker, WebMercatorViewport, FlyToInterpolator, NavigationControl} from "react-map-gl";
 import * as d3 from 'd3-ease';
 import config from '../config';
 import SensorPin from './sensorPin';
@@ -264,6 +264,9 @@ class Map extends Component {
             this.props.updateMouseCoords(e.lngLat)
           }}
         >
+          <div id="navigation">
+            <NavigationControl />
+          </div>
           {this.planPath()}
           {this.props.sensors.map(sensor => 
             this.renderSensorPin({sensor}),
