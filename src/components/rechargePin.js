@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react';
 import { ReactComponent as Recharge } from './recharge.svg';
 
-const width = 30;
-const height = 36;
+const width = 15;
+const height = 30;
 const pinStyle = {
   cursor: 'pointer',
   transform: `translate(${-width/2}px,${-height/2}px)`
