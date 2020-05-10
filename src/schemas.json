@@ -4,7 +4,8 @@
         ["Latitude", "latitude"], 
         ["Longitude", "longitude"], 
         ["Elevation", "elevation"],
-        ["Charge Rate", "chargeRate"]
+        ["Charge Rate", "chargeRate"],
+        ["Capacity (mAh)", "capacity"]
     ],
     "Recharge": [
         ["Name", "name"], 

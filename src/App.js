@@ -86,7 +86,7 @@ class App extends Component {
     }
   }
 
-  editplanMarkersInPlace(updatedMarker) {
+  editPlanMarkersInPlace(updatedMarker) {
     var updatedPlanRouteSensors = [...this.state.planRouteSensors]
     for (var i = 0; i < this.state.planRouteSensors.length; i++) {
       if (this.state.planRouteSensors[i]['id'] === updatedMarker['id']) {
@@ -101,17 +101,17 @@ class App extends Component {
     const newValue = input.target.name === 'name' ? input.target.value : parseFloat(input.target.value);
     updatedMarker[input.target.name] = newValue;
     if (this.state.selectedMarker === this.state.planTakeoff) {
-      this.editplanMarkersInPlace(updatedMarker)
+      this.editPlanMarkersInPlace(updatedMarker)
       this.setState({
         planTakeoff: updatedMarker,
-        planRouteSensors: this.editplanMarkersInPlace(updatedMarker),
+        planRouteSensors: this.editPlanMarkersInPlace(updatedMarker),
         selectedMarker: updatedMarker
       })
     } else {
-      this.editplanMarkersInPlace(updatedMarker)
+      this.editPlanMarkersInPlace(updatedMarker)
       this.setState(prevState => ({
         planMarkers: [...prevState.planMarkers.filter(sensor => sensor['id'] !== this.state.selectedMarker['id']), updatedMarker],
-        planRouteSensors: this.editplanMarkersInPlace(updatedMarker),
+        planRouteSensors: this.editPlanMarkersInPlace(updatedMarker),
         selectedMarker: updatedMarker
       }))
     }
