@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import './sidebar.css';
 import Switch from './switch';
+import schemas from '../schemas';
 
 class Sidebar extends Component {
 
@@ -110,9 +111,10 @@ class Sidebar extends Component {
         } else {
             return(
                 <>
-                    <p id="title">Name: <input type="text" name="name" onChange={this.props.updateMarker.bind(this)} value={selectedMarker.name}></input></p>
-                    <p id="title">Latitude: <input type="text" name="latitude" onChange={this.props.updateMarker.bind(this)} value={selectedMarker.latitude}></input></p>
-                    <p id="title">Longitude: <input type="text" name="longitude" onChange={this.props.updateMarker.bind(this)} value={selectedMarker.longitude}></input></p>
+                    {schemas[selectedMarker.type].map(field => 
+                        <p id="title">{field[0]}: <input type="text" name={field[1]} onChange={this.props.updateMarker.bind(this)} value={selectedMarker[field[1]]}></input></p>
+                    )}
+                    
                     <button className="sidebar-button" type="button"
                     onClick={(e) => {
                         this.props.removeMarkerClickHandler(selectedMarker);

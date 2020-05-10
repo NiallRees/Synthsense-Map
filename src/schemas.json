@@ -1,0 +1,22 @@
+{
+    "Sensor": [
+        ["Name", "name"], 
+        ["Latitude", "latitude"], 
+        ["Longitude", "longitude"], 
+        ["Elevation", "elevation"],
+        ["Charge Rate", "chargeRate"]
+    ],
+    "Recharge": [
+        ["Name", "name"], 
+        ["Latitude", "latitude"], 
+        ["Longitude", "longitude"], 
+        ["Elevation", "elevation"],
+        ["Charge Rate", "chargeRate"]
+    ],
+    "Takeoff": [
+        ["Name", "name"], 
+        ["Latitude", "latitude"], 
+        ["Longitude", "longitude"], 
+        ["Elevation", "elevation"]
+    ]
+}
