@@ -3,21 +3,21 @@
         ["Name", "name"], 
         ["Latitude", "latitude"], 
         ["Longitude", "longitude"], 
-        ["Elevation", "elevation"],
-        ["Charge Rate", "chargeRate"],
+        ["Elevation (m)", "elevation"],
+        ["Charge Rate (C)", "chargeRate"],
         ["Capacity (mAh)", "capacity"]
     ],
     "Recharge": [
         ["Name", "name"], 
         ["Latitude", "latitude"], 
         ["Longitude", "longitude"], 
-        ["Elevation", "elevation"],
-        ["Charge Rate", "chargeRate"]
+        ["Elevation (m)", "elevation"],
+        ["Charge Rate (C)", "chargeRate"]
     ],
     "Takeoff": [
         ["Name", "name"], 
         ["Latitude", "latitude"], 
         ["Longitude", "longitude"], 
-        ["Elevation", "elevation"]
+        ["Elevation (m)", "elevation"]
     ]
 }

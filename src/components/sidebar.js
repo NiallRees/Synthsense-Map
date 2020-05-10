@@ -112,7 +112,15 @@ class Sidebar extends Component {
       return(
         <>
           {schemas[selectedMarker.type].map(field => 
-            <p id="title">{field[0]}: <input type="text" name={field[1]} onChange={this.props.updateMarker.bind(this)} value={selectedMarker[field[1]]}></input></p>
+            <p id="title">{field[0]}: 
+              <input 
+                type="text" 
+                name={field[1]} 
+                onChange={this.props.updateMarker.bind(this)} 
+                value={selectedMarker[field[1]] || 0}
+              >
+              </input>
+            </p>
           )}
           
           <button className="sidebar-button" type="button"

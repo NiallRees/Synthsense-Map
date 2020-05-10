@@ -98,7 +98,8 @@ class App extends Component {
 
   updateMarker(input) {
     var updatedMarker = { ...this.state.selectedMarker};
-    const newValue = input.target.name === 'name' ? input.target.value : parseFloat(input.target.value);
+    var newValue = input.target.name === 'name' ? input.target.value : parseFloat(input.target.value);
+    newValue = isNaN(newValue) ? 0.0 : newValue
     updatedMarker[input.target.name] = newValue;
     if (this.state.selectedMarker === this.state.planTakeoff) {
       this.editPlanMarkersInPlace(updatedMarker)
