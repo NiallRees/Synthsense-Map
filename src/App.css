@@ -35,7 +35,7 @@ aside.collapsed {
   opacity: 0.18;
 }
 
-.takeoff-dot {
+.central-dot {
   height: 80px;
   width: 80px;
   background-color: #484848;
@@ -51,10 +51,11 @@ aside.collapsed {
   padding: 5px;
   border-radius: 2px;
   background-color: whitesmoke;
-  float: left;
+  top: 50%;
+  transform: translateY(-50%);
   position: absolute;
-  bottom: -4px;
-  left: 20px;
+  left: 100%;
+  margin-left: 10px;
   white-space: nowrap;
 }
 

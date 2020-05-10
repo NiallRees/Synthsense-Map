@@ -20,8 +20,8 @@ class App extends Component {
     super();
     this.state = {
       dataFolderPath: null,
-      viewSensors: [],
-      planSensors: [],
+      viewMarkers: [],
+      planMarkers: [],
       planRouteSensors: [],
       planTakeoff: null,
       selectedMarker: null,
@@ -43,7 +43,7 @@ class App extends Component {
       console.log(arg)
 
       this.setState({
-        viewSensors: arg[0].sensors,
+        viewMarkers: arg[0].sensors,
         dataFolderPath: arg[1]
       })
       this.refs.map.centerViewportFromCoords(arg[0].sensors)
@@ -86,7 +86,7 @@ class App extends Component {
     }
   }
 
-  editPlanSensorsInPlace(updatedMarker) {
+  editplanMarkersInPlace(updatedMarker) {
     var updatedPlanRouteSensors = [...this.state.planRouteSensors]
     for (var i = 0; i < this.state.planRouteSensors.length; i++) {
       if (this.state.planRouteSensors[i]['id'] === updatedMarker['id']) {
@@ -101,17 +101,17 @@ class App extends Component {
     const newValue = input.target.name === 'name' ? input.target.value : parseFloat(input.target.value);
     updatedMarker[input.target.name] = newValue;
     if (this.state.selectedMarker === this.state.planTakeoff) {
-      this.editPlanSensorsInPlace(updatedMarker)
+      this.editplanMarkersInPlace(updatedMarker)
       this.setState({
         planTakeoff: updatedMarker,
-        planRouteSensors: this.editPlanSensorsInPlace(updatedMarker),
+        planRouteSensors: this.editplanMarkersInPlace(updatedMarker),
         selectedMarker: updatedMarker
       })
     } else {
-      this.editPlanSensorsInPlace(updatedMarker)
+      this.editplanMarkersInPlace(updatedMarker)
       this.setState(prevState => ({
-        planSensors: [...prevState.planSensors.filter(sensor => sensor['id'] !== this.state.selectedMarker['id']), updatedMarker],
-        planRouteSensors: this.editPlanSensorsInPlace(updatedMarker),
+        planMarkers: [...prevState.planMarkers.filter(sensor => sensor['id'] !== this.state.selectedMarker['id']), updatedMarker],
+        planRouteSensors: this.editplanMarkersInPlace(updatedMarker),
         selectedMarker: updatedMarker
       }))
     }
@@ -181,7 +181,7 @@ class App extends Component {
 
   clearMarkersClickHandler() {
     this.setState({
-      planSensors: [],
+      planMarkers: [],
       planRouteSensors: []
     })
   }
@@ -197,7 +197,7 @@ class App extends Component {
       })
     } else {
       this.setState(prevState => ({
-        planSensors: prevState.planSensors.filter(sensor => sensor['id'] !== selectedMarker['id']),
+        planMarkers: prevState.planMarkers.filter(sensor => sensor['id'] !== selectedMarker['id']),
         planRouteSensors: prevState.planRouteSensors.filter(sensor => sensor['id'] !== selectedMarker['id']),
         selectedMarker: null
       }))
@@ -226,7 +226,21 @@ class App extends Component {
         "data": []
       }
       this.setState(prevState => ({
-        planSensors: [...prevState.planSensors, newSensor]
+        planMarkers: [...prevState.planMarkers, newSensor]
+      }))
+    }
+
+    if (pinType === "recharge") {
+      const newSensor = {
+        "id": this.makeid(8), // TODO add collision prevention
+        "type": "Recharge",
+        "name": "New Recharge",
+        "longitude": pinPrompt.longitude,
+        "latitude": pinPrompt.latitude,
+        "data": []
+      }
+      this.setState(prevState => ({
+        planMarkers: [...prevState.planMarkers, newSensor]
       }))
     }
 
@@ -273,9 +287,9 @@ class App extends Component {
         mode: 'plan',
         switchIsOn: true
       })
-      if (this.state.planSensors.length === 0) {
+      if (this.state.planMarkers.length === 0) {
         this.setState({
-          planSensors: this.state.viewSensors.map(sensor => (
+          planMarkers: this.state.viewMarkers.map(sensor => (
             {
               id: sensor.id,
               type: sensor.type,
@@ -307,7 +321,7 @@ class App extends Component {
         <div className="map">
           <Map
             ref="map"
-            sensors={this.state.switchIsOn ? this.state.planSensors : this.state.viewSensors}
+            markers={this.state.switchIsOn ? this.state.planMarkers : this.state.viewMarkers}
             planRouteSensors={this.state.planRouteSensors}
             takeoff={this.state.switchIsOn ? this.state.planTakeoff : null}
             selectedMarker={this.state.selectedMarker} 

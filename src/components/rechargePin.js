@@ -1,43 +1,52 @@
 import React, {PureComponent} from 'react';
-import { ReactComponent as Drone } from './drone.svg';
+import { ReactComponent as Recharge } from './recharge.svg';
 
-const size = 30;
+const width = 30;
+const height = 36;
 const pinStyle = {
   cursor: 'pointer',
-  transform: `translate(${-size/2}px,${-size/2}px)`
+  transform: `translate(${-width/2}px,${-height/2}px)`
 };
 
-export default class TakeoffPin extends PureComponent {
+export default class rechargePin extends PureComponent {
 
   state = {
     hovered: false,
   };
 
+  pinColour(mode) {
+    if (mode === 'view') {
+      return ('#FF0000')
+    } else {
+      return ('black')
+    }
+  }
+
   render() {
-    const {takeoff = null, clickHandler = null} = this.props;
+    const {sensor = null, clickHandler = null, mode = 'view'} = this.props;
 
     return (
       <div className="pin-object">
         {(this.props.selected) ? <span className="central-dot"></span> : <></>}
         <div
-          style={{...pinStyle}}
+          style={{...pinStyle, fill: this.pinColour(mode), position: 'relative'}}
           onMouseOver={(e) => {
             this.setState({ hovered: true});
-            }}
+          }}
           onMouseOut={(e) => {
             this.setState({ hovered: false});
-            }}
+          }}
           onClick={(e) => {
-            clickHandler(takeoff);
-            }}
-        >
+            clickHandler(sensor);
+          }}
+        >        
           {
             (this.state.hovered && !this.props.selected) &&
             <div id="pin-label">
-              {takeoff.name}
+              {sensor.name}
             </div>
           }
-          <Drone />
+          <Recharge />
         </div>
       </div>
     );

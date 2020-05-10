@@ -5,7 +5,7 @@ import Switch from './switch';
 class Sidebar extends Component {
 
     viewSideBar(sensor) {
-        if (this.props.state.viewSensors.length === 0) {
+        if (this.props.state.viewMarkers.length === 0) {
           return (<p id="title">No data imported</p>)
         } else if (sensor == null) {
           return (<p id="title">No sensor selected</p>)

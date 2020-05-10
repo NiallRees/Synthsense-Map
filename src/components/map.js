@@ -4,6 +4,7 @@ import * as d3 from 'd3-ease';
 import config from '../config';
 import SensorPin from './sensorPin';
 import TakeoffPin from './takeoffPin';
+import RechargePin from './rechargePin';
 import PinPrompt from './pinPrompt';
 import PolylineOverlay from './polylineOverlay';
 
@@ -92,18 +93,32 @@ class Map extends Component {
     this.setState({viewport: etc})
   }
 
-  renderSensorPin({ sensor }) {
-    const selected = (sensor === this.props.selectedMarker);
-    return (
-      <Marker key={sensor.id} latitude={sensor.latitude} longitude={sensor.longitude}>
-        <SensorPin
-          sensor={sensor}
-          selected={selected}
-          clickHandler={this.props.markerClickHandler}
-          mode = {this.props.mode}
-        />
-      </Marker>
-    )
+  renderMarker({ marker }) {
+    const selected = (marker === this.props.selectedMarker);
+    if (marker.type === "Sensor") {
+      return (
+        <Marker key={marker.id} latitude={marker.latitude} longitude={marker.longitude}>
+          <SensorPin
+            sensor={marker}
+            selected={selected}
+            clickHandler={this.props.markerClickHandler}
+            mode = {this.props.mode}
+          />
+        </Marker>
+      )
+    }
+    if (marker.type === "Recharge") {
+      return (
+        <Marker key={marker.id} latitude={marker.latitude} longitude={marker.longitude}>
+          <RechargePin
+            sensor={marker}
+            selected={selected}
+            clickHandler={this.props.markerClickHandler}
+            mode = {this.props.mode}
+          />
+        </Marker>
+      )
+    }
   }
 
   renderTakeoffPin() {
@@ -268,8 +283,8 @@ class Map extends Component {
             <NavigationControl />
           </div>
           {this.planPath()}
-          {this.props.sensors.map(sensor => 
-            this.renderSensorPin({sensor}),
+          {this.props.markers.map(marker => 
+            this.renderMarker({marker}),
           )}
           {this.renderTakeoffPin()}
           {this.renderPinPrompt()}

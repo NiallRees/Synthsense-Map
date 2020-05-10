@@ -9,7 +9,7 @@ const pinStyle = {
   stroke: 'none'
 };
 
-const size = 20;
+const size = 22;
 
 export default class sensorPin extends PureComponent {
 
@@ -30,12 +30,9 @@ export default class sensorPin extends PureComponent {
 
     return (
       <div className="pin-object">
-        <div style={{float:'left'}}>
         {(this.props.selected) ? <span className="sensor-dot"></span> : <></>}
-        <svg
-          height={size}
-          viewBox="0 0 24 24"
-          style={{...pinStyle, fill: this.pinColour(mode), transform: `translate(${-size/2}px,${-size}px)`}}
+        <div
+          style={{...pinStyle, transform: `translate(${-size/2}px,${-size}px)`}}
           onMouseOver={(e) => {
             this.setState({ hovered: true});
           }}
@@ -46,15 +43,20 @@ export default class sensorPin extends PureComponent {
             clickHandler(sensor);
           }}
         >
-          <path d={ICON}/>
-        </svg>
+          <svg
+            height={size}
+            viewBox="2 0 20 24"
+            style={{fill: this.pinColour(mode), display: 'block'}}
+          >
+            <path d={ICON}/>
+          </svg>
+          {
+            (this.state.hovered && !this.props.selected) &&
+            <div id="pin-label">
+              {sensor.name}
+            </div>
+          }
         </div>
-        {
-          (this.state.hovered && !this.props.selected) &&
-          <div id="pin-label">
-            {sensor.name}
-          </div>
-        }
       </div>
     );
   }
