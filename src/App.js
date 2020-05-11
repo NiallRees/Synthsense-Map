@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Map from './components/map';
 import Sidebar from './components/sidebar';
+import schemas from './schemas';
 const { ipcRenderer } = window.require('electron');
 
 function containsObject(obj, list) {
@@ -24,6 +25,7 @@ class App extends Component {
       planMarkers: [],
       planRouteSensors: [],
       planTakeoff: null,
+      planFlightParameters: {},
       selectedMarker: null,
       switchIsOn: false,
       mode: 'view',
@@ -63,6 +65,7 @@ class App extends Component {
     this.undoBuildRouteClickHandler = this.undoBuildRouteClickHandler.bind(this);
     this.removeMarkerClickHandler = this.removeMarkerClickHandler.bind(this);
     this.updateMarker = this.updateMarker.bind(this);
+    this.updateFlightParameters = this.updateFlightParameters.bind(this);
     this.updateMouseCoords = this.updateMouseCoords.bind(this);
     this.addPlanPin = this.addPlanPin.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -98,8 +101,12 @@ class App extends Component {
 
   updateMarker(input) {
     var updatedMarker = { ...this.state.selectedMarker};
-    var newValue = input.target.name === 'name' ? input.target.value : parseFloat(input.target.value);
-    newValue = isNaN(newValue) ? 0.0 : newValue
+    var newValue
+    if (input.target.name === "name") {
+      newValue = input.target.value
+    } else {
+      newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
+    }
     updatedMarker[input.target.name] = newValue;
     if (this.state.selectedMarker === this.state.planTakeoff) {
       this.editPlanMarkersInPlace(updatedMarker)
@@ -116,6 +123,14 @@ class App extends Component {
         selectedMarker: updatedMarker
       }))
     }
+  }
+
+  updateFlightParameters(input) {
+    var updatedParameters = { ...this.state.planFlightParameters};
+    updatedParameters[input.target.name] = input.target.value;
+    this.setState({
+      planFlightParameters: updatedParameters
+    })
   }
 
   mapClickHandler(e) {
@@ -217,45 +232,24 @@ class App extends Component {
  }
 
   addPlanPin(pinPrompt, pinType) {
-    if (pinType === "sensor") {
-      const newSensor = {
-        "id": this.makeid(8), // TODO add collision prevention
-        "type": "Sensor",
-        "name": "New Sensor",
-        "longitude": pinPrompt.longitude,
-        "latitude": pinPrompt.latitude,
-        "data": []
-      }
-      this.setState(prevState => ({
-        planMarkers: [...prevState.planMarkers, newSensor]
-      }))
-    }
+      var newMarker = {}
+      Object.keys(schemas[pinType]).forEach(function(key) {
+        newMarker[key] = schemas[pinType][key].Default
+      });
 
-    if (pinType === "recharge") {
-      const newSensor = {
-        "id": this.makeid(8), // TODO add collision prevention
-        "type": "Recharge",
-        "name": "New Recharge",
-        "longitude": pinPrompt.longitude,
-        "latitude": pinPrompt.latitude,
-        "data": []
-      }
-      this.setState(prevState => ({
-        planMarkers: [...prevState.planMarkers, newSensor]
-      }))
-    }
+      newMarker["id"] = this.makeid(8) // TODO add collision prevention
+      newMarker["type"] = pinType
+      newMarker["longitude"] = pinPrompt.longitude
+      newMarker["latitude"] = pinPrompt.latitude
 
-    if (pinType === "takeoff") {
-      const takeoff = {
-        "id": this.makeid(8),
-        "type": "Takeoff",
-        "name": "Takeoff",
-        "longitude": pinPrompt.longitude,
-        "latitude": pinPrompt.latitude,
-      }
+    if (pinType === "Takeoff") {
       this.setState({
-        planTakeoff: takeoff
+        planTakeoff: newMarker
       })
+    } else {
+      this.setState(prevState => ({
+        planMarkers: [...prevState.planMarkers, newMarker]
+      }))
     }
   }
 
@@ -352,6 +346,7 @@ class App extends Component {
             undoBuildRouteClickHandler={this.undoBuildRouteClickHandler}
             removeMarkerClickHandler={this.removeMarkerClickHandler}
             updateMarker={this.updateMarker}
+            updateFlightParameters={this.updateFlightParameters}
           />
         </aside>
       </div>

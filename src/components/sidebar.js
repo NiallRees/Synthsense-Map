@@ -105,22 +105,35 @@ class Sidebar extends Component {
             >
             Clear Markers
             </button>
+
+            {Object.keys(schemas.Flight).map(key =>
+              <p id="title">{schemas.Flight[key]["Human Readable"]}: 
+              <input 
+                type="text" 
+                name={key} 
+                onChange={this.props.updateFlightParameters.bind(this)} 
+                value={this.props.state.planFlightParameters[key]}
+              >
+              </input>
+            </p>
+            )}
           </div>
         </>
       )
     } else {
       return(
         <>
-          {schemas[selectedMarker.type].map(field => 
-            <p id="title">{field[0]}: 
-              <input 
-                type="text" 
-                name={field[1]} 
-                onChange={this.props.updateMarker.bind(this)} 
-                value={selectedMarker[field[1]] || 0}
-              >
-              </input>
-            </p>
+
+          {Object.keys(schemas[selectedMarker.type]).map(key =>
+            <p id="title">{schemas[selectedMarker.type][key]["Human Readable"]}: 
+            <input 
+              type="text" 
+              name={key} 
+              onChange={this.props.updateMarker.bind(this)} 
+              value={selectedMarker[key]}
+            >
+            </input>
+          </p>
           )}
           
           <button className="sidebar-button" type="button"
