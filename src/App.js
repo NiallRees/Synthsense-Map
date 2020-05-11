@@ -46,7 +46,6 @@ class App extends Component {
     };
 
     ipcRenderer.on('imported-data', (event, arg) => {
-      console.log(arg)
 
       this.setState({
         viewMarkers: arg[0].sensors,

@@ -54,7 +54,6 @@ class Map extends Component {
     if (coords.length === 0 ) {
       return
     }
-    console.log("Called")
     var lat_min = coords[0].latitude
     var lat_max = coords[0].latitude
     var lng_min = coords[0].longitude
