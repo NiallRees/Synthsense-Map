@@ -7,20 +7,20 @@ class Sidebar extends Component {
 
   viewSideBar(sensor) {
     if (this.props.state.viewMarkers.length === 0) {
-      return (<p id="title">No data imported</p>)
+      return (<p class="title">No data imported</p>)
     } else if (sensor == null) {
-      return (<p id="title">No sensor selected</p>)
+      return (<p class="title">No sensor selected</p>)
     } else {
     const listItems = sensor.data.map((d) => 
-      <li className="datum" key={Object.keys(d)[0]}>{Object.keys(d)[0]}: {Object.values(d)[0]}</li>
+      <li class="datum" key={Object.keys(d)[0]}>{Object.keys(d)[0]}: {Object.values(d)[0]}</li>
     );
     return (
       <>
-      <p id="title">{sensor.name}</p>
-      <ul className='data' >
+      <p class="title">{sensor.name}</p>
+      <ul class='data' >
         {listItems}
       </ul>
-      <button className="sidebar-button" type="button"
+      <button class="sidebar-button" type="button"
         onClick={(e) => {
         this.props.viewDataClickHandler(sensor);
         }}
@@ -35,15 +35,15 @@ class Sidebar extends Component {
   buildRouteSideBar() {
     if (this.props.state.planTakeoff == null) {
       return (
-          <p id="title">Add a Takeoff Point</p>
+          <p class="title">Add a Takeoff Point</p>
       )
     } else if (this.props.state.planRouteSensors.length < 1) {
       return (
-          <p id="title">Select the First Sensor</p>
+          <p class="title">Select the First Sensor</p>
       )
     } else { 
       return (
-        <p id="title">Select the Next Sensor</p>
+        <p class="title">Select the Next Sensor</p>
       )
     }
   }
@@ -54,30 +54,30 @@ class Sidebar extends Component {
     if (buildRouteMode) {
       return (
         <>
-          <p id="title">Build Route</p>
+          <p class="title">Build Route</p>
           {this.buildRouteSideBar()}
-          <button className="sidebar-button" type="button"
+          <button class="sidebar-button" type="button"
           onClick={(e) => {
             this.props.undoBuildRouteClickHandler();
           }}
           >
           Undo
           </button>
-          <button className="sidebar-button" type="button"
+          <button class="sidebar-button" type="button"
           onClick={(e) => {
             this.props.resetBuildRouteClickHandler();
           }}
           >
           Reset
           </button>
-          <button className="sidebar-button" type="button"
+          <button class="sidebar-button" type="button"
           onClick={(e) => {
             this.props.exportBuildRouteClickHandler();
           }}
           >
           Export
           </button>
-          <button className="sidebar-button" type="button"
+          <button class="sidebar-button" type="button"
           onClick={(e) => {
             this.props.exitBuildRouteClickHandler();
           }}
@@ -89,9 +89,9 @@ class Sidebar extends Component {
     } else if (selectedMarker == null) {
       return (
         <>
-          <p id="title">No Marker Selected</p>
+          <p class="title">No Marker Selected</p>
           <div>
-            <button className="sidebar-button" type="button"
+            <button class="sidebar-button" type="button"
             onClick={(e) => {
               this.props.buildRouteClickHandler();
             }}
@@ -100,24 +100,29 @@ class Sidebar extends Component {
             </button>
           </div>
           <div>
-            <button className="sidebar-button" type="button"
+            <button class="sidebar-button" type="button"
             onClick={(e) => {
               this.props.clearMarkersClickHandler();
             }}
             >
             Clear Markers
             </button>
-
+          </div>
+          <div class="fields-div">
             {Object.keys(schemas.Flight).map(key =>
-              <p key={key} id="title">{schemas.Flight[key]["Human Readable"]}: 
-              <input 
-                type="text" 
-                name={key}
-                onChange={this.props.updateFlightParameters.bind(this)} 
-                value={this.props.state.planFlightParameters[key]}
-              >
-              </input>
-            </p>
+              <div class="field-div" key={key}>
+                <p key={key} class="field-name">{schemas.Flight[key]["Human Readable"]}</p>
+                <p class="field-input-p">
+                  <input
+                      class="field-input"
+                      type="text"
+                      name={key}
+                      onChange={this.props.updateFlightParameters.bind(this)} 
+                      value={this.props.state.planFlightParameters[key]}
+                    >
+                  </input>
+                </p>
+              </div>
             )}
           </div>
         </>
@@ -125,20 +130,25 @@ class Sidebar extends Component {
     } else {
       return(
         <>
-
-          {Object.keys(schemas[selectedMarker.type]).map(key =>
-            <p key={key} id="title">{schemas[selectedMarker.type][key]["Human Readable"]}: 
-            <input 
-              type="text" 
-              name={key} 
-              onChange={this.props.updateMarker.bind(this)} 
-              value={selectedMarker[key]}
-            >
-            </input>
-          </p>
-          )}
-          
-          <button className="sidebar-button" type="button"
+          <div class="fields-div">
+            <p class="title">{selectedMarker.name}</p>
+            {Object.keys(schemas[selectedMarker.type]).map(key =>
+              <div class="field-div" key={key}>
+                <p key={key} class="field-name">{schemas[selectedMarker.type][key]["Human Readable"]}</p>
+                <p class="field-input-p">
+                  <input 
+                    class="field-input"
+                    type="text" 
+                    name={key} 
+                    onChange={this.props.updateMarker.bind(this)} 
+                    value={selectedMarker[key]}
+                  >
+                  </input>
+                </p>
+              </div>
+            )}
+          </div>
+          <button class="sidebar-button" type="button"
           onClick={(e) => {
             this.props.removeMarkerClickHandler(selectedMarker);
           }}
@@ -166,17 +176,17 @@ class Sidebar extends Component {
 
   render() {
     return (
-      <div className="sidebar">
+      <div class="sidebar">
       {this.sidebar()}
-      <div className="mode-container">
-        <div className="mode-element" id="mode-left">View</div>
-        <div className="mode-element">
+      <div class="mode-container">
+        <div class="mode-element" id="mode-left">View</div>
+        <div class="mode-element">
         <Switch
           isOn={this.props.state.switchIsOn}
           handleToggle={this.props.handleToggle}
         />
         </div>
-        <div className="mode-element" id="mode-right">Plan</div>
+        <div class="mode-element" id="mode-right">Plan</div>
       </div>
     </div>
     );

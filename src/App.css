@@ -59,20 +59,6 @@ aside.collapsed {
   white-space: nowrap;
 }
 
-.data {
-  list-style-type: none;
-  display: inline-block;
-  padding: 5px;
-  border-radius: 2px;
-  background-color: white;
-  width: 80%;
-}
-
-#title {
-  margin-top: 2em;
-  margin-bottom: 0;
-}
-
 #coords-box {
   position: absolute;
   height: 1rem;

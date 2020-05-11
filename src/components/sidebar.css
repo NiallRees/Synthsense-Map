@@ -44,3 +44,48 @@ input {
 #mode-right {
     padding-right: 40px;
 }
+
+.data {
+    list-style-type: none;
+    display: inline-block;
+    padding: 5px;
+    border-radius: 2px;
+    background-color: white;
+    width: 80%;
+}
+
+.fields-div {
+    margin-top: 2em;
+    text-align: left;
+}
+
+.field-div {
+    overflow: hidden;
+}
+
+.field-p {
+    float: left;
+}
+
+.field-input-p {
+    width: 6.5em;
+    float: right;
+    margin-right: 1em;
+}
+
+.field-input {
+    width: 6.5em;
+    float: right;
+}
+
+.field-name {
+    float: left;
+    width: 11.5em;
+    margin-left: 1em;
+}
+
+.title {
+    margin-top: 2em;
+    text-align: center;
+    height: 1em;
+}

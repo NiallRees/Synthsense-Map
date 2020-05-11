@@ -245,8 +245,8 @@ class App extends Component {
 
       newMarker["id"] = this.makeid(8) // TODO add collision prevention
       newMarker["type"] = pinType
-      newMarker["longitude"] = pinPrompt.longitude
-      newMarker["latitude"] = pinPrompt.latitude
+      newMarker["longitude"] = +(pinPrompt.longitude.toFixed(7)) // 7 dp gives 11mm precision
+      newMarker["latitude"] = +(pinPrompt.latitude.toFixed(7))
 
     if (pinType === "Takeoff") {
       this.setState({
