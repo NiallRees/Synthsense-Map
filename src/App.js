@@ -133,7 +133,11 @@ class App extends Component {
 
   updateFlightParameters(input) {
     var updatedParameters = { ...this.state.planFlightParameters};
-    updatedParameters[input.target.name] = input.target.value;
+    var newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
+    const schemaVariable = schemas.Flight[input.target.name]
+    newValue = (newValue < schemaVariable.Min) ? schemaVariable.Min : newValue
+    newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
+    updatedParameters[input.target.name] = newValue;
     this.setState({
       planFlightParameters: updatedParameters
     })
