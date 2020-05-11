@@ -124,7 +124,7 @@ class App extends Component {
       newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
     }
     updatedMarker[input.target.name] = newValue;
-    if (this.state.selectedMarker === this.state.planTakeoff) {
+    if (this.state.selectedMarker.type === "Takeoff") {
       this.setState({
         planTakeoff: updatedMarker,
         planRouteSensors: this.editPlanMarkersInPlace(updatedMarker),

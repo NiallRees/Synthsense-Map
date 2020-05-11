@@ -122,9 +122,10 @@ class Map extends Component {
   }
 
   renderTakeoffPin() {
-  const selected = (this.props.takeoff === this.props.selectedMarker);
   const takeoff = this.props.takeoff;
   if (takeoff !== null) {
+    const selectedMarkerID = this.props.selectedMarker ? this.props.selectedMarker.id : null
+    const selected = (takeoff.id === selectedMarkerID);
       return (
         <Marker key={takeoff.id} latitude={takeoff.latitude} longitude={takeoff.longitude}>
           <TakeoffPin
