@@ -11,7 +11,9 @@ class Sidebar extends Component {
     } else if (sensor == null) {
       return (<p id="title">No sensor selected</p>)
     } else {
-    const listItems = sensor.data.map((d) => <li className="datum" key={Object.keys(d)[0]}>{Object.keys(d)[0]}: {Object.values(d)[0]}</li>);
+    const listItems = sensor.data.map((d) => 
+      <li className="datum" key={Object.keys(d)[0]}>{Object.keys(d)[0]}: {Object.values(d)[0]}</li>
+    );
     return (
       <>
       <p id="title">{sensor.name}</p>
@@ -107,10 +109,10 @@ class Sidebar extends Component {
             </button>
 
             {Object.keys(schemas.Flight).map(key =>
-              <p id="title">{schemas.Flight[key]["Human Readable"]}: 
+              <p key={key} id="title">{schemas.Flight[key]["Human Readable"]}: 
               <input 
                 type="text" 
-                name={key} 
+                name={key}
                 onChange={this.props.updateFlightParameters.bind(this)} 
                 value={this.props.state.planFlightParameters[key]}
               >
@@ -125,7 +127,7 @@ class Sidebar extends Component {
         <>
 
           {Object.keys(schemas[selectedMarker.type]).map(key =>
-            <p id="title">{schemas[selectedMarker.type][key]["Human Readable"]}: 
+            <p key={key} id="title">{schemas[selectedMarker.type][key]["Human Readable"]}: 
             <input 
               type="text" 
               name={key} 

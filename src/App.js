@@ -19,13 +19,17 @@ function containsObject(obj, list) {
 class App extends Component {
   constructor() {
     super();
+    var planFlightParameters = {}
+    Object.keys(schemas.Flight).forEach(function(key) {
+      planFlightParameters[key] = schemas.Flight[key].Default
+    });
     this.state = {
       dataFolderPath: null,
       viewMarkers: [],
       planMarkers: [],
       planRouteSensors: [],
       planTakeoff: null,
-      planFlightParameters: {},
+      planFlightParameters: planFlightParameters,
       selectedMarker: null,
       switchIsOn: false,
       mode: 'view',
@@ -105,7 +109,10 @@ class App extends Component {
     if (input.target.name === "name") {
       newValue = input.target.value
     } else {
+      const schemaVariable = schemas[updatedMarker.type][input.target.name]
       newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
+      newValue = (newValue < schemaVariable.Min) ? schemaVariable.Min : newValue
+      newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
     }
     updatedMarker[input.target.name] = newValue;
     if (this.state.selectedMarker === this.state.planTakeoff) {
