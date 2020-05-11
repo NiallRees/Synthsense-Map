@@ -93,7 +93,8 @@ class Map extends Component {
   }
 
   renderMarker({ marker }) {
-    const selected = (marker === this.props.selectedMarker);
+    const selectedMarkerID = this.props.selectedMarker ? this.props.selectedMarker.id : null
+    const selected = (marker.id === selectedMarkerID);
     if (marker.type === "Sensor") {
       return (
         <Marker key={marker.id} latitude={marker.latitude} longitude={marker.longitude}>
