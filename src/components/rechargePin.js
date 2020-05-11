@@ -29,7 +29,7 @@ export default class rechargePin extends PureComponent {
       <div className="pin-object">
         {(this.props.selected) ? <span className="central-dot"></span> : <></>}
         <div
-          style={{...pinStyle, fill: this.pinColour(mode), position: 'relative'}}
+          style={{...pinStyle}}
           onMouseOver={(e) => {
             this.setState({ hovered: true});
           }}
