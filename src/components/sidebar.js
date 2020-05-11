@@ -117,7 +117,8 @@ class Sidebar extends Component {
                       className="field-input"
                       type="text"
                       name={key}
-                      onChange={this.props.updateFlightParameters.bind(this)} 
+                      onChange={this.props.updateFlightParameters.bind(this)}
+                      onBlur={this.props.validateFlightParameters.bind(this)}
                       value={this.props.state.planFlightParameters[key]}
                     >
                   </input>
@@ -140,7 +141,8 @@ class Sidebar extends Component {
                     className="field-input"
                     type="text" 
                     name={key} 
-                    onChange={this.props.updateMarker.bind(this)} 
+                    onChange={this.props.updateSelectedMarker.bind(this)}
+                    onBlur={this.props.validateMarker.bind(this)} 
                     value={selectedMarker[key]}
                   >
                   </input>

@@ -67,8 +67,10 @@ class App extends Component {
     this.exportBuildRouteClickHandler = this.exportBuildRouteClickHandler.bind(this);
     this.undoBuildRouteClickHandler = this.undoBuildRouteClickHandler.bind(this);
     this.removeMarkerClickHandler = this.removeMarkerClickHandler.bind(this);
-    this.updateMarker = this.updateMarker.bind(this);
+    this.updateSelectedMarker = this.updateSelectedMarker.bind(this);
+    this.validateMarker = this.validateMarker.bind(this);
     this.updateFlightParameters = this.updateFlightParameters.bind(this);
+    this.validateFlightParameters = this.validateFlightParameters.bind(this);
     this.updateMouseCoords = this.updateMouseCoords.bind(this);
     this.addPlanPin = this.addPlanPin.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -102,27 +104,33 @@ class App extends Component {
     return(updatedPlanRouteSensors)
   }
 
-  updateMarker(input) {
+  updateSelectedMarker(input) {
     var updatedMarker = { ...this.state.selectedMarker};
-    var newValue
+    updatedMarker[input.target.name] = input.target.value;
+    this.setState({
+      selectedMarker: updatedMarker
+    })
+  }
+
+  validateMarker(input) {
+    var updatedMarker = { ...this.state.selectedMarker};
+    var newValue;
     if (input.target.name === "name") {
       newValue = input.target.value
     } else {
-      const schemaVariable = schemas[updatedMarker.type][input.target.name]
-      newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
+      const schemaVariable = schemas[updatedMarker.type][input.target.name];
+      var newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
       newValue = (newValue < schemaVariable.Min) ? schemaVariable.Min : newValue
       newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
     }
     updatedMarker[input.target.name] = newValue;
     if (this.state.selectedMarker === this.state.planTakeoff) {
-      this.editPlanMarkersInPlace(updatedMarker)
       this.setState({
         planTakeoff: updatedMarker,
         planRouteSensors: this.editPlanMarkersInPlace(updatedMarker),
         selectedMarker: updatedMarker
       })
     } else {
-      this.editPlanMarkersInPlace(updatedMarker)
       this.setState(prevState => ({
         planMarkers: [...prevState.planMarkers.filter(sensor => sensor['id'] !== this.state.selectedMarker['id']), updatedMarker],
         planRouteSensors: this.editPlanMarkersInPlace(updatedMarker),
@@ -133,7 +141,15 @@ class App extends Component {
 
   updateFlightParameters(input) {
     var updatedParameters = { ...this.state.planFlightParameters};
+    updatedParameters[input.target.name] = input.target.value;
+    this.setState({
+      planFlightParameters: updatedParameters
+    })
+  }
+
+  validateFlightParameters(input) {
     var newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
+    var updatedParameters = { ...this.state.planFlightParameters};
     const schemaVariable = schemas.Flight[input.target.name]
     newValue = (newValue < schemaVariable.Min) ? schemaVariable.Min : newValue
     newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
@@ -357,8 +373,10 @@ class App extends Component {
             resetBuildRouteClickHandler={this.resetBuildRouteClickHandler}
             undoBuildRouteClickHandler={this.undoBuildRouteClickHandler}
             removeMarkerClickHandler={this.removeMarkerClickHandler}
-            updateMarker={this.updateMarker}
+            updateSelectedMarker={this.updateSelectedMarker}
+            validateMarker={this.validateMarker}
             updateFlightParameters={this.updateFlightParameters}
+            validateFlightParameters={this.validateFlightParameters}
           />
         </aside>
       </div>
