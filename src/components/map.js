@@ -287,9 +287,9 @@ class Map extends Component {
           )}
           {this.renderTakeoffPin()}
           {this.renderPinPrompt()}
-          <div id="coords-box">
-            <pre id="coord">Latitude: {this.props.mouseCoords.latitude}</pre>
-            <pre id="coord">Longitude: {this.props.mouseCoords.longitude}</pre>
+          <div class="coords-box">
+            <pre class="coord">Latitude: {this.props.mouseCoords.latitude}</pre>
+            <pre class="coord">Longitude: {this.props.mouseCoords.longitude}</pre>
           </div>
         </ReactMapGL>
         {this.renderSearchBox()}

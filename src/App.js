@@ -35,8 +35,8 @@ class App extends Component {
       mode: 'view',
       buildRouteMode: false,
       mouseCoords: {
-        latitude: 52.405436044104256,
-        longitude: -0.32935776356134167
+        latitude: 52.4054360,
+        longitude: -0.3293577
       },
       pinPrompt: {
         'enabled': false,
@@ -153,12 +153,14 @@ class App extends Component {
   }
 
   updateMouseCoords(lngLat) {
-    this.setState({
-      mouseCoords: {
-        longitude: lngLat[0],
-        latitude: lngLat[1]
-      }
-    })
+    if(lngLat[0]) {
+      this.setState({
+        mouseCoords: {
+          longitude: lngLat[0].toFixed(7),
+          latitude: lngLat[1].toFixed(7)
+        }
+      })
+    }
   }
 
   resetSelectedMarker() {

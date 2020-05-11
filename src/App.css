@@ -59,10 +59,9 @@ aside.collapsed {
   white-space: nowrap;
 }
 
-#coords-box {
+.coords-box {
   position: absolute;
   height: 1rem;
-  width: 30rem;
   top: 0;
   left: 0;
   padding: 0.2rem 0.4rem;
@@ -70,8 +69,8 @@ aside.collapsed {
   opacity: 0.8;
 }
 
-#coord {
-  width: 15rem;
+.coord {
+  width: 11rem;
   margin: 0;
   float:left;
 }
