@@ -150,8 +150,8 @@ class Map extends Component {
   }
 
   planPath() {
-    if (this.props.mode !== 'view' && this.props.planRouteSensors.length > 0) {
-      var lineCoords = this.props.planRouteSensors.map(sensor =>
+    if (this.props.mode !== 'view' && this.props.planRouteMarkers.length > 0) {
+      var lineCoords = this.props.planRouteMarkers.map(sensor =>
         [sensor['longitude'], sensor['latitude']]
       )
       lineCoords.unshift([this.props.takeoff['longitude'], this.props.takeoff['latitude']])
@@ -289,9 +289,9 @@ class Map extends Component {
           )}
           {this.renderTakeoffPin()}
           {this.renderPinPrompt()}
-          <div class="coords-box">
-            <pre class="coord">Latitude: {this.props.mouseCoords.latitude}</pre>
-            <pre class="coord">Longitude: {this.props.mouseCoords.longitude}</pre>
+          <div className="coords-box">
+            <pre className="coord">Latitude: {this.props.mouseCoords.latitude}</pre>
+            <pre className="coord">Longitude: {this.props.mouseCoords.longitude}</pre>
           </div>
         </ReactMapGL>
         {this.renderSearchBox()}

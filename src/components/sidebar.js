@@ -37,7 +37,7 @@ class Sidebar extends Component {
       return (
           <p className="title">Add a Takeoff Point</p>
       )
-    } else if (this.props.state.planRouteSensors.length < 1) {
+    } else if (this.props.state.planRouteMarkers.length < 1) {
       return (
           <p className="title">Select the First Sensor</p>
       )
@@ -112,14 +112,14 @@ class Sidebar extends Component {
             {Object.keys(schemas.Flight).map(key =>
               <div className="field-div" key={key}>
                 <p key={key} className="field-name">{schemas.Flight[key]["Human Readable"]}</p>
-                <p className="field-input-p">
+                <p className="field-value">
                   <input
                       className="field-input"
                       type="text"
                       name={key}
-                      onChange={this.props.updateFlightParameters.bind(this)}
-                      onBlur={this.props.validateFlightParameters.bind(this)}
-                      value={this.props.state.planFlightParameters[key]}
+                      onChange={this.props.updatePlanFlightParameters.bind(this)}
+                      onBlur={this.props.validatePlanFlightParameters.bind(this)}
+                      value={this.props.state.stagingPlanFlightParameters[key]}
                     >
                   </input>
                 </p>
@@ -136,7 +136,7 @@ class Sidebar extends Component {
             {Object.keys(schemas[selectedMarker.type]).map(key =>
               <div className="field-div" key={key}>
                 <p key={key} className="field-name">{schemas[selectedMarker.type][key]["Human Readable"]}</p>
-                <p className="field-input-p">
+                <p className="field-value">
                   <input 
                     className="field-input"
                     type="text" 
@@ -162,6 +162,75 @@ class Sidebar extends Component {
     }
   }
 
+  calculateCoordDistance(lat1, lat2, lon1, lon2) {
+    const R = 6371e3;
+    const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+    const φ2 = lat2 * Math.PI/180;
+    const Δφ = (lat2-lat1) * Math.PI/180;
+    const Δλ = (lon2-lon1) * Math.PI/180;
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const d = R * c; // in metres
+    return(d)
+  }
+
+  routeDistance() {
+    var length = 0
+    var marker1 = this.props.state.planTakeoff
+    var d
+    for (let marker2 of this.props.state.planRouteMarkers) {
+      d = this.calculateCoordDistance(marker1.latitude, marker2.latitude, marker1.longitude, marker2.longitude)
+      length += d
+      marker1 = marker2
+    }
+    return length
+  }
+
+  routeAscent() {
+    var ascent = 0
+    var marker1 = this.props.state.planTakeoff
+    var h
+    for (let marker2 of this.props.state.planRouteMarkers) {
+      h = Math.max(marker2.elevation - marker1.elevation, 0) + this.props.state.planFlightParameters.altitude
+      ascent += h
+      marker1 = marker2
+    }
+    return ascent
+  }
+
+  airTime() {
+    var seconds = 0
+    if (this.routeDistance() > 0) {
+      seconds += this.routeDistance() / this.props.state.planFlightParameters.horizontalSpeed
+      seconds += this.routeAscent() / this.props.state.planFlightParameters.ascendingSpeed
+      seconds += this.routeAscent() / this.props.state.planFlightParameters.descendingSpeed
+    }
+    return ((seconds/60).toFixed(0).padStart(2, '0') + ':' + (seconds % 60).toFixed(0).padStart(2, '0'))
+  }
+
+  flightPlanInfoCalcs() {
+    return(
+      <>
+        <div id="bottom-flight-info" className="fields-div">
+          <div className="field-div">
+            <p className="field-name">Total Air Time (m:s)</p>
+            <p id="bottom-flight-info-value" className="field-value">{this.airTime()}</p>
+          </div>
+          <div className="field-div">
+            <p className="field-name">Total Route Length (m)</p>
+            <p id="bottom-flight-info-value" className="field-value">{this.routeDistance().toFixed(0)}</p>
+          </div>
+          <div className="field-div">
+            <p className="field-name">Total Route Ascent (m)</p>
+            <p id="bottom-flight-info-value" className="field-value">{this.routeAscent().toFixed(0)}</p>
+          </div>
+        </div>
+      </>
+    )
+  }
+
   sidebar() {
     if (this.props.state.mode === "view") {
       return (
@@ -171,7 +240,10 @@ class Sidebar extends Component {
 
     if (this.props.state.mode === "plan") {
       return (
-        this.planSideBar(this.props.state.selectedMarker)
+        <>
+          {this.planSideBar(this.props.state.selectedMarker)}
+          {this.flightPlanInfoCalcs()}
+        </>
       )
     }
   }  

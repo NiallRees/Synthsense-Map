@@ -31,6 +31,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1500, 
     height: 1000,
+    minWidth: 1200,
+    minHeight: 800,
     webPreferences: {
       nodeIntegration: true,
       preload: __dirname + '/preload.js'

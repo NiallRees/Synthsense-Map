@@ -5,16 +5,6 @@ import Sidebar from './components/sidebar';
 import schemas from './schemas';
 const { ipcRenderer } = window.require('electron');
 
-function containsObject(obj, list) {
-  var i;
-  for (i = 0; i < list.length; i++) {
-      if (list[i] === obj) {
-          return true;
-      }
-  }
-
-  return false;
-}
 
 class App extends Component {
   constructor() {
@@ -27,9 +17,10 @@ class App extends Component {
       dataFolderPath: null,
       viewMarkers: [],
       planMarkers: [],
-      planRouteSensors: [],
+      planRouteMarkers: [],
       planTakeoff: null,
       planFlightParameters: planFlightParameters,
+      stagingPlanFlightParameters: planFlightParameters,
       selectedMarker: null,
       switchIsOn: false,
       mode: 'view',
@@ -46,7 +37,6 @@ class App extends Component {
     };
 
     ipcRenderer.on('imported-data', (event, arg) => {
-
       this.setState({
         viewMarkers: arg[0].sensors,
         dataFolderPath: arg[1]
@@ -69,17 +59,17 @@ class App extends Component {
     this.removeMarkerClickHandler = this.removeMarkerClickHandler.bind(this);
     this.updateSelectedMarker = this.updateSelectedMarker.bind(this);
     this.validateMarker = this.validateMarker.bind(this);
-    this.updateFlightParameters = this.updateFlightParameters.bind(this);
-    this.validateFlightParameters = this.validateFlightParameters.bind(this);
+    this.updatePlanFlightParameters = this.updatePlanFlightParameters.bind(this);
+    this.validatePlanFlightParameters = this.validatePlanFlightParameters.bind(this);
     this.updateMouseCoords = this.updateMouseCoords.bind(this);
     this.addPlanPin = this.addPlanPin.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
   }
 
   planRouteMarkerClickHandler(marker) {
-    if (!containsObject(marker, this.state.planRouteSensors) && this.state.planTakeoff) {
+    if (this.state.planTakeoff) {
       this.setState(prevState => ({
-        planRouteSensors: [...prevState.planRouteSensors, marker]
+        planRouteMarkers: [...prevState.planRouteMarkers, marker]
       }))
     }
   }
@@ -95,13 +85,13 @@ class App extends Component {
   }
 
   editPlanMarkersInPlace(updatedMarker) {
-    var updatedPlanRouteSensors = [...this.state.planRouteSensors]
-    for (var i = 0; i < this.state.planRouteSensors.length; i++) {
-      if (this.state.planRouteSensors[i]['id'] === updatedMarker['id']) {
-        updatedPlanRouteSensors.splice(i, 1, updatedMarker)
+    var updatedplanRouteMarkers = [...this.state.planRouteMarkers]
+    for (var i = 0; i < this.state.planRouteMarkers.length; i++) {
+      if (this.state.planRouteMarkers[i]['id'] === updatedMarker['id']) {
+        updatedplanRouteMarkers.splice(i, 1, updatedMarker)
       }
     }
-    return(updatedPlanRouteSensors)
+    return(updatedplanRouteMarkers)
   }
 
   updateSelectedMarker(input) {
@@ -127,27 +117,27 @@ class App extends Component {
     if (this.state.selectedMarker.type === "Takeoff") {
       this.setState({
         planTakeoff: updatedMarker,
-        planRouteSensors: this.editPlanMarkersInPlace(updatedMarker),
+        planRouteMarkers: this.editPlanMarkersInPlace(updatedMarker),
         selectedMarker: updatedMarker
       })
     } else {
       this.setState(prevState => ({
         planMarkers: [...prevState.planMarkers.filter(sensor => sensor['id'] !== this.state.selectedMarker['id']), updatedMarker],
-        planRouteSensors: this.editPlanMarkersInPlace(updatedMarker),
+        planRouteMarkers: this.editPlanMarkersInPlace(updatedMarker),
         selectedMarker: updatedMarker
       }))
     }
   }
 
-  updateFlightParameters(input) {
+  updatePlanFlightParameters(input) {
     var updatedParameters = { ...this.state.planFlightParameters};
     updatedParameters[input.target.name] = input.target.value;
     this.setState({
-      planFlightParameters: updatedParameters
+      stagingPlanFlightParameters: updatedParameters
     })
   }
 
-  validateFlightParameters(input) {
+  validatePlanFlightParameters(input) {
     var newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
     var updatedParameters = { ...this.state.planFlightParameters};
     const schemaVariable = schemas.Flight[input.target.name]
@@ -201,19 +191,19 @@ class App extends Component {
 
   resetBuildRouteClickHandler() {
     this.setState({
-      planRouteSensors: []
+      planRouteMarkers: []
     })
   }
 
   exportBuildRouteClickHandler() {
-    ipcRenderer.send('export_route', this.state.planRouteSensors)
+    ipcRenderer.send('export_route', this.state.planRouteMarkers)
   }
 
   undoBuildRouteClickHandler() {
-    const planRouteSensors = [...this.state.planRouteSensors];
-    planRouteSensors.pop();
+    const planRouteMarkers = [...this.state.planRouteMarkers];
+    planRouteMarkers.pop();
     this.setState({
-      planRouteSensors: planRouteSensors
+      planRouteMarkers: planRouteMarkers
     })
   }
 
@@ -226,13 +216,13 @@ class App extends Component {
   clearMarkersClickHandler() {
     this.setState({
       planMarkers: [],
-      planRouteSensors: []
+      planRouteMarkers: []
     })
   }
 
   removeMarkerClickHandler(selectedMarker) {
     this.setState({
-      planRouteSensors: []
+      planRouteMarkers: []
     })
     if (selectedMarker === this.state.planTakeoff) {
       this.setState({
@@ -242,7 +232,7 @@ class App extends Component {
     } else {
       this.setState(prevState => ({
         planMarkers: prevState.planMarkers.filter(sensor => sensor['id'] !== selectedMarker['id']),
-        planRouteSensors: prevState.planRouteSensors.filter(sensor => sensor['id'] !== selectedMarker['id']),
+        planRouteMarkers: prevState.planRouteMarkers.filter(sensor => sensor['id'] !== selectedMarker['id']),
         selectedMarker: null
       }))
     }
@@ -345,7 +335,7 @@ class App extends Component {
           <Map
             ref="map"
             markers={this.state.switchIsOn ? this.state.planMarkers : this.state.viewMarkers}
-            planRouteSensors={this.state.planRouteSensors}
+            planRouteMarkers={this.state.planRouteMarkers}
             takeoff={this.state.switchIsOn ? this.state.planTakeoff : null}
             selectedMarker={this.state.selectedMarker} 
             markerClickHandler={this.markerClickHandler}
@@ -375,8 +365,8 @@ class App extends Component {
             removeMarkerClickHandler={this.removeMarkerClickHandler}
             updateSelectedMarker={this.updateSelectedMarker}
             validateMarker={this.validateMarker}
-            updateFlightParameters={this.updateFlightParameters}
-            validateFlightParameters={this.validateFlightParameters}
+            updatePlanFlightParameters={this.updatePlanFlightParameters}
+            validatePlanFlightParameters={this.validatePlanFlightParameters}
           />
         </aside>
       </div>

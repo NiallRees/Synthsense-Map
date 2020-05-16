@@ -59,6 +59,15 @@ input {
     text-align: left;
 }
 
+#bottom-flight-info {
+    position: absolute;
+    bottom: 6em;
+}
+
+#bottom-flight-info-value {
+    text-align: center
+}
+
 .field-div {
     overflow: hidden;
 }
@@ -67,10 +76,11 @@ input {
     float: left;
 }
 
-.field-input-p {
+.field-value {
     width: 6.5em;
     float: right;
     margin-right: 1em;
+    margin-top: 0.5em;
 }
 
 .field-input {
@@ -82,6 +92,7 @@ input {
     float: left;
     width: 11.5em;
     margin-left: 1em;
+    margin-top: 0.5em;
 }
 
 .title {
