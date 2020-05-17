@@ -9,16 +9,37 @@ const isMac = process.platform === 'darwin'
 let mainWindow;
 
 // Open the enclosing data folder
-ipcMain.on('open_data_folder', (event, arg) => {
+ipcMain.on('open-data-folder', (event, arg) => {
   const separator = isMac ? '/' : '\\'
   filePath = arg[0].concat(separator, arg[1])
-  console.log(filePath)
-  console.log(shell.openItem(filePath))
 })
 
 // Import view data
-ipcMain.on('import_view_data', (event, arg) => {
+ipcMain.on('import-view-data', (event, arg) => {
   loadData();
+})
+
+// Save plan data
+ipcMain.on('save-plan', (event, data) => {
+  const today = new Date();
+  const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  const time = today.getHours() + '-' + today.getMinutes() + '-' + today.getSeconds();
+  const dateTime = date + ' ' + time;
+  const separator = isMac ? '/' : '\\';
+  destinationPath = app.getPath('home').concat(separator, 'Synthsense Data', separator)
+  const path = dialog.showSaveDialogSync(mainWindow, {
+    defaultPath: destinationPath.concat(dateTime, '.json'),
+    properties: ['createDirectory']
+  });
+  if (!path) return;
+
+  fs.writeJson(path, data, err => {
+    if (err) return console.error(err);
+  })
+})
+
+ipcMain.on('import-plan', (event) => {
+  importPlan();
 })
 
 // Export route
@@ -184,9 +205,25 @@ function loadData() {
   const folderPathSplit = folderPath.split(separator)
   const folderName = folderPathSplit[folderPathSplit.length-1]
   destinationPath = app.getPath('home').concat(separator, 'Synthsense Data', separator, folderName);
-  console.log('Destination: ', destinationPath)
-  fs.copySync(folderPath, destinationPath);
+  if (folderPath !== destinationPath) {
+    fs.copySync(folderPath, destinationPath);
+  }
   sensorsJson = fs.readFileSync(destinationPath.concat(separator, 'sensors.json'))
   sensors = JSON.parse(sensorsJson)
-  mainWindow.webContents.send('imported-data', [sensors, destinationPath])
+  mainWindow.webContents.send('imported-view-data', [sensors, destinationPath])
+}
+
+function importPlan() {
+  const separator = isMac ? '/' : '\\';
+  defaultPath = app.getPath('home').concat(separator, 'Synthsense Data')
+  const selections = dialog.showOpenDialogSync(mainWindow, {
+    defaultPath: defaultPath,
+    properties: ['openFile']
+  });
+
+  if (!selections) return;
+  const filePath = selections[0]
+  planDataJson = fs.readFileSync(filePath)
+  planData = JSON.parse(planDataJson)
+  mainWindow.webContents.send('imported-plan-data', planData)
 }

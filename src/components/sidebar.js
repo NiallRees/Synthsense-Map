@@ -14,7 +14,6 @@ class Sidebar extends Component {
   }
 
   viewSideBar(sensor) {
-    console.log(sensor)
     if (sensor == null) {
       return (
         <>
@@ -50,7 +49,7 @@ class Sidebar extends Component {
     }
   }
 
-  buildRouteSideBar() {
+  buildRouteTips() {
     if (this.props.state.planTakeoff == null) {
       return (
           <p className="title">Add a Takeoff Point</p>
@@ -73,7 +72,7 @@ class Sidebar extends Component {
       return (
         <>
           <p className="title">Build Route</p>
-          {this.buildRouteSideBar()}
+          {this.buildRouteTips()}
           <button className="sidebar-button" type="button"
           onClick={(e) => {
             this.props.undoBuildRouteClickHandler();
@@ -108,7 +107,20 @@ class Sidebar extends Component {
       return (
         <>
           <p className="title">No Marker Selected</p>
-          <div>
+            <button className="sidebar-button" type="button"
+            onClick={(e) => {
+              this.props.savePlanClickHandler();
+            }}
+            >
+            Save Plan
+            </button>
+            <button className="sidebar-button" type="button"
+            onClick={(e) => {
+              this.props.importPlanClickHandler();
+            }}
+            >
+            Import Plan
+            </button>
             <button className="sidebar-button" type="button"
             onClick={(e) => {
               this.props.buildRouteClickHandler();
@@ -116,8 +128,6 @@ class Sidebar extends Component {
             >
             Build Route
             </button>
-          </div>
-          <div>
             <button className="sidebar-button" type="button"
             onClick={(e) => {
               this.props.clearMarkersClickHandler();
@@ -125,7 +135,6 @@ class Sidebar extends Component {
             >
             Clear Markers
             </button>
-          </div>
           <div className="fields-div">
             {Object.keys(schemas.Flight).map(key =>
               <div className="field-div" key={key}>
@@ -198,10 +207,12 @@ class Sidebar extends Component {
     var length = 0
     var marker1 = this.props.state.planTakeoff
     var d
-    for (let marker2 of this.props.state.planRouteMarkers) {
-      d = this.calculateCoordDistance(marker1.latitude, marker2.latitude, marker1.longitude, marker2.longitude)
-      length += d
-      marker1 = marker2
+    if (this.props.state.planRouteMarkers) {
+      for (let marker2 of this.props.state.planRouteMarkers) {
+        d = this.calculateCoordDistance(marker1.latitude, marker2.latitude, marker1.longitude, marker2.longitude)
+        length += d
+        marker1 = marker2
+      }
     }
     return length
   }
@@ -210,10 +221,12 @@ class Sidebar extends Component {
     var ascent = 0
     var marker1 = this.props.state.planTakeoff
     var h
-    for (let marker2 of this.props.state.planRouteMarkers) {
-      h = Math.max(marker2.elevation - marker1.elevation, 0) + this.props.state.planFlightParameters.altitude
-      ascent += h
-      marker1 = marker2
+    if (this.props.state.planRouteMarkers) {
+      for (let marker2 of this.props.state.planRouteMarkers) {
+        h = Math.max(marker2.elevation - marker1.elevation, 0) + this.props.state.planFlightParameters.altitude
+        ascent += h
+        marker1 = marker2
+      }
     }
     return ascent
   }

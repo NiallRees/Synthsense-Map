@@ -46,7 +46,7 @@ export default class rechargePin extends PureComponent {
               {sensor.name}
             </div>
           }
-          <Recharge />
+          <Recharge style={{fill: this.pinColour(mode)}}/>
         </div>
       </div>
     );

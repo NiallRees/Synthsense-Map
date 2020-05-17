@@ -92,6 +92,16 @@ class Map extends Component {
     this.setState({viewport: etc})
   }
 
+  renderMarkers() {
+    if (this.props.markers) {
+      return(
+        this.props.markers.map(marker => 
+          this.renderMarker({marker}),
+        )
+      )
+    }
+  }
+
   renderMarker({ marker }) {
     const selectedMarkerID = this.props.selectedMarker ? this.props.selectedMarker.id : null
     const selected = (marker.id === selectedMarkerID);
@@ -123,7 +133,7 @@ class Map extends Component {
 
   renderTakeoffPin() {
   const takeoff = this.props.takeoff;
-  if (takeoff !== null) {
+  if (takeoff) {
     const selectedMarkerID = this.props.selectedMarker ? this.props.selectedMarker.id : null
     const selected = (takeoff.id === selectedMarkerID);
       return (
@@ -150,7 +160,7 @@ class Map extends Component {
   }
 
   planPath() {
-    if (this.props.mode !== 'view' && this.props.planRouteMarkers.length > 0) {
+    if (this.props.mode === 'plan' && this.props.planRouteMarkers && this.props.planRouteMarkers.length > 0) {
       var lineCoords = this.props.planRouteMarkers.map(sensor =>
         [sensor['longitude'], sensor['latitude']]
       )
@@ -284,9 +294,7 @@ class Map extends Component {
             <NavigationControl />
           </div>
           {this.planPath()}
-          {this.props.markers.map(marker => 
-            this.renderMarker({marker}),
-          )}
+          {this.renderMarkers()}
           {this.renderTakeoffPin()}
           {this.renderPinPrompt()}
           <div className="coords-box">

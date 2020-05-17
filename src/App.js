@@ -36,12 +36,22 @@ class App extends Component {
       }
     };
 
-    ipcRenderer.on('imported-data', (event, arg) => {
+    ipcRenderer.on('imported-view-data', (event, arg) => {
       this.setState({
         viewMarkers: arg[0].sensors,
         dataFolderPath: arg[1]
       })
       this.refs.map.centerViewportFromCoords(arg[0].sensors)
+    })
+
+    ipcRenderer.on('imported-plan-data', (event, data) => {
+      this.setState({
+        planFlightParameters: data.planFlightParameters,
+        planRouteMarkers: data.planRouteMarkers,
+        planTakeoff: data.planTakeoff,
+        planMarkers: data.planMarkers
+      })
+      this.refs.map.centerViewportFromCoords(data.planMarkers)
     })
 
     this.markerClickHandler = this.markerClickHandler.bind(this);
@@ -51,6 +61,8 @@ class App extends Component {
     this.mapClickHandler = this.mapClickHandler.bind(this);
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
     this.importViewDataClickHandler = this.importViewDataClickHandler.bind(this);
+    this.savePlanClickHandler = this.savePlanClickHandler.bind(this);
+    this.importPlanClickHandler = this.importPlanClickHandler.bind(this);
     this.buildRouteClickHandler = this.buildRouteClickHandler.bind(this);
     this.clearMarkersClickHandler = this.clearMarkersClickHandler.bind(this);
     this.exitBuildRouteClickHandler = this.exitBuildRouteClickHandler.bind(this);
@@ -181,11 +193,11 @@ class App extends Component {
   }
 
   viewDataClickHandler(sensor) {
-    ipcRenderer.send('open_data_folder', [this.state.dataFolderPath, sensor.name])
+    ipcRenderer.send('open-data-folder', [this.state.dataFolderPath, sensor.name])
   }
 
   importViewDataClickHandler() {
-    ipcRenderer.send('import_view_data')
+    ipcRenderer.send('import-view-data')
   }
 
   exitBuildRouteClickHandler() {
@@ -214,6 +226,20 @@ class App extends Component {
     this.setState({
       planRouteMarkers: planRouteMarkers
     })
+  }
+
+  savePlanClickHandler() {
+    const data = {
+      'planFlightParameters': this.state.planFlightParameters,
+      'planRouteMarkers': this.state.planRouteMarkers,
+      'planTakeoff': this.state.planTakeoff,
+      'planMarkers': this.state.planMarkers
+    }
+    ipcRenderer.send('save-plan', data)
+  }
+
+  importPlanClickHandler() {
+    ipcRenderer.send('import-plan')
   }
 
   buildRouteClickHandler() {
@@ -367,6 +393,8 @@ class App extends Component {
             handleModeToggle={this.handleModeToggle}
             viewDataClickHandler={this.viewDataClickHandler}
             importViewDataClickHandler={this.importViewDataClickHandler}
+            savePlanClickHandler={this.savePlanClickHandler}
+            importPlanClickHandler={this.importPlanClickHandler}
             buildRouteClickHandler={this.buildRouteClickHandler}
             clearMarkersClickHandler={this.clearMarkersClickHandler}
             exitBuildRouteClickHandler={this.exitBuildRouteClickHandler}
