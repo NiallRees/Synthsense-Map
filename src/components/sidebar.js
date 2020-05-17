@@ -5,30 +5,48 @@ import schemas from '../schemas';
 
 class Sidebar extends Component {
 
-  viewSideBar(sensor) {
+  noData() {
     if (this.props.state.viewMarkers.length === 0) {
-      return (<p className="title">No data imported</p>)
-    } else if (sensor == null) {
-      return (<p className="title">No sensor selected</p>)
+      return(<p className="title">No data imported</p>)
     } else {
-    const listItems = sensor.data.map((d) => 
-      <li className="datum" key={Object.keys(d)[0]}>{Object.keys(d)[0]}: {Object.values(d)[0]}</li>
-    );
-    return (
-      <>
-      <p className="title">{sensor.name}</p>
-      <ul className='data' >
-        {listItems}
-      </ul>
-      <button className="sidebar-button" type="button"
+      return(<p className="title">No sensor selected</p>)
+    }
+  }
+
+  viewSideBar(sensor) {
+    console.log(sensor)
+    if (sensor == null) {
+      return (
+        <>
+        {this.noData()}
+        <button className="sidebar-button" type="button"
         onClick={(e) => {
-        this.props.viewDataClickHandler(sensor);
+          this.props.importViewDataClickHandler();
         }}
-      >
-        View Data
-      </button>
-      </>
-    )
+        >
+          Import Data
+        </button>
+        </>
+      )
+    } else {
+      const listItems = sensor.data.map((d) => 
+        <li className="datum" key={Object.keys(d)[0]}>{Object.keys(d)[0]}: {Object.values(d)[0]}</li>
+      );
+      return (
+        <>
+        <p className="title">{sensor.name}</p>
+        <ul className='data' >
+          {listItems}
+        </ul>
+        <button className="sidebar-button" type="button"
+          onClick={(e) => {
+            this.props.viewDataClickHandler(sensor);
+          }}
+        >
+          View Data
+        </button>
+        </>
+      )
     }
   }
 
@@ -234,7 +252,9 @@ class Sidebar extends Component {
   sidebar() {
     if (this.props.state.mode === "view") {
       return (
-        this.viewSideBar(this.props.state.selectedMarker)
+        <>
+          {this.viewSideBar(this.props.state.selectedMarker)}
+        </>
       )
     }
 

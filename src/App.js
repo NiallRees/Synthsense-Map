@@ -50,6 +50,7 @@ class App extends Component {
     this.pinPromptClickHandler = this.pinPromptClickHandler.bind(this);
     this.mapClickHandler = this.mapClickHandler.bind(this);
     this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
+    this.importViewDataClickHandler = this.importViewDataClickHandler.bind(this);
     this.buildRouteClickHandler = this.buildRouteClickHandler.bind(this);
     this.clearMarkersClickHandler = this.clearMarkersClickHandler.bind(this);
     this.exitBuildRouteClickHandler = this.exitBuildRouteClickHandler.bind(this);
@@ -181,6 +182,10 @@ class App extends Component {
 
   viewDataClickHandler(sensor) {
     ipcRenderer.send('open_data_folder', [this.state.dataFolderPath, sensor.name])
+  }
+
+  importViewDataClickHandler() {
+    ipcRenderer.send('import_view_data')
   }
 
   exitBuildRouteClickHandler() {
@@ -356,6 +361,7 @@ class App extends Component {
             state={this.state}
             handleToggle={this.handleToggle}
             viewDataClickHandler={this.viewDataClickHandler}
+            importViewDataClickHandler={this.importViewDataClickHandler}
             buildRouteClickHandler={this.buildRouteClickHandler}
             clearMarkersClickHandler={this.clearMarkersClickHandler}
             exitBuildRouteClickHandler={this.exitBuildRouteClickHandler}

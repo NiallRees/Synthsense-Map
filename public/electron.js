@@ -11,7 +11,14 @@ let mainWindow;
 // Open the enclosing data folder
 ipcMain.on('open_data_folder', (event, arg) => {
   const separator = isMac ? '/' : '\\'
-  shell.openItem(arg[0].concat(separator, arg[1]))
+  filePath = arg[0].concat(separator, arg[1])
+  console.log(filePath)
+  console.log(shell.openItem(filePath))
+})
+
+// Import view data
+ipcMain.on('import_view_data', (event, arg) => {
+  loadData();
 })
 
 // Export route
@@ -66,13 +73,6 @@ function createWindow() {
     {
       label: 'File',
       submenu: [
-        {
-          label: 'Import Data',
-          accelerator: 'CmdOrCtrl+O',
-          click() {
-            loadData();
-          }
-        }
       ]
     },
     // { role: 'editMenu' }
