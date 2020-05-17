@@ -237,7 +237,7 @@ class Sidebar extends Component {
             <p id="bottom-flight-info-value" className="field-value">{this.airTime()}</p>
           </div>
           <div className="field-div">
-            <p className="field-name">Total Route Length (m)</p>
+            <p className="field-name">Total Route Distance (m)</p>
             <p id="bottom-flight-info-value" className="field-value">{this.routeDistance().toFixed(0)}</p>
           </div>
           <div className="field-div">
@@ -277,7 +277,7 @@ class Sidebar extends Component {
         <div className="mode-element">
         <Switch
           isOn={this.props.state.switchIsOn}
-          handleToggle={this.props.handleToggle}
+          handleModeToggle={this.props.handleModeToggle}
         />
         </div>
         <div className="mode-element" id="mode-right">Plan</div>

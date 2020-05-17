@@ -64,7 +64,7 @@ class App extends Component {
     this.validatePlanFlightParameters = this.validatePlanFlightParameters.bind(this);
     this.updateMouseCoords = this.updateMouseCoords.bind(this);
     this.addPlanPin = this.addPlanPin.bind(this);
-    this.handleToggle = this.handleToggle.bind(this);
+    this.handleModeToggle = this.handleModeToggle.bind(this);
   }
 
   planRouteMarkerClickHandler(marker) {
@@ -299,7 +299,7 @@ class App extends Component {
     this.addPlanPin(pinPrompt, pinType)
   }
 
-  handleToggle() {
+  handleModeToggle() {
     if (!this.state.switchIsOn) {
       this.setState({
         mode: 'plan',
@@ -313,7 +313,8 @@ class App extends Component {
               type: sensor.type,
               name: sensor.name,
               longitude: sensor.longitude,
-              latitude: sensor.latitude
+              latitude: sensor.latitude,
+              elevation: sensor.elevation
             }
           ))
         })
@@ -359,7 +360,7 @@ class App extends Component {
         <aside>
           <Sidebar
             state={this.state}
-            handleToggle={this.handleToggle}
+            handleModeToggle={this.handleModeToggle}
             viewDataClickHandler={this.viewDataClickHandler}
             importViewDataClickHandler={this.importViewDataClickHandler}
             buildRouteClickHandler={this.buildRouteClickHandler}

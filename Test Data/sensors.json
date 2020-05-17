@@ -6,6 +6,7 @@
             "name": "Sensor 1",
             "latitude": 51.448032,
             "longitude": -0.2714485,
+            "elevation": 0,
             "data": [
                 {"Battery": "95%"},
                 {"Last Updated": "2019-11-10"}
@@ -17,6 +18,7 @@
             "name": "Sensor 2",
             "latitude": 51.446477,
             "longitude": -0.270706,
+            "elevation": 0,
             "data": [
                 {"Battery": "90%"},
                 {"Last Updated": "2019-11-10"}
@@ -28,6 +30,7 @@
             "name": "Sensor 3",
             "latitude": 51.448223,
             "longitude":  -0.276155,
+            "elevation": 0,
             "data": [
                 {"Battery": "85%"},
                 {"Last Updated": "2019-11-10"}
@@ -39,6 +42,7 @@
             "name": "Sensor 4",
             "latitude": 51.44223,
             "longitude":  -0.270155,
+            "elevation": 0,
             "data": [
                 {"Battery": "85%"},
                 {"Last Updated": "2019-11-10"}
