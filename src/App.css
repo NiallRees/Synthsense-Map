@@ -143,3 +143,9 @@ aside.collapsed {
   right: 1rem;
   bottom: 2rem;
 }
+
+#scale {
+  position: absolute;
+  right: 4rem;
+  bottom: 2rem;
+}

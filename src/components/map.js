@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactMapGL, {Marker, WebMercatorViewport, FlyToInterpolator, NavigationControl} from "react-map-gl";
+import ReactMapGL, {Marker, WebMercatorViewport, FlyToInterpolator, NavigationControl, ScaleControl} from "react-map-gl";
 import * as d3 from 'd3-ease';
 import config from '../config';
 import SensorPin from './sensorPin';
@@ -292,6 +292,9 @@ class Map extends Component {
         >
           <div id="navigation">
             <NavigationControl />
+          </div>
+          <div id="scale">
+            <ScaleControl maxWidth={200} unit={"metric"}/>
           </div>
           {this.planPath()}
           {this.renderMarkers()}
