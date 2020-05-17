@@ -12,6 +12,7 @@ let mainWindow;
 ipcMain.on('open-data-folder', (event, arg) => {
   const separator = isMac ? '/' : '\\'
   filePath = arg[0].concat(separator, arg[1])
+  shell.openItem(filePath)
 })
 
 // Import view data
@@ -26,7 +27,7 @@ ipcMain.on('save-plan', (event, data) => {
   const time = today.getHours() + '-' + today.getMinutes() + '-' + today.getSeconds();
   const dateTime = date + ' ' + time;
   const separator = isMac ? '/' : '\\';
-  destinationPath = app.getPath('home').concat(separator, 'Synthsense Data', separator)
+  destinationPath = app.getPath('documents').concat(separator, 'Synthsense Data', separator)
   const path = dialog.showSaveDialogSync(mainWindow, {
     defaultPath: destinationPath.concat(dateTime, '.json'),
     properties: ['createDirectory']
@@ -204,7 +205,7 @@ function loadData() {
   const separator = isMac ? '/' : '\\'
   const folderPathSplit = folderPath.split(separator)
   const folderName = folderPathSplit[folderPathSplit.length-1]
-  destinationPath = app.getPath('home').concat(separator, 'Synthsense Data', separator, folderName);
+  destinationPath = app.getPath('documents').concat(separator, 'Synthsense Data', separator, folderName);
   if (folderPath !== destinationPath) {
     fs.copySync(folderPath, destinationPath);
   }
@@ -215,7 +216,7 @@ function loadData() {
 
 function importPlan() {
   const separator = isMac ? '/' : '\\';
-  defaultPath = app.getPath('home').concat(separator, 'Synthsense Data')
+  defaultPath = app.getPath('documents').concat(separator, 'Synthsense Data')
   const selections = dialog.showOpenDialogSync(mainWindow, {
     defaultPath: defaultPath,
     properties: ['openFile']
