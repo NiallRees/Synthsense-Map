@@ -201,7 +201,11 @@ class App extends Component {
   }
 
   exportBuildRouteClickHandler() {
-    ipcRenderer.send('export_route', this.state.planRouteMarkers)
+    const data = {
+      'flightParameters': this.state.planFlightParameters,
+      'route': this.state.planRouteMarkers
+    }
+    ipcRenderer.send('export-route', data)
   }
 
   undoBuildRouteClickHandler() {

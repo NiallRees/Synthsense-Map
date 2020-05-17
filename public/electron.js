@@ -22,14 +22,14 @@ ipcMain.on('import_view_data', (event, arg) => {
 })
 
 // Export route
-ipcMain.on('export_route', (event, route) => {
+ipcMain.on('export-route', (event, data) => {
   const path = dialog.showSaveDialogSync(mainWindow, {
     defaultPath: "Route.json",
     properties: ['createDirectory']
   });
   if (!path) return;
 
-  fs.writeJson(path, route, err => {
+  fs.writeJson(path, data, err => {
     if (err) return console.error(err);
   })
 })
