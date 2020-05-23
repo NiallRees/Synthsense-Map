@@ -93,12 +93,6 @@ function createWindow() {
     }] : []),
     // { role: 'fileMenu' }
     {
-      label: 'File',
-      submenu: [
-      ]
-    },
-    // { role: 'editMenu' }
-    {
       label: 'Edit',
       submenu: [
         { role: 'undo' },
