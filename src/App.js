@@ -51,7 +51,7 @@ class App extends Component {
         planTakeoff: data.planTakeoff,
         planMarkers: data.planMarkers
       })
-      this.refs.map.centerViewportFromCoords(data.planMarkers)
+      this.refs.map.centerViewportFromCoords([data.planTakeoff, ...data.planMarkers])
     })
 
     this.markerClickHandler = this.markerClickHandler.bind(this);
