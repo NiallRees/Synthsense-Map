@@ -105,7 +105,7 @@ class Map extends Component {
   renderMarker({ marker }) {
     const selectedMarkerID = this.props.selectedMarker ? this.props.selectedMarker.id : null
     const selected = (marker.id === selectedMarkerID);
-    if (marker.type === "Sensor") {
+    if (marker.type === "sensor") {
       return (
         <Marker key={marker.id} latitude={marker.latitude} longitude={marker.longitude}>
           <SensorPin
@@ -117,7 +117,7 @@ class Map extends Component {
         </Marker>
       )
     }
-    if (marker.type === "Recharge") {
+    if (marker.type === "recharge") {
       return (
         <Marker key={marker.id} latitude={marker.latitude} longitude={marker.longitude}>
           <RechargePin

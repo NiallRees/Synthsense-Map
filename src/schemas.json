@@ -1,5 +1,5 @@
 {
-    "Sensor": {
+    "sensor": {
         "name": {"Human Readable": "Name", "Default": "New Sensor"}, 
         "latitude": {"Human Readable": "Latitude", "Default": 0, "Min": -90, "Max": 90}, 
         "longitude": {"Human Readable": "Longitude", "Default": 0, "Min": -180, "Max": 180}, 
@@ -9,20 +9,20 @@
         "desiredCharge": {"Human Readable": "Desired Charge (mAh)", "Default": 0, "Min": 0, "Max": 100000},
         "maxChargeTime": {"Human Readable": "Max Charge Time (s)", "Default": 60, "Min": 0, "Max": 360}
     },
-    "Recharge": {
+    "recharge": {
         "name": {"Human Readable": "Name", "Default": "New Recharge"}, 
         "latitude": {"Human Readable": "Latitude", "Default": 0, "Min": -89.9999999, "Max": 90}, 
         "longitude": {"Human Readable": "Longitude", "Default": 0, "Min": -180, "Max": 180}, 
         "elevation": {"Human Readable": "Elevation (m)", "Default": 0, "Min": -100000, "Max": 100000},
         "chargeRate": {"Human Readable": "Charge Rate (C)", "Default": 1, "Min": 0, "Max": 100000}
     },
-    "Takeoff": {
-        "name": {"Human Readable": "Name", "Default": "Takeoff"},
+    "takeoff": {
+        "name": {"Human Readable": "Name", "Default": "takeoff"},
         "latitude": {"Human Readable": "Latitude", "Default": 0, "Min": -89.999999, "Max": 90}, 
         "longitude": {"Human Readable": "Longitude", "Default": 0, "Min": -180, "Max": 180}, 
         "elevation": {"Human Readable": "Elevation (m)", "Default": 0, "Min": -100000, "Max": 1000000}
     },
-    "Flight": {
+    "flight": {
         "altitude": {"Human Readable": "Flight Altitude (m)", "Default": 30, "Min": 10, "Max": 130},
         "horizontalSpeed": {"Human Readable": "Horizontal Speed (m/s)", "Default": 2, "Min": 1, "Max": 10},
         "ascendingSpeed": {"Human Readable": "Ascending Speed (m/s)", "Default": 2, "Min": 1, "Max": 10},

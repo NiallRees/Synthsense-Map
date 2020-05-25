@@ -10,8 +10,8 @@ class App extends Component {
   constructor() {
     super();
     var planFlightParameters = {}
-    Object.keys(schemas.Flight).forEach(function(key) {
-      planFlightParameters[key] = schemas.Flight[key].Default
+    Object.keys(schemas.flight).forEach(function(key) {
+      planFlightParameters[key] = schemas.flight[key].Default
     });
     this.state = {
       dataFolderPath: null,
@@ -129,7 +129,7 @@ class App extends Component {
       newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
     }
     updatedMarker[input.target.name] = newValue;
-    if (this.state.selectedMarker.type === "Takeoff") {
+    if (this.state.selectedMarker.type === "takeoff") {
       this.setState({
         planTakeoff: updatedMarker,
         planRouteMarkers: this.editPlanMarkersInPlace(updatedMarker),
@@ -155,7 +155,7 @@ class App extends Component {
   validatePlanFlightParameters(input) {
     var newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
     var updatedParameters = { ...this.state.planFlightParameters};
-    const schemaVariable = schemas.Flight[input.target.name]
+    const schemaVariable = schemas.flight[input.target.name]
     newValue = (newValue < schemaVariable.Min) ? schemaVariable.Min : newValue
     newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
     updatedParameters[input.target.name] = newValue;
@@ -297,7 +297,7 @@ class App extends Component {
       newMarker["longitude"] = +(pinPrompt.longitude.toFixed(7)) // 7 dp gives 11mm precision
       newMarker["latitude"] = +(pinPrompt.latitude.toFixed(7))
 
-    if (pinType === "Takeoff") {
+    if (pinType === "takeoff") {
       this.setState({
         planTakeoff: newMarker
       })

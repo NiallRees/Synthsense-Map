@@ -38,6 +38,12 @@ class Sidebar extends Component {
         <>
           <div className="fields-div">
             <p className="title">{sensor.name}</p>
+            {["latitude", "longitude", "elevation"].map((key) =>
+              <div className="field-div">
+                <p className="field-name">{schemas.sensor[key]["Human Readable"]}</p>
+                <p id="bottom-flight-info-value" className="field-value">{sensor[key]}</p>
+              </div>
+            )}
             {listItems}
           </div>
           <button className="sidebar-button" type="button"
@@ -139,9 +145,9 @@ class Sidebar extends Component {
             Clear Markers
             </button>
           <div className="fields-div">
-            {Object.keys(schemas.Flight).map(key =>
+            {Object.keys(schemas.flight).map(key =>
               <div className="field-div" key={key}>
-                <p key={key} className="field-name">{schemas.Flight[key]["Human Readable"]}</p>
+                <p key={key} className="field-name">{schemas.flight[key]["Human Readable"]}</p>
                 <p className="field-value">
                   <input
                       className="field-input"

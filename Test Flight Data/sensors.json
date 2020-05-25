@@ -8,7 +8,7 @@
     "sensors": [
         {
             "id": 1,
-            "type": "Sensor",
+            "type": "sensor",
             "name": "Sensor 1",
             "latitude": 51.448032,
             "longitude": -0.2714485,
@@ -23,7 +23,7 @@
         },
         {
             "id": 2,
-            "type": "Sensor",
+            "type": "sensor",
             "name": "Sensor 2",
             "latitude": 51.446477,
             "longitude": -0.270706,
@@ -37,7 +37,7 @@
         },
         {
             "id": 3,
-            "type": "Sensor",
+            "type": "sensor",
             "name": "Sensor 3",
             "latitude": 51.448223,
             "longitude":  -0.276155,
@@ -51,7 +51,7 @@
         },
         {
             "id": 4,
-            "type": "Sensor",
+            "type": "sensor",
             "name": "Sensor 4",
             "latitude": 51.44223,
             "longitude":  -0.270155,
