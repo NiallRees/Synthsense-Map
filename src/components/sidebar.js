@@ -7,9 +7,9 @@ class Sidebar extends Component {
 
   noData() {
     if (this.props.state.viewMarkers.length === 0) {
-      return(<p className="title">No data imported</p>)
+      return(<p className="title">No Data Imported</p>)
     } else {
-      return(<p className="title">No sensor selected</p>)
+      return(<p className="title">No Sensor Selected</p>)
     }
   }
 
