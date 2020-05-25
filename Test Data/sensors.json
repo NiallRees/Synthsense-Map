@@ -1,4 +1,10 @@
 {
+    "flight": {
+        "Datetime Started": "2019-11-10 14:58:09",
+        "Datetime Finished": "2019-11-10 15:16:14",
+        "Battery Start": "100%",
+        "Battery End": "42%"
+    },
     "sensors": [
         {
             "id": 1,
@@ -7,10 +13,13 @@
             "latitude": 51.448032,
             "longitude": -0.2714485,
             "elevation": 0,
-            "data": [
-                {"Battery": "95%"},
-                {"Last Updated": "2019-11-10"}
-            ]
+            "data": {
+                "Battery Start": "45%",
+                "Battery End": "85%",
+                "Datetime Arrived": "2019-11-10 15:04:21",
+                "Datetime Left": "2019-11-10 15:05:18"
+
+            }
         },
         {
             "id": 2,
@@ -19,10 +28,12 @@
             "latitude": 51.446477,
             "longitude": -0.270706,
             "elevation": 0,
-            "data": [
-                {"Battery": "90%"},
-                {"Last Updated": "2019-11-10"}
-            ]
+            "data": {
+                "Battery Start": "45%",
+                "Battery End": "85%",
+                "Datetime Arrived": "2019-11-10 15:04:21",
+                "Datetime Left": "2019-11-10 15:05:18"
+            }
         },
         {
             "id": 3,
@@ -31,10 +42,12 @@
             "latitude": 51.448223,
             "longitude":  -0.276155,
             "elevation": 0,
-            "data": [
-                {"Battery": "85%"},
-                {"Last Updated": "2019-11-10"}
-            ]
+            "data": {
+                "Battery Start": "45%",
+                "Battery End": "85%",
+                "Datetime Arrived": "2019-11-10 15:04:21",
+                "Datetime Left": "2019-11-10 15:05:18"
+            }
         },
         {
             "id": 4,
@@ -43,10 +56,12 @@
             "latitude": 51.44223,
             "longitude":  -0.270155,
             "elevation": 0,
-            "data": [
-                {"Battery": "85%"},
-                {"Last Updated": "2019-11-10"}
-            ]
+            "data": {
+                "Battery Start": "45%",
+                "Battery End": "85%",
+                "Datetime Arrived": "2019-11-10 15:04:21",
+                "Datetime Left": "2019-11-10 15:05:18"
+            }
         }
     ]
 }

@@ -28,22 +28,25 @@ class Sidebar extends Component {
         </>
       )
     } else {
-      const listItems = sensor.data.map((d) => 
-        <li className="datum" key={Object.keys(d)[0]}>{Object.keys(d)[0]}: {Object.values(d)[0]}</li>
+      const listItems = Object.keys(sensor.data).map((key) => 
+      <div className="field-div">
+        <p className="field-name">{key}</p>
+        <p id="bottom-flight-info-value" className="field-value">{sensor.data[key]}</p>
+      </div>
       );
       return (
         <>
-        <p className="title">{sensor.name}</p>
-        <ul className='data' >
-          {listItems}
-        </ul>
-        <button className="sidebar-button" type="button"
-          onClick={(e) => {
-            this.props.viewDataClickHandler(sensor);
-          }}
-        >
-          View Data
-        </button>
+          <div className="fields-div">
+            <p className="title">{sensor.name}</p>
+            {listItems}
+          </div>
+          <button className="sidebar-button" type="button"
+            onClick={(e) => {
+              this.props.viewDataClickHandler(sensor);
+            }}
+          >
+            View Data
+          </button>
         </>
       )
     }
@@ -262,11 +265,25 @@ class Sidebar extends Component {
     )
   }
 
+  viewFlightInfo() {
+    return(
+      <div id="bottom-flight-info" className="fields-div">
+        {Object.keys(this.props.state.viewFlightInfo).map((key) => 
+          <div className="field-div">
+            <p className="field-name">{key}</p>
+            <p id="bottom-flight-info-value" className="field-value">{this.props.state.viewFlightInfo[key]}</p>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   sidebar() {
     if (this.props.state.mode === "view") {
       return (
         <>
           {this.viewSideBar(this.props.state.selectedMarker)}
+          {this.viewFlightInfo()}
         </>
       )
     }

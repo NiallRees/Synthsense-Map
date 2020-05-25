@@ -16,6 +16,7 @@ class App extends Component {
     this.state = {
       dataFolderPath: null,
       viewMarkers: [],
+      viewFlightInfo: {},
       planMarkers: [],
       planRouteMarkers: [],
       planTakeoff: null,
@@ -39,6 +40,7 @@ class App extends Component {
     ipcRenderer.on('imported-view-data', (event, arg) => {
       this.setState({
         viewMarkers: arg[0].sensors,
+        viewFlightInfo: arg[0].flight,
         dataFolderPath: arg[1]
       })
       this.refs.map.centerViewportFromCoords(arg[0].sensors)
