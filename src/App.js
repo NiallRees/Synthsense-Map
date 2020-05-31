@@ -3,7 +3,7 @@ import './App.css';
 import Map from './components/map';
 import Sidebar from './components/sidebar';
 import schemas from './schemas';
-const { ipcRenderer } = window.require('electron');
+const { ipcRenderer } = require('electron');
 
 
 class App extends Component {
