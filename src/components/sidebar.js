@@ -1,326 +1,79 @@
-import React, { Component } from "react";
+import React from "react";
 import './sidebar.css';
-import Switch from './switch';
-import schemas from '../schemas';
+import Switch from './sidebar/switch';
+import FlightPlanInfoCalcs from './sidebar/flightPlanInfoCalcs';
+import ViewFlightInfo from "./sidebar/viewFlightInfo";
+import PlanSideBar from "./sidebar/planSideBar";
+import ViewSideBar from "./sidebar/viewSideBar";
 
-class Sidebar extends Component {
+function Sidebar(props) {
 
-  noData() {
-    if (this.props.state.viewMarkers.length === 0) {
-      return(<p className="title">No Data Imported</p>)
-    } else {
-      return(<p className="title">No Sensor Selected</p>)
-    }
-  }
-
-  viewSideBar(sensor) {
-    if (sensor == null) {
+  const sidebar = () => {
+    if (props.state.mode === "view") {
       return (
         <>
-        {this.noData()}
-        <button className="sidebar-button" type="button"
-        onClick={(e) => {
-          this.props.importViewDataClickHandler();
-        }}
-        >
-          Import Data
-        </button>
-        </>
-      )
-    } else {
-      const listItems = Object.keys(sensor.data).map((key) => 
-      <div className="field-div">
-        <p className="field-name">{key}</p>
-        <p id="bottom-flight-info-value" className="field-value">{sensor.data[key]}</p>
-      </div>
-      );
-      return (
-        <>
-          <div className="fields-div">
-            <p className="title">{sensor.name}</p>
-            {["latitude", "longitude", "elevation"].map((key) =>
-              <div className="field-div">
-                <p className="field-name">{schemas.sensor[key]["Human Readable"]}</p>
-                <p id="bottom-flight-info-value" className="field-value">{sensor[key]}</p>
-              </div>
-            )}
-            {listItems}
-          </div>
-          <button className="sidebar-button" type="button"
-            onClick={(e) => {
-              this.props.viewDataClickHandler(sensor);
-            }}
-          >
-            View Data
-          </button>
-        </>
-      )
-    }
-  }
-
-  buildRouteTips() {
-    if (this.props.state.planTakeoff == null) {
-      return (
-          <p className="title">Add a Takeoff Point</p>
-      )
-    } else if (this.props.state.planRouteMarkers.length < 1) {
-      return (
-          <p className="title">Select the First Sensor</p>
-      )
-    } else { 
-      return (
-        <p className="title">Select the Next Sensor</p>
-      )
-    }
-  }
-
-  planSideBar() {
-    const selectedMarker = this.props.state.selectedMarker;
-    const buildRouteMode = this.props.state.buildRouteMode;
-    if (buildRouteMode) {
-      return (
-        <>
-          <p className="title">Build Route</p>
-          {this.buildRouteTips()}
-          <button className="sidebar-button" type="button"
-          onClick={(e) => {
-            this.props.undoBuildRouteClickHandler();
-          }}
-          >
-          Undo
-          </button>
-          <button className="sidebar-button" type="button"
-          onClick={(e) => {
-            this.props.resetBuildRouteClickHandler();
-          }}
-          >
-          Reset
-          </button>
-          <button className="sidebar-button" type="button"
-          onClick={(e) => {
-            this.props.exportBuildRouteClickHandler();
-          }}
-          >
-          Export
-          </button>
-          <button className="sidebar-button" type="button"
-          onClick={(e) => {
-            this.props.exitBuildRouteClickHandler();
-          }}
-          >
-          Exit
-          </button>
-        </>
-      )
-    } else if (selectedMarker == null) {
-      return (
-        <>
-          <p className="title">No Marker Selected</p>
-            <button className="sidebar-button" type="button"
-            onClick={(e) => {
-              this.props.savePlanClickHandler();
-            }}
-            >
-            Save Plan
-            </button>
-            <button className="sidebar-button" type="button"
-            onClick={(e) => {
-              this.props.importPlanClickHandler();
-            }}
-            >
-            Import Plan
-            </button>
-            <button className="sidebar-button" type="button"
-            onClick={(e) => {
-              this.props.buildRouteClickHandler();
-            }}
-            >
-            Build Route
-            </button>
-            <button className="sidebar-button" type="button"
-            onClick={(e) => {
-              this.props.clearMarkersClickHandler();
-            }}
-            >
-            Clear Markers
-            </button>
-          <div className="fields-div">
-            {Object.keys(schemas.flight).map(key =>
-              <div className="field-div" key={key}>
-                <p key={key} className="field-name">{schemas.flight[key]["Human Readable"]}</p>
-                <p className="field-value">
-                  <input
-                      className="field-input"
-                      type="text"
-                      name={key}
-                      onChange={this.props.updatePlanFlightParameters.bind(this)}
-                      onBlur={this.props.validatePlanFlightParameters.bind(this)}
-                      value={this.props.state.stagingPlanFlightParameters[key]}
-                    >
-                  </input>
-                </p>
-              </div>
-            )}
-          </div>
-        </>
-      )
-    } else {
-      return(
-        <>
-          <div className="fields-div">
-            <p className="title">{selectedMarker.name}</p>
-            {Object.keys(schemas[selectedMarker.type]).map(key =>
-              <div className="field-div" key={key}>
-                <p key={key} className="field-name">{schemas[selectedMarker.type][key]["Human Readable"]}</p>
-                <p className="field-value">
-                  <input 
-                    className="field-input"
-                    type="text" 
-                    name={key} 
-                    onChange={this.props.updateSelectedMarker.bind(this)}
-                    onBlur={this.props.validateMarker.bind(this)} 
-                    value={selectedMarker[key]}
-                  >
-                  </input>
-                </p>
-              </div>
-            )}
-          </div>
-          <button className="sidebar-button" type="button"
-          onClick={(e) => {
-            this.props.removeMarkerClickHandler(selectedMarker);
-          }}
-          >
-          Delete
-          </button>
-        </>
-      )
-    }
-  }
-
-  calculateCoordDistance(lat1, lat2, lon1, lon2) {
-    const R = 6371e3;
-    const φ1 = lat1 * Math.PI/180; // φ, λ in radians
-    const φ2 = lat2 * Math.PI/180;
-    const Δφ = (lat2-lat1) * Math.PI/180;
-    const Δλ = (lon2-lon1) * Math.PI/180;
-    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-              Math.cos(φ1) * Math.cos(φ2) *
-              Math.sin(Δλ/2) * Math.sin(Δλ/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    const d = R * c; // in metres
-    return(d)
-  }
-
-  routeDistance() {
-    var length = 0
-    var marker1 = this.props.state.planTakeoff
-    var d
-    if (this.props.state.planRouteMarkers) {
-      for (let marker2 of this.props.state.planRouteMarkers) {
-        d = this.calculateCoordDistance(marker1.latitude, marker2.latitude, marker1.longitude, marker2.longitude)
-        length += d
-        marker1 = marker2
-      }
-    }
-    return length
-  }
-
-  routeAscent() {
-    var ascent = 0
-    var marker1 = this.props.state.planTakeoff
-    var h
-    if (this.props.state.planRouteMarkers) {
-      for (let marker2 of this.props.state.planRouteMarkers) {
-        h = Math.max(marker2.elevation - marker1.elevation, 0) + this.props.state.planFlightParameters.altitude
-        ascent += h
-        marker1 = marker2
-      }
-    }
-    return ascent
-  }
-
-  airTime() {
-    var seconds = 0
-    if (this.routeDistance() > 0) {
-      seconds += this.routeDistance() / this.props.state.planFlightParameters.horizontalSpeed
-      seconds += this.routeAscent() / this.props.state.planFlightParameters.ascendingSpeed
-      seconds += this.routeAscent() / this.props.state.planFlightParameters.descendingSpeed
-    }
-    return ((seconds/60).toFixed(0).padStart(2, '0') + ':' + (seconds % 60).toFixed(0).padStart(2, '0'))
-  }
-
-  flightPlanInfoCalcs() {
-    return(
-      <>
-        <div id="bottom-flight-info" className="fields-div">
-          <div className="field-div">
-            <p className="field-name">Total Air Time (m:s)</p>
-            <p id="bottom-flight-info-value" className="field-value">{this.airTime()}</p>
-          </div>
-          <div className="field-div">
-            <p className="field-name">Total Route Distance (m)</p>
-            <p id="bottom-flight-info-value" className="field-value">{this.routeDistance().toFixed(0)}</p>
-          </div>
-          <div className="field-div">
-            <p className="field-name">Total Route Ascent (m)</p>
-            <p id="bottom-flight-info-value" className="field-value">{this.routeAscent().toFixed(0)}</p>
-          </div>
-        </div>
-      </>
-    )
-  }
-
-  viewFlightInfo() {
-    return(
-      <div id="bottom-flight-info" className="fields-div">
-        {Object.keys(this.props.state.viewFlightInfo).map((key) => 
-          <div className="field-div">
-            <p className="field-name">{key}</p>
-            <p id="bottom-flight-info-value" className="field-value">{this.props.state.viewFlightInfo[key]}</p>
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  sidebar() {
-    if (this.props.state.mode === "view") {
-      return (
-        <>
-          {this.viewSideBar(this.props.state.selectedMarker)}
-          {this.viewFlightInfo()}
+          <ViewSideBar
+            selectedMarker={props.state.selectedMarker}
+            viewMarkers={props.state.viewMarkers}
+            importViewDataClickHandler={props.importViewDataClickHandler}
+            viewDataClickHandler={props.viewDataClickHandler}
+          />
+          <ViewFlightInfo 
+            flightInfo={props.state.viewFlightInfo}
+          />
         </>
       )
     }
 
-    if (this.props.state.mode === "plan") {
+    if (props.state.mode === "plan") {
       return (
         <>
-          {this.planSideBar(this.props.state.selectedMarker)}
-          {this.flightPlanInfoCalcs()}
+          <PlanSideBar
+            planTakeoff={props.state.planTakeoff}
+            selectedMarker={props.state.selectedMarker}
+            buildRouteMode={props.state.buildRouteMode}
+            planRouteMarkers={props.state.planRouteMarkers}
+            undoBuildRouteClickHandler={props.undoBuildRouteClickHandler}
+            resetBuildRouteClickHandler={props.resetBuildRouteClickHandler}
+            exportBuildRouteClickHandler={props.exportBuildRouteClickHandler}
+            exitBuildRouteClickHandler={props.exitBuildRouteClickHandler}
+            savePlanClickHandler={props.savePlanClickHandler}
+            importPlanClickHandler={props.importPlanClickHandler}
+            buildRouteClickHandler={props.buildRouteClickHandler}
+            clearMarkersClickHandler={props.clearMarkersClickHandler}
+            updatePlanFlightParameters={props.updatePlanFlightParameters}
+            validatePlanFlightParameters={props.validatePlanFlightParameters}
+            stagingPlanFlightParameters={props.state.stagingPlanFlightParameters}
+            updateSelectedMarker={props.updateSelectedMarker}
+            validateMarker={props.validateMarker}
+            removeMarkerClickHandler={props.removeMarkerClickHandler}
+          />
+          <FlightPlanInfoCalcs
+            planRouteMarkers={props.state.planRouteMarkers}
+            planTakeoff={props.state.planTakeoff}
+            planFlightParameters={props.state.planFlightParameters}
+          />
         </>
       )
     }
   }  
 
-  render() {
-    return (
-      <div className="sidebar">
-      {this.sidebar()}
-      <div className="mode-container">
-        <div className="mode-element" id="mode-left">View</div>
-        <div className="mode-element">
-        <Switch
-          isOn={this.props.state.switchIsOn}
-          handleModeToggle={this.props.handleModeToggle}
-        />
-        </div>
-        <div className="mode-element" id="mode-right">Plan</div>
+  return (
+    <div className="sidebar">
+    {sidebar()}
+    <div className="mode-container">
+      <div className="mode-element" id="mode-left">View</div>
+      <div className="mode-element">
+      <Switch
+        isOn={props.state.switchIsOn}
+        handleModeToggle={props.handleModeToggle}
+      />
       </div>
+      <div className="mode-element" id="mode-right">Plan</div>
     </div>
-    );
-  }
+  </div>
+  );
+
 };
 
 export default Sidebar;

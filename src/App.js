@@ -160,7 +160,8 @@ class App extends Component {
     newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
     updatedParameters[input.target.name] = newValue;
     this.setState({
-      planFlightParameters: updatedParameters
+      planFlightParameters: updatedParameters,
+      stagingPlanFlightParameters: updatedParameters
     })
   }
 

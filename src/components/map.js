@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import ReactMapGL, {Marker, WebMercatorViewport, FlyToInterpolator, NavigationControl, ScaleControl} from "react-map-gl";
 import * as d3 from 'd3-ease';
 import config from '../config';
-import SensorPin from './sensorPin';
-import TakeoffPin from './takeoffPin';
-import RechargePin from './rechargePin';
-import PinPrompt from './pinPrompt';
-import PolylineOverlay from './polylineOverlay';
+import SensorPin from './map/sensorPin';
+import TakeoffPin from './map/takeoffPin';
+import RechargePin from './map/rechargePin';
+import PinPrompt from './map/pinPrompt';
+import PolylineOverlay from './map/polylineOverlay';
 
 
 const TOKEN=config.REACT_APP_TOKEN;
