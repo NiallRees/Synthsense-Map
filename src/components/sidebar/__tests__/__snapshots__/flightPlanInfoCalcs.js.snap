@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test FlightPlanInfoCalcs Matches snapshot with arbitrary takeoff and sensors 1`] = `ShallowWrapper {}`;
+
+exports[`Test FlightPlanInfoCalcs Matches snapshot with no takeoff or sensors 1`] = `ShallowWrapper {}`;
+
+exports[`Test FlightPlanInfoCalcs Renders correctly without props 1`] = `ShallowWrapper {}`;

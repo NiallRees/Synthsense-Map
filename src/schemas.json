@@ -17,7 +17,7 @@
         "chargeRate": {"Human Readable": "Charge Rate (C)", "Default": 1, "Min": 0, "Max": 100000}
     },
     "takeoff": {
-        "name": {"Human Readable": "Name", "Default": "takeoff"},
+        "name": {"Human Readable": "Name", "Default": "Takeoff"},
         "latitude": {"Human Readable": "Latitude", "Default": 0, "Min": -89.999999, "Max": 90}, 
         "longitude": {"Human Readable": "Longitude", "Default": 0, "Min": -180, "Max": 180}, 
         "elevation": {"Human Readable": "Elevation (m)", "Default": 0, "Min": -100000, "Max": 1000000}
