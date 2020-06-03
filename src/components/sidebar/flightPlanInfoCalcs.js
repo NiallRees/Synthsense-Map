@@ -20,9 +20,9 @@ function FlightPlanInfoCalcs(props) {
 
   const routeDistance = () => {
     var length = 0
-    var marker1 = props.planTakeoff
-    var d
-    if (props.planRouteMarkers) {
+    if (props.planRouteMarkers && props.planTakeoff) {
+      var marker1 = props.planTakeoff
+      var d
       for (let marker2 of props.planRouteMarkers) {
         d = calculateCoordDistance(marker1.latitude, marker2.latitude, marker1.longitude, marker2.longitude)
         length += d
@@ -34,9 +34,9 @@ function FlightPlanInfoCalcs(props) {
 
   const routeAscent = () => {
     var ascent = 0
-    var marker1 = props.planTakeoff
-    var h
-    if (props.planRouteMarkers) {
+    if (props.planRouteMarkers && props.planTakeoff) {
+      var marker1 = props.planTakeoff
+      var h
       for (let marker2 of props.planRouteMarkers) {
         h = Math.max(marker2.elevation - marker1.elevation, 0) + props.planFlightParameters.altitude
         ascent += h

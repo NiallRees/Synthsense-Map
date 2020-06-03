@@ -27,17 +27,17 @@ function ViewSideBar(props) {
     )
   } else {
     const listItems = Object.keys(props.selectedMarker.data).map((key) => 
-    <div className="field-div">
-      <p className="field-name">{key}</p>
-      <p id="bottom-flight-info-value" className="field-value">{props.selectedMarker.data[key]}</p>
-    </div>
+      <div key={key} className="field-div">
+        <p className="field-name">{key}</p>
+        <p id="bottom-flight-info-value" className="field-value">{props.selectedMarker.data[key]}</p>
+      </div>
     );
     return (
       <>
         <div className="fields-div">
           <p className="title">{props.selectedMarker.name}</p>
           {["latitude", "longitude", "elevation"].map((key) =>
-            <div className="field-div">
+            <div key={key} className="field-div">
               <p className="field-name">{schemas.sensor[key]["Human Readable"]}</p>
               <p id="bottom-flight-info-value" className="field-value">{props.selectedMarker[key]}</p>
             </div>

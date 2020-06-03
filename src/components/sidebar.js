@@ -9,30 +9,30 @@ import ViewSideBar from "./sidebar/viewSideBar";
 function Sidebar(props) {
 
   const sidebar = () => {
-    if (props.state.mode === "view") {
+    if (props.mode === "view") {
       return (
         <>
           <ViewSideBar
-            selectedMarker={props.state.selectedMarker}
-            viewMarkers={props.state.viewMarkers}
+            selectedMarker={props.selectedMarker}
+            viewMarkers={props.viewMarkers}
             importViewDataClickHandler={props.importViewDataClickHandler}
             viewDataClickHandler={props.viewDataClickHandler}
           />
           <ViewFlightInfo 
-            flightInfo={props.state.viewFlightInfo}
+            flightInfo={props.viewFlightInfo}
           />
         </>
       )
     }
 
-    if (props.state.mode === "plan") {
+    if (props.mode === "plan") {
       return (
         <>
           <PlanSideBar
-            planTakeoff={props.state.planTakeoff}
-            selectedMarker={props.state.selectedMarker}
-            buildRouteMode={props.state.buildRouteMode}
-            planRouteMarkers={props.state.planRouteMarkers}
+            planTakeoff={props.planTakeoff}
+            selectedMarker={props.selectedMarker}
+            buildRouteMode={props.buildRouteMode}
+            planRouteMarkers={props.planRouteMarkers}
             undoBuildRouteClickHandler={props.undoBuildRouteClickHandler}
             resetBuildRouteClickHandler={props.resetBuildRouteClickHandler}
             exportBuildRouteClickHandler={props.exportBuildRouteClickHandler}
@@ -43,15 +43,15 @@ function Sidebar(props) {
             clearMarkersClickHandler={props.clearMarkersClickHandler}
             updatePlanFlightParameters={props.updatePlanFlightParameters}
             validatePlanFlightParameters={props.validatePlanFlightParameters}
-            stagingPlanFlightParameters={props.state.stagingPlanFlightParameters}
+            stagingPlanFlightParameters={props.stagingPlanFlightParameters}
             updateSelectedMarker={props.updateSelectedMarker}
             validateMarker={props.validateMarker}
             removeMarkerClickHandler={props.removeMarkerClickHandler}
           />
           <FlightPlanInfoCalcs
-            planRouteMarkers={props.state.planRouteMarkers}
-            planTakeoff={props.state.planTakeoff}
-            planFlightParameters={props.state.planFlightParameters}
+            planRouteMarkers={props.planRouteMarkers}
+            planTakeoff={props.planTakeoff}
+            planFlightParameters={props.planFlightParameters}
           />
         </>
       )
@@ -65,7 +65,7 @@ function Sidebar(props) {
       <div className="mode-element" id="mode-left">View</div>
       <div className="mode-element">
       <Switch
-        isOn={props.state.switchIsOn}
+        isOn={props.switchIsOn}
         handleModeToggle={props.handleModeToggle}
       />
       </div>

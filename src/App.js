@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+import {WebMercatorViewport, FlyToInterpolator} from "react-map-gl";
+import * as d3 from 'd3-ease';
 import './App.css';
 import Map from './components/map';
 import Sidebar from './components/sidebar';
@@ -6,277 +8,269 @@ import schemas from './schemas';
 const { ipcRenderer } = require('electron');
 
 
-class App extends Component {
-  constructor() {
-    super();
-    var planFlightParameters = {}
-    Object.keys(schemas.flight).forEach(function(key) {
-      planFlightParameters[key] = schemas.flight[key].Default
-    });
-    this.state = {
-      dataFolderPath: null,
-      viewMarkers: [],
-      viewFlightInfo: {},
-      planMarkers: [],
-      planRouteMarkers: [],
-      planTakeoff: null,
-      planFlightParameters: planFlightParameters,
-      stagingPlanFlightParameters: planFlightParameters,
-      selectedMarker: null,
-      switchIsOn: false,
-      mode: 'view',
-      buildRouteMode: false,
-      mouseCoords: {
-        latitude: 52.4054360,
-        longitude: -0.3293577
-      },
-      pinPrompt: {
-        'enabled': false,
-        'longitude': 0,
-        'latitude': 0
-      }
-    };
+function App() {
+  const defaultPlanFlightParameters = {}
+  Object.keys(schemas.flight).forEach(function(key) {
+    defaultPlanFlightParameters[key] = schemas.flight[key].Default
+  })
+  const defaultViewport = {
+    width: 800,
+    height: 600
+  };
 
-    ipcRenderer.on('imported-view-data', (event, arg) => {
-      this.setState({
-        viewMarkers: arg[0].sensors,
-        viewFlightInfo: arg[0].flight,
-        dataFolderPath: arg[1]
-      })
-      this.refs.map.centerViewportFromCoords(arg[0].sensors)
-    })
+  const [viewport, setViewport] = useState(defaultViewport)
+  const [searchLocation, setSearchLocation] = useState(null)
+  const [lastSearchLocation, setLastSearchLocation] = useState(null)
+  const [searchResults, setSearchResults] = useState([])
+  const [showSearchResults, setShowSearchResults] = useState(false)
+  const [dataFolderPath, setDataFolderPath] = useState(null)
+  const [viewMarkers, setViewMarkers] = useState([])
+  const [viewFlightInfo, setViewFlightInfo] = useState({})
+  const [planMarkers, setPlanMarkers] = useState([])
+  const [planRouteMarkers, setPlanRouteMarkers] = useState([])
+  const [planTakeoff, setPlanTakeoff] = useState(null)
+  const [planFlightParameters, setPlanFlightParameters] = useState(defaultPlanFlightParameters)
+  const [stagingPlanFlightParameters, setStagingPlanFlightParameters] = useState(planFlightParameters)
+  const [selectedMarker, setSelectedMarker] = useState(null)
+  const [switchIsOn, setSwitchIsOn] = useState(false)
+  const [mode, setMode] = useState('view')
+  const [buildRouteMode, setBuildRouteMode] = useState(false)
+  const [mouseCoords, setMouseCoords] = useState({
+    latitude: 52.4054360,
+    longitude: -0.3293577
+  })
+  const [pinPrompt, setPinPrompt] = useState({
+    'enabled': false,
+    'longitude': 0,
+    'latitude': 0
+  })
 
-    ipcRenderer.on('imported-plan-data', (event, data) => {
-      this.setState({
-        planFlightParameters: data.planFlightParameters,
-        planRouteMarkers: data.planRouteMarkers,
-        planTakeoff: data.planTakeoff,
-        planMarkers: data.planMarkers
-      })
-      this.refs.map.centerViewportFromCoords([data.planTakeoff, ...data.planMarkers])
-    })
 
-    this.markerClickHandler = this.markerClickHandler.bind(this);
-    this.resetSelectedMarker = this.resetSelectedMarker.bind(this);
-    this.setPinPrompt = this.setPinPrompt.bind(this);
-    this.pinPromptClickHandler = this.pinPromptClickHandler.bind(this);
-    this.mapClickHandler = this.mapClickHandler.bind(this);
-    this.viewDataClickHandler = this.viewDataClickHandler.bind(this);
-    this.importViewDataClickHandler = this.importViewDataClickHandler.bind(this);
-    this.savePlanClickHandler = this.savePlanClickHandler.bind(this);
-    this.importPlanClickHandler = this.importPlanClickHandler.bind(this);
-    this.buildRouteClickHandler = this.buildRouteClickHandler.bind(this);
-    this.clearMarkersClickHandler = this.clearMarkersClickHandler.bind(this);
-    this.exitBuildRouteClickHandler = this.exitBuildRouteClickHandler.bind(this);
-    this.resetBuildRouteClickHandler = this.resetBuildRouteClickHandler.bind(this);
-    this.exportBuildRouteClickHandler = this.exportBuildRouteClickHandler.bind(this);
-    this.undoBuildRouteClickHandler = this.undoBuildRouteClickHandler.bind(this);
-    this.removeMarkerClickHandler = this.removeMarkerClickHandler.bind(this);
-    this.updateSelectedMarker = this.updateSelectedMarker.bind(this);
-    this.validateMarker = this.validateMarker.bind(this);
-    this.updatePlanFlightParameters = this.updatePlanFlightParameters.bind(this);
-    this.validatePlanFlightParameters = this.validatePlanFlightParameters.bind(this);
-    this.updateMouseCoords = this.updateMouseCoords.bind(this);
-    this.addPlanPin = this.addPlanPin.bind(this);
-    this.handleModeToggle = this.handleModeToggle.bind(this);
+  useEffect( () => {
+    ipcRenderer.on('imported-view-data', importedViewDataListener)
+    ipcRenderer.on('imported-plan-data', importedPlanDataListener)
+    return () => {
+      ipcRenderer.removeListener('imported-view-data', importedViewDataListener)
+      ipcRenderer.removeListener('imported-plan-data', importedPlanDataListener)
+    }
+  })
+
+  const importedViewDataListener = (event, arg) => {
+    setViewMarkers(arg[0].sensors)
+    setViewFlightInfo(arg[0].flight)
+    setDataFolderPath(arg[1])
+    centerViewportFromCoords(arg[0].sensors)
   }
 
-  planRouteMarkerClickHandler(marker) {
-    if (this.state.planTakeoff) {
-      this.setState(prevState => ({
-        planRouteMarkers: [...prevState.planRouteMarkers, marker]
-      }))
+  const importedPlanDataListener = (event, arg) => {
+    setPlanFlightParameters(arg.planFlightParameters)
+    setPlanRouteMarkers(arg.planRouteMarkers)
+    setPlanTakeoff(arg.planTakeoff)
+    setPlanMarkers(arg.planMarkers)
+    centerViewportFromCoords([arg.planTakeoff, ...arg.planMarkers])
+  }
+
+  const planRouteMarkerClickHandler = (marker) => {
+    if (planTakeoff) {
+      setPlanRouteMarkers([...planRouteMarkers, marker])
     }
   }
 
-  markerClickHandler(marker) {
-    if (this.state.buildRouteMode === false) {
-      this.setState({
-        selectedMarker: marker
-      })
+  const markerClickHandler = (marker) => {
+    if (buildRouteMode === false) {
+      setSelectedMarker(marker)
     } else {
-      this.planRouteMarkerClickHandler(marker);
+     planRouteMarkerClickHandler(marker);
     }
   }
 
-  editPlanMarkersInPlace(updatedMarker) {
-    var updatedplanRouteMarkers = [...this.state.planRouteMarkers]
-    for (var i = 0; i < this.state.planRouteMarkers.length; i++) {
-      if (this.state.planRouteMarkers[i]['id'] === updatedMarker['id']) {
+  const editPlanMarkersInPlace = (updatedMarker) => {
+    var updatedplanRouteMarkers = [...planRouteMarkers]
+    for (var i = 0; i < planRouteMarkers.length; i++) {
+      if (planRouteMarkers[i]['id'] === updatedMarker['id']) {
         updatedplanRouteMarkers.splice(i, 1, updatedMarker)
       }
     }
     return(updatedplanRouteMarkers)
   }
 
-  updateSelectedMarker(input) {
-    var updatedMarker = { ...this.state.selectedMarker};
+  const updateSelectedMarker = (input) => {
+    var updatedMarker = {...selectedMarker};
     updatedMarker[input.target.name] = input.target.value;
-    this.setState({
-      selectedMarker: updatedMarker
-    })
+    setSelectedMarker(updatedMarker)
   }
 
-  validateMarker(input) {
-    var updatedMarker = { ...this.state.selectedMarker};
+  const validateMarker = (input) => {
+    var updatedMarker = {...selectedMarker};
     var newValue;
     if (input.target.name === "name") {
       newValue = input.target.value
     } else {
       const schemaVariable = schemas[updatedMarker.type][input.target.name];
-      var newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
+      newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
       newValue = (newValue < schemaVariable.Min) ? schemaVariable.Min : newValue
       newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
     }
     updatedMarker[input.target.name] = newValue;
-    if (this.state.selectedMarker.type === "takeoff") {
-      this.setState({
-        planTakeoff: updatedMarker,
-        planRouteMarkers: this.editPlanMarkersInPlace(updatedMarker),
-        selectedMarker: updatedMarker
-      })
+    if (selectedMarker.type === "takeoff") {
+      setPlanTakeoff(updatedMarker)
+      setPlanRouteMarkers(editPlanMarkersInPlace(updatedMarker))
+      setSelectedMarker(updatedMarker)
     } else {
-      this.setState(prevState => ({
-        planMarkers: [...prevState.planMarkers.filter(sensor => sensor['id'] !== this.state.selectedMarker['id']), updatedMarker],
-        planRouteMarkers: this.editPlanMarkersInPlace(updatedMarker),
-        selectedMarker: updatedMarker
-      }))
+      setPlanMarkers([...planMarkers.filter(sensor => sensor['id'] !== selectedMarker['id']), updatedMarker])
+      setPlanRouteMarkers(editPlanMarkersInPlace(updatedMarker))
+      setSelectedMarker(updatedMarker)
     }
   }
 
-  updatePlanFlightParameters(input) {
-    var updatedParameters = { ...this.state.planFlightParameters};
-    updatedParameters[input.target.name] = input.target.value;
-    this.setState({
-      stagingPlanFlightParameters: updatedParameters
-    })
+  const updatePlanFlightParameters = (input) => {
+    var updatedParameters = {planFlightParameters}
+    updatedParameters[input.target.name] = input.target.value
+    setStagingPlanFlightParameters(updatedParameters)
   }
 
-  validatePlanFlightParameters(input) {
+  const validatePlanFlightParameters = (input) => {
     var newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
-    var updatedParameters = { ...this.state.planFlightParameters};
+    var updatedParameters = {planFlightParameters}
     const schemaVariable = schemas.flight[input.target.name]
     newValue = (newValue < schemaVariable.Min) ? schemaVariable.Min : newValue
     newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
     updatedParameters[input.target.name] = newValue;
-    this.setState({
-      planFlightParameters: updatedParameters,
-      stagingPlanFlightParameters: updatedParameters
-    })
+    setPlanFlightParameters(updatedParameters)
+    setStagingPlanFlightParameters(updatedParameters)
   }
 
-  mapClickHandler(e) {
+  const centeredViewport = (a_lat, a_lng, b_lat, b_lng) => {
+    const viewport = new WebMercatorViewport(defaultViewport)
+    .fitBounds([[a_lng, a_lat], [b_lng, b_lat]], {
+      padding: 20,
+      offset: [0, -100]
+    });
+    return viewport;
+  }
+
+  const onViewportChange = (viewport) => { 
+    const {width, height, ...etc} = viewport
+    setViewport(etc)
+  }
+
+  const centerViewportFromCoords = (coords) => {
+    if (coords.length === 0 ) {
+      return
+    }
+    var lat_min = coords[0].latitude
+    var lat_max = coords[0].latitude
+    var lng_min = coords[0].longitude
+    var lng_max = coords[0].longitude
+    for (let a of coords) {
+      lat_min = Math.min(lat_min, a.latitude)
+      lat_max = Math.max(lat_max, a.latitude)
+      lng_min = Math.min(lng_min, a.longitude)
+      lng_max = Math.max(lng_max, a.longitude)
+    }
+    var {longitude, latitude, zoom} = centeredViewport(lat_min, lng_min, lat_max, lng_max)
+    const newViewport = {
+      ...viewport,
+      longitude,
+      latitude,
+      zoom: zoom+1,
+      transitionDuration: 2000,
+      transitionInterpolator: new FlyToInterpolator(),
+      transitionEasing: d3.easeCubic
+    }
+    setViewport(newViewport)
+  }
+
+  const mapClickHandler = (e) => {
     if(e.leftButton) {
-      this.resetSelectedMarker();
-      this.setState({
-        pinPrompt: {
-          'enabled': false,
-          'longitude': 0,
-          'latitude': 0
-        }
+      resetSelectedMarker()
+      setPinPrompt({
+        'enabled': false,
+        'longitude': 0,
+        'latitude': 0
       })
     }
   }
 
-  updateMouseCoords(lngLat) {
+  const updateMouseCoords = (lngLat) => {
     if(lngLat[0]) {
-      this.setState({
-        mouseCoords: {
-          longitude: lngLat[0].toFixed(7),
-          latitude: lngLat[1].toFixed(7)
-        }
+      setMouseCoords({
+        longitude: lngLat[0].toFixed(7),
+        latitude: lngLat[1].toFixed(7)
       })
     }
   }
 
-  resetSelectedMarker() {
-    this.setState({
-      selectedMarker: null
-    })
+  const resetSelectedMarker = () => {
+      setSelectedMarker(null)
   }
 
-  viewDataClickHandler(sensor) {
-    ipcRenderer.send('open-data-folder', [this.state.dataFolderPath, sensor.name])
+  const viewDataClickHandler = (sensor) => {
+    ipcRenderer.send('open-data-folder', [dataFolderPath, sensor.name])
   }
 
-  importViewDataClickHandler() {
+  const importViewDataClickHandler = () => {
     ipcRenderer.send('import-view-data')
   }
 
-  exitBuildRouteClickHandler() {
-    this.setState({
-      buildRouteMode: false
-    })
+  const exitBuildRouteClickHandler = () => {
+    setBuildRouteMode(false)
   }
 
-  resetBuildRouteClickHandler() {
-    this.setState({
-      planRouteMarkers: []
-    })
+  const resetBuildRouteClickHandler = () => {
+    setPlanRouteMarkers([])
   }
 
-  exportBuildRouteClickHandler() {
+  const exportBuildRouteClickHandler = () => {
     const data = {
-      'flightParameters': this.state.planFlightParameters,
-      'route': this.state.planRouteMarkers
+      'flightParameters': planFlightParameters,
+      'route': planRouteMarkers
     }
     ipcRenderer.send('export-route', data)
   }
 
-  undoBuildRouteClickHandler() {
-    const planRouteMarkers = [...this.state.planRouteMarkers];
-    planRouteMarkers.pop();
-    this.setState({
-      planRouteMarkers: planRouteMarkers
-    })
+  const undoBuildRouteClickHandler = () => {
+    const newPlanRouteMarkers = [...planRouteMarkers];
+    newPlanRouteMarkers.pop();
+    setPlanRouteMarkers(newPlanRouteMarkers)
   }
 
-  savePlanClickHandler() {
+  const savePlanClickHandler = () => {
     const data = {
-      'planFlightParameters': this.state.planFlightParameters,
-      'planRouteMarkers': this.state.planRouteMarkers,
-      'planTakeoff': this.state.planTakeoff,
-      'planMarkers': this.state.planMarkers
+      'planFlightParameters': planFlightParameters,
+      'planRouteMarkers': planRouteMarkers,
+      'planTakeoff': planTakeoff,
+      'planMarkers': planMarkers
     }
     ipcRenderer.send('save-plan', data)
   }
 
-  importPlanClickHandler() {
+  const importPlanClickHandler = () => {
     ipcRenderer.send('import-plan')
   }
 
-  buildRouteClickHandler() {
-    this.setState({
-      buildRouteMode: true
-    })
+  const buildRouteClickHandler = () => {
+    setBuildRouteMode(true)
   }
 
-  clearMarkersClickHandler() {
-    this.setState({
-      planMarkers: [],
-      planRouteMarkers: []
-    })
+  const clearMarkersClickHandler = () => {
+    setPlanMarkers([])
+    setPlanRouteMarkers([])
   }
 
-  removeMarkerClickHandler(selectedMarker) {
-    this.setState({
-      planRouteMarkers: []
-    })
-    if (selectedMarker === this.state.planTakeoff) {
-      this.setState({
-        planTakeoff: null,
-        selectedMarker: null
-      })
+  const removeMarkerClickHandler = (selectedMarker) => {
+    setPlanRouteMarkers([])
+    if (selectedMarker === planTakeoff) {
+      setPlanTakeoff(null)
+      setSelectedMarker(null)
     } else {
-      this.setState(prevState => ({
-        planMarkers: prevState.planMarkers.filter(sensor => sensor['id'] !== selectedMarker['id']),
-        planRouteMarkers: prevState.planRouteMarkers.filter(sensor => sensor['id'] !== selectedMarker['id']),
-        selectedMarker: null
-      }))
+      setPlanMarkers(planMarkers.filter(sensor => sensor['id'] !== selectedMarker['id']))
+      setPlanRouteMarkers(planRouteMarkers.filter(sensor => sensor['id'] !== selectedMarker['id']))
+      setSelectedMarker(null)
     }
   }
 
-  makeid(length) {
+  const makeid = (length) => {
     // Taken from https://stackoverflow.com/a/1349426
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -287,133 +281,136 @@ class App extends Component {
     return result;
  }
 
-  addPlanPin(pinPrompt, pinType) {
+  const addPlanPin = (pinPrompt, pinType) => {
       var newMarker = {}
       Object.keys(schemas[pinType]).forEach(function(key) {
         newMarker[key] = schemas[pinType][key].Default
       });
 
-      newMarker["id"] = this.makeid(8) // TODO add collision prevention
+      newMarker["id"] =makeid(8) // TODO add collision prevention
       newMarker["type"] = pinType
       newMarker["longitude"] = +(pinPrompt.longitude.toFixed(7)) // 7 dp gives 11mm precision
       newMarker["latitude"] = +(pinPrompt.latitude.toFixed(7))
 
     if (pinType === "takeoff") {
-      this.setState({
-        planTakeoff: newMarker
-      })
+      setPlanTakeoff(newMarker)
     } else {
-      this.setState(prevState => ({
-        planMarkers: [...prevState.planMarkers, newMarker]
-      }))
+      setPlanMarkers([...planMarkers, newMarker])
     }
   }
 
-  setPinPrompt(lngLat) {
-    if (this.state.mode === "plan") {
-      this.setState({
-        pinPrompt: {
-          'enabled': true,
-          'longitude': lngLat[0],
-          'latitude': lngLat[1]
-        }
+  const enablePinPrompt = (lngLat) => {
+    if (mode === "plan") {
+      setPinPrompt({
+        'enabled': true,
+        'longitude': lngLat[0],
+        'latitude': lngLat[1]
       })
     }
   }
 
-  pinPromptClickHandler(pinPrompt, pinType) {
-    this.setState({
-      pinPrompt: {
-        'enabled': false,
-        'longitude': 0,
-        'latitude': 0
-      }
+  const pinPromptClickHandler = (pinPrompt, pinType) => {
+    setPinPrompt({
+      'enabled': false,
+      'longitude': 0,
+      'latitude': 0
     })
-    this.addPlanPin(pinPrompt, pinType)
+    addPlanPin(pinPrompt, pinType)
   }
 
-  handleModeToggle() {
-    if (!this.state.switchIsOn) {
-      this.setState({
-        mode: 'plan',
-        switchIsOn: true
-      })
-      if (this.state.planMarkers.length === 0) {
-        this.setState({
-          planMarkers: this.state.viewMarkers.map(sensor => (
-            {
-              id: sensor.id,
-              type: sensor.type,
-              name: sensor.name,
-              longitude: sensor.longitude,
-              latitude: sensor.latitude,
-              elevation: sensor.elevation
-            }
-          ))
-        })
+  const handleModeToggle = () => {
+    if (!switchIsOn) {
+      setMode('plan')
+      setSwitchIsOn(true)
+      if (planMarkers.length === 0) {
+        setPlanMarkers(viewMarkers.map(sensor => (
+          {
+            id: sensor.id,
+            type: sensor.type,
+            name: sensor.name,
+            longitude: sensor.longitude,
+            latitude: sensor.latitude,
+            elevation: sensor.elevation
+          }
+        )))
       }
     }
 
-    if (this.state.switchIsOn) {
-      this.setState({
-        mode: 'view',
-        buildRouteMode: false,
-        switchIsOn: false
-      })
+    if (switchIsOn) {
+      setMode('view')
+      setBuildRouteMode(false)
+      setSwitchIsOn(false)
     }      
     
-    this.setState({
-      selectedMarker: null
-    })
+    setSelectedMarker(null)
   }
 
-  render() {
-    return (
-      <div className="container">
-        <div className="map">
-          <Map
-            ref="map"
-            markers={this.state.switchIsOn ? this.state.planMarkers : this.state.viewMarkers}
-            planRouteMarkers={this.state.planRouteMarkers}
-            takeoff={this.state.switchIsOn ? this.state.planTakeoff : null}
-            selectedMarker={this.state.selectedMarker} 
-            markerClickHandler={this.markerClickHandler}
-            addPlanPin={this.addPlanPin}
-            resetSelectedMarker={this.resetSelectedMarker}
-            setPinPrompt={this.setPinPrompt}
-            pinPrompt={this.state.pinPrompt}
-            updateMouseCoords={this.updateMouseCoords}
-            mode={this.state.mode}
-            buildRouteMode={this.state.buildRouteMode}
-            mouseCoords={this.state.mouseCoords}
-            pinPromptClickHandler={this.pinPromptClickHandler}
-            mapClickHandler={this.mapClickHandler}
-          />
-        </div>
-        <aside>
-          <Sidebar
-            state={this.state}
-            handleModeToggle={this.handleModeToggle}
-            viewDataClickHandler={this.viewDataClickHandler}
-            importViewDataClickHandler={this.importViewDataClickHandler}
-            savePlanClickHandler={this.savePlanClickHandler}
-            importPlanClickHandler={this.importPlanClickHandler}
-            buildRouteClickHandler={this.buildRouteClickHandler}
-            clearMarkersClickHandler={this.clearMarkersClickHandler}
-            exitBuildRouteClickHandler={this.exitBuildRouteClickHandler}
-            exportBuildRouteClickHandler={this.exportBuildRouteClickHandler}
-            resetBuildRouteClickHandler={this.resetBuildRouteClickHandler}
-            undoBuildRouteClickHandler={this.undoBuildRouteClickHandler}
-            removeMarkerClickHandler={this.removeMarkerClickHandler}
-            updateSelectedMarker={this.updateSelectedMarker}
-            validateMarker={this.validateMarker}
-            updatePlanFlightParameters={this.updatePlanFlightParameters}
-            validatePlanFlightParameters={this.validatePlanFlightParameters}
-          />
-        </aside>
+  return (
+    <div className="container">
+      <div className="map">
+        <Map
+          centeredViewport={centeredViewport}
+          searchLocation={searchLocation}
+          setSearchLocation={setSearchLocation}
+          lastSearchLocation={lastSearchLocation}
+          setLastSearchLocation={setLastSearchLocation}
+          searchResults={searchResults}
+          setSearchResults={setSearchResults}
+          showSearchResults={showSearchResults}
+          setShowSearchResults={setShowSearchResults}
+          viewport={viewport}
+          setViewport={setViewport}
+          onViewportChange={onViewportChange}
+          markers={switchIsOn ? planMarkers : viewMarkers}
+          planRouteMarkers={planRouteMarkers}
+          takeoff={switchIsOn ? planTakeoff : null}
+          selectedMarker={selectedMarker} 
+          markerClickHandler={markerClickHandler}
+          addPlanPin={addPlanPin}
+          resetSelectedMarker={resetSelectedMarker}
+          enablePinPrompt={enablePinPrompt}
+          pinPrompt={pinPrompt}
+          switchIsOn={switchIsOn}
+          updateMouseCoords={updateMouseCoords}
+          mode={mode}
+          buildRouteMode={buildRouteMode}
+          mouseCoords={mouseCoords}
+          pinPromptClickHandler={pinPromptClickHandler}
+          mapClickHandler={mapClickHandler}
+        />
       </div>
-    );
-  }
+      <aside>
+        <Sidebar
+          handleModeToggle={handleModeToggle}
+          viewDataClickHandler={viewDataClickHandler}
+          importViewDataClickHandler={importViewDataClickHandler}
+          savePlanClickHandler={savePlanClickHandler}
+          importPlanClickHandler={importPlanClickHandler}
+          buildRouteClickHandler={buildRouteClickHandler}
+          clearMarkersClickHandler={clearMarkersClickHandler}
+          exitBuildRouteClickHandler={exitBuildRouteClickHandler}
+          exportBuildRouteClickHandler={exportBuildRouteClickHandler}
+          resetBuildRouteClickHandler={resetBuildRouteClickHandler}
+          undoBuildRouteClickHandler={undoBuildRouteClickHandler}
+          viewMarkers={viewMarkers}
+          removeMarkerClickHandler={removeMarkerClickHandler}
+          updateSelectedMarker={updateSelectedMarker}
+          validateMarker={validateMarker}
+          updatePlanFlightParameters={updatePlanFlightParameters}
+          validatePlanFlightParameters={validatePlanFlightParameters}
+          planTakeoff={planTakeoff}
+          selectedMarker={selectedMarker}
+          buildRouteMode={buildRouteMode}
+          planRouteMarkers={planRouteMarkers}
+          stagingPlanFlightParameters={stagingPlanFlightParameters}
+          planFlightParameters={planFlightParameters}
+          viewFlightInfo={viewFlightInfo}
+          switchIsOn={switchIsOn}
+          mode={mode}
+        />
+      </aside>
+    </div>
+  );
 }
 
 export default App;
