@@ -30,7 +30,7 @@ function App() {
   const [planRouteMarkers, setPlanRouteMarkers] = useState([])
   const [planTakeoff, setPlanTakeoff] = useState(null)
   const [planFlightParameters, setPlanFlightParameters] = useState(defaultPlanFlightParameters)
-  const [stagingPlanFlightParameters, setStagingPlanFlightParameters] = useState(planFlightParameters)
+  const [stagingPlanFlightParameters, setStagingPlanFlightParameters] = useState(defaultPlanFlightParameters)
   const [selectedMarker, setSelectedMarker] = useState(null)
   const [switchIsOn, setSwitchIsOn] = useState(false)
   const [mode, setMode] = useState('view')
@@ -63,6 +63,7 @@ function App() {
   }
 
   const importedPlanDataListener = (event, arg) => {
+    setStagingPlanFlightParameters(arg.planFlightParameters)
     setPlanFlightParameters(arg.planFlightParameters)
     setPlanRouteMarkers(arg.planRouteMarkers)
     setPlanTakeoff(arg.planTakeoff)
@@ -125,7 +126,7 @@ function App() {
 
   const updatePlanFlightParameters = (input) => {
     var updatedParameters = {planFlightParameters}
-    updatedParameters[input.target.name] = input.target.value
+    updatedParameters[input.target.name] = parseFloat(input.target.value)
     setStagingPlanFlightParameters(updatedParameters)
   }
 

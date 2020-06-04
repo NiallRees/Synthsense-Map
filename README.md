@@ -1,73 +1,53 @@
-Built from https://www.codementor.io/@randyfindley/how-to-build-an-electron-app-using-create-react-app-and-electron-builder-ss1k0sfer
+# Synthsense Map
 
-Run with yarn electron-dev
+Synthsense Map is a cross-platform desktop mapping application for Synthsense, the main project of the Wireless Power and Control Group at Imperial College London. The application facilitates route and flight parameter planning, data consumption and exploration.
 
+![Screenshot](mac_screenshot.png)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## To Build
 
-## Available Scripts
+Clone the repo, and make sure you have [yarn](https://yarnpkg.com/getting-started/install) installed. Acquire a mapbox API key from [here](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/) and add it to `config.json` within the `/src` directory.
 
-In the project directory, you can run:
+cd into the root folder, and run `yarn` to install all the required packages, followed by `yarn electron-pack` which will build the application into Windows and Mac installers in the dist directory. Acquire a mapbox API key from [here](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/) and add it to `config.json` within the `/src` directory.
 
-### `npm start`
+## Development
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+With all the required packages installed per the above, run `yarn electron-dev` to launch the main and renderer processes. The renderer process is in hot reload mode and will reflect any new changes immediately. Acquire a mapbox API key from [here](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/) and add it to `config.json` within the `/src` directory.
+## Application Overview
+The application uses two core libraries - [React](https://reactjs.org/) and [Electron](https://www.electronjs.org/). React powers the front end, and Electron allows the application to interact with OS level functionality, such as native menus and the local filesystem.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+There are two modes, view and plan. View allows the user to import data from a returning drone, saving it to the Documents folder and structuring it by sensor. The sensor locations are then plotted on the map, with the user able to view high level key value data from within the application such as battery level, time since visit and location. Other sensor-specific data can then be accessed by selecting `View Data` which will open the sensor folder in the native file explorer for further analysis in the preferred application.
 
-### `npm test`
+In plan mode, new sensors can be plotted on the map by right clicking and using the prompt. A route can then be plotted from the takeoff point and between the sensors. Each sensor has configurable parameters, all defined within schemas.json including defaults, minimum and maximum values. Plans can be saved and revised at a future data using save and load functionality. When the route is complete, it can be exported to the drone.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+A search bar is implemented which uses mapbox's geocoding api, and takes the user to a returned location when selected from the search results.
 
-### `npm run build`
+## Core Application Structure
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+```text
+.
+├── package.json
+├── public
+|   ├── electron.js - main process
+|   └── preload.js
+├── src
+|   ├── index.js
+|   ├── index.css
+|   ├── index.js
+|   ├── schemas.json
+|   ├── App.js
+|   ├── App.css
+|   ├── setupTests.css
+|   └── components
+|       ├── map.js
+|       ├── sidebar.js
+|       ├── sidebar.css
+|       ├── map
+|       |   ├── __tests__
+|       |   └── ...components
+|       └── sidebar
+|           ├── __tests__
+|           └── ...components
+├── Test Flight Data - can be imported in View mode
+└── config.json - Mapbox API key
+```

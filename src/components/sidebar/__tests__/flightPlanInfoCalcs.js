@@ -1,9 +1,7 @@
 import FlightPlanInfoCalcs from '../flightPlanInfoCalcs';
 import React from 'react';
 var enzyme = require('enzyme');
-var Adapter = require('enzyme-adapter-react-16');
 
-enzyme.configure({ adapter: new Adapter() })
 
 describe('Test FlightPlanInfoCalcs', () => {
   it('Renders correctly without props', () => {

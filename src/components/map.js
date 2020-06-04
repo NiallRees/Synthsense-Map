@@ -9,7 +9,7 @@ import PinPrompt from './map/pinPrompt';
 import PolylineOverlay from './map/polylineOverlay';
 
 
-const TOKEN=config.REACT_APP_TOKEN;
+const TOKEN=config.MAPBOX_TOKEN;
 const GEOCODEURL='https://api.mapbox.com/geocoding/v5/mapbox.places/'
 const MAPSEARCHINTERVAL=1500
 
