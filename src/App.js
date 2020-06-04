@@ -125,14 +125,14 @@ function App() {
   }
 
   const updatePlanFlightParameters = (input) => {
-    var updatedParameters = {planFlightParameters}
+    var updatedParameters = {...planFlightParameters}
     updatedParameters[input.target.name] = parseFloat(input.target.value)
     setStagingPlanFlightParameters(updatedParameters)
   }
 
   const validatePlanFlightParameters = (input) => {
     var newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
-    var updatedParameters = {planFlightParameters}
+    var updatedParameters = {...planFlightParameters}
     const schemaVariable = schemas.flight[input.target.name]
     newValue = (newValue < schemaVariable.Min) ? schemaVariable.Min : newValue
     newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
