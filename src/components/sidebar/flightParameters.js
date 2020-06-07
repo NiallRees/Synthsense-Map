@@ -7,7 +7,7 @@ function FlightParameters(props) {
     <div className="fields-div">
       {Object.keys(schemas.flight).map(key =>
         <div className="field-div" key={key}>
-          <p key={key} className="field-name">{schemas.flight[key]["Human Readable"]}</p>
+          <p key={key} className="field-name">{schemas.flight[key]["human_readable"]}</p>
           <p className="field-value">
             <input
                 className="field-input"

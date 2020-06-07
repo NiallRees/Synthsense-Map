@@ -1,31 +1,31 @@
 {
     "sensor": {
-        "name": {"Human Readable": "Name", "Default": "New Sensor"}, 
-        "latitude": {"Human Readable": "Latitude", "Default": 0, "Min": -90, "Max": 90}, 
-        "longitude": {"Human Readable": "Longitude", "Default": 0, "Min": -180, "Max": 180}, 
-        "elevation": {"Human Readable": "Elevation (m)", "Default": 0, "Min": -100000, "Max": 100000},
-        "chargeRate": {"Human Readable": "Charge Rate (C)", "Default": 1, "Min": 0, "Max": 100000},
-        "capacity": {"Human Readable": "Capacity (mAh)", "Default": 6000, "Min": 0, "Max": 100000},
-        "desiredCharge": {"Human Readable": "Desired Charge (mAh)", "Default": 0, "Min": 0, "Max": 100000},
-        "maxChargeTime": {"Human Readable": "Max Charge Time (s)", "Default": 60, "Min": 0, "Max": 360}
+        "name": {"human_readable": "Name", "default": "New Sensor"}, 
+        "latitude": {"human_readable": "Latitude", "default": 0, "min": -90, "max": 90}, 
+        "longitude": {"human_readable": "Longitude", "default": 0, "min": -180, "max": 180}, 
+        "elevation": {"human_readable": "Elevation (m)", "default": 0, "min": -100000, "max": 100000},
+        "chargeRate": {"human_readable": "Charge Rate (C)", "default": 1, "min": 0, "max": 100000},
+        "capacity": {"human_readable": "Capacity (mAh)", "default": 6000, "min": 0, "max": 100000},
+        "desiredCharge": {"human_readable": "Desired Charge (mAh)", "default": 0, "min": 0, "max": 100000},
+        "maxChargeTime": {"human_readable": "max Charge Time (s)", "default": 60, "min": 0, "max": 360}
     },
     "recharge": {
-        "name": {"Human Readable": "Name", "Default": "New Recharge"}, 
-        "latitude": {"Human Readable": "Latitude", "Default": 0, "Min": -89.9999999, "Max": 90}, 
-        "longitude": {"Human Readable": "Longitude", "Default": 0, "Min": -180, "Max": 180}, 
-        "elevation": {"Human Readable": "Elevation (m)", "Default": 0, "Min": -100000, "Max": 100000},
-        "chargeRate": {"Human Readable": "Charge Rate (C)", "Default": 1, "Min": 0, "Max": 100000}
+        "name": {"human_readable": "Name", "default": "New Recharge"}, 
+        "latitude": {"human_readable": "Latitude", "default": 0, "min": -89.9999999, "max": 90}, 
+        "longitude": {"human_readable": "Longitude", "default": 0, "min": -180, "max": 180}, 
+        "elevation": {"human_readable": "Elevation (m)", "default": 0, "min": -100000, "max": 100000},
+        "chargeRate": {"human_readable": "Charge Rate (C)", "default": 1, "min": 0, "max": 100000}
     },
     "takeoff": {
-        "name": {"Human Readable": "Name", "Default": "Takeoff"},
-        "latitude": {"Human Readable": "Latitude", "Default": 0, "Min": -89.999999, "Max": 90}, 
-        "longitude": {"Human Readable": "Longitude", "Default": 0, "Min": -180, "Max": 180}, 
-        "elevation": {"Human Readable": "Elevation (m)", "Default": 0, "Min": -100000, "Max": 1000000}
+        "name": {"human_readable": "Name", "default": "Takeoff"},
+        "latitude": {"human_readable": "Latitude", "default": 0, "min": -89.999999, "max": 90}, 
+        "longitude": {"human_readable": "Longitude", "default": 0, "min": -180, "max": 180}, 
+        "elevation": {"human_readable": "Elevation (m)", "default": 0, "min": -100000, "max": 1000000}
     },
     "flight": {
-        "altitude": {"Human Readable": "Flight Altitude (m)", "Default": 30, "Min": 10, "Max": 130},
-        "horizontalSpeed": {"Human Readable": "Horizontal Speed (m/s)", "Default": 2, "Min": 1, "Max": 10},
-        "ascendingSpeed": {"Human Readable": "Ascending Speed (m/s)", "Default": 2, "Min": 1, "Max": 10},
-        "descendingSpeed": {"Human Readable": "Descending Speed (m/s)", "Default": 2, "Min": 1, "Max": 10}
+        "altitude": {"human_readable": "Flight Altitude (m)", "default": 30, "min": 10, "max": 130},
+        "horizontalSpeed": {"human_readable": "Horizontal Speed (m/s)", "default": 2, "min": 1, "max": 10},
+        "ascendingSpeed": {"human_readable": "Ascending Speed (m/s)", "default": 2, "min": 1, "max": 10},
+        "descendingSpeed": {"human_readable": "Descending Speed (m/s)", "default": 2, "min": 1, "max": 10}
     }
 }

@@ -11,7 +11,7 @@ const { ipcRenderer } = require('electron');
 function App() {
   const defaultPlanFlightParameters = {}
   Object.keys(schemas.flight).forEach(function(key) {
-    defaultPlanFlightParameters[key] = schemas.flight[key].Default
+    defaultPlanFlightParameters[key] = schemas.flight[key].default
   })
   const defaultViewport = {
     width: 800,
@@ -109,8 +109,8 @@ function App() {
     } else {
       const schemaVariable = schemas[updatedMarker.type][input.target.name];
       newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
-      newValue = (newValue < schemaVariable.Min) ? schemaVariable.Min : newValue
-      newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
+      newValue = (newValue < schemaVariable.min) ? schemaVariable.min : newValue
+      newValue = (newValue > schemaVariable.max) ? schemaVariable.max : newValue
     }
     updatedMarker[input.target.name] = newValue;
     if (selectedMarker.type === "takeoff") {
@@ -134,8 +134,8 @@ function App() {
     var newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
     var updatedParameters = {...planFlightParameters}
     const schemaVariable = schemas.flight[input.target.name]
-    newValue = (newValue < schemaVariable.Min) ? schemaVariable.Min : newValue
-    newValue = (newValue > schemaVariable.Max) ? schemaVariable.Max : newValue
+    newValue = (newValue < schemaVariable.min) ? schemaVariable.min : newValue
+    newValue = (newValue > schemaVariable.max) ? schemaVariable.max : newValue
     updatedParameters[input.target.name] = newValue;
     setPlanFlightParameters(updatedParameters)
     setStagingPlanFlightParameters(updatedParameters)
@@ -285,7 +285,7 @@ function App() {
   const addPlanPin = (pinPrompt, pinType) => {
       var newMarker = {}
       Object.keys(schemas[pinType]).forEach(function(key) {
-        newMarker[key] = schemas[pinType][key].Default
+        newMarker[key] = schemas[pinType][key].default
       });
 
       newMarker["id"] =makeid(8) // TODO add collision prevention

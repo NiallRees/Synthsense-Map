@@ -38,7 +38,7 @@ function ViewSideBar(props) {
           <p className="title">{props.selectedMarker.name}</p>
           {["latitude", "longitude", "elevation"].map((key) =>
             <div key={key} className="field-div">
-              <p className="field-name">{schemas.sensor[key]["Human Readable"]}</p>
+              <p className="field-name">{schemas.sensor[key]["human_readable"]}</p>
               <p id="bottom-flight-info-value" className="field-value">{props.selectedMarker[key]}</p>
             </div>
           )}

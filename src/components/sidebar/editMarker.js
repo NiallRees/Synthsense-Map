@@ -9,7 +9,7 @@ function EditMarker(props) {
         <p className="title">{props.selectedMarker.name}</p>
         {Object.keys(schemas[props.selectedMarker.type]).map(key =>
           <div className="field-div" key={key}>
-            <p key={key} className="field-name">{schemas[props.selectedMarker.type][key]["Human Readable"]}</p>
+            <p key={key} className="field-name">{schemas[props.selectedMarker.type][key]["human_readable"]}</p>
             <p className="field-value">
               <input 
                 className="field-input"
