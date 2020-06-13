@@ -1,7 +1,7 @@
 {
     "sensor": {
         "name": {"human_readable": "Name", "default": "New Sensor"}, 
-        "latitude": {"human_readable": "Latitude", "default": 0, "min": -90, "max": 90}, 
+        "latitude": {"human_readable": "Latitude", "default": 0, "min": -89.999999, "max": 90}, 
         "longitude": {"human_readable": "Longitude", "default": 0, "min": -180, "max": 180}, 
         "elevation": {"human_readable": "Elevation (m)", "default": 0, "min": -100000, "max": 100000},
         "chargeRate": {"human_readable": "Charge Rate (C)", "default": 1, "min": 0, "max": 100000},

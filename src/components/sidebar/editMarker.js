@@ -16,7 +16,7 @@ function EditMarker(props) {
                 type="text" 
                 name={key} 
                 onChange={props.updateSelectedMarker.bind(this)}
-                onBlur={props.validateMarker.bind(this)} 
+                onBlur={props.updateValidatedMarker.bind(this)} 
                 value={props.selectedMarker[key]}
               >
               </input>

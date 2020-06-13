@@ -14,7 +14,7 @@ function FlightParameters(props) {
                 type="text"
                 name={key}
                 onChange={props.updatePlanFlightParameters.bind(this)}
-                onBlur={props.validatePlanFlightParameters.bind(this)}
+                onBlur={props.updateValidatePlanFlightParameters.bind(this)}
                 value={props.stagingPlanFlightParameters[key]}
               >
             </input>

@@ -7,6 +7,13 @@ import Sidebar from './components/sidebar';
 import schemas from './schemas';
 const { ipcRenderer } = require('electron');
 
+export function validateParameter(value, schemaParameter) {
+  var newValue = isNaN(parseFloat(value)) ? 0.0 : parseFloat(value)
+  newValue = (newValue < schemaParameter.min) ? schemaParameter.min : newValue
+  newValue = (newValue > schemaParameter.max) ? schemaParameter.max : newValue
+  return newValue
+}
+
 
 function App() {
   const defaultPlanFlightParameters = {}
@@ -101,16 +108,13 @@ function App() {
     setSelectedMarker(updatedMarker)
   }
 
-  const validateMarker = (input) => {
+  const updateValidatedMarker = (input) => {
     var updatedMarker = {...selectedMarker};
     var newValue;
     if (input.target.name === "name") {
       newValue = input.target.value
     } else {
-      const schemaVariable = schemas[updatedMarker.type][input.target.name];
-      newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
-      newValue = (newValue < schemaVariable.min) ? schemaVariable.min : newValue
-      newValue = (newValue > schemaVariable.max) ? schemaVariable.max : newValue
+      newValue = validateParameter(input.target.value, schemas[updatedMarker.type][input.target.name]);
     }
     updatedMarker[input.target.name] = newValue;
     if (selectedMarker.type === "takeoff") {
@@ -130,13 +134,9 @@ function App() {
     setStagingPlanFlightParameters(updatedParameters)
   }
 
-  const validatePlanFlightParameters = (input) => {
-    var newValue = isNaN(parseFloat(input.target.value)) ? 0.0 : parseFloat(input.target.value)
+  const updateValidatePlanFlightParameters = (input) => {
     var updatedParameters = {...planFlightParameters}
-    const schemaVariable = schemas.flight[input.target.name]
-    newValue = (newValue < schemaVariable.min) ? schemaVariable.min : newValue
-    newValue = (newValue > schemaVariable.max) ? schemaVariable.max : newValue
-    updatedParameters[input.target.name] = newValue;
+    updatedParameters[input.target.name] = validateParameter(input.target.value, schemas.flight[input.target.name]);
     setPlanFlightParameters(updatedParameters)
     setStagingPlanFlightParameters(updatedParameters)
   }
@@ -396,9 +396,9 @@ function App() {
           viewMarkers={viewMarkers}
           removeMarkerClickHandler={removeMarkerClickHandler}
           updateSelectedMarker={updateSelectedMarker}
-          validateMarker={validateMarker}
+          updateValidatedMarker={updateValidatedMarker}
           updatePlanFlightParameters={updatePlanFlightParameters}
-          validatePlanFlightParameters={validatePlanFlightParameters}
+          updateValidatePlanFlightParameters={updateValidatePlanFlightParameters}
           planTakeoff={planTakeoff}
           selectedMarker={selectedMarker}
           buildRouteMode={buildRouteMode}

@@ -29,7 +29,7 @@ function PlanSideBar(props) {
         />
         <FlightParameters 
           updatePlanFlightParameters={props.updatePlanFlightParameters}
-          validatePlanFlightParameters={props.validatePlanFlightParameters}
+          updateValidatePlanFlightParameters={props.updateValidatePlanFlightParameters}
           stagingPlanFlightParameters={props.stagingPlanFlightParameters}
         />
       </>
@@ -39,7 +39,7 @@ function PlanSideBar(props) {
       <EditMarker
         selectedMarker={props.selectedMarker}
         updateSelectedMarker={props.updateSelectedMarker}
-        validateMarker={props.validateMarker}
+        updateValidatedMarker={props.updateValidatedMarker}
         removeMarkerClickHandler={props.removeMarkerClickHandler}
       />
     )

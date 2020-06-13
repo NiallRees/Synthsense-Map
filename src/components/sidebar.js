@@ -42,10 +42,10 @@ function Sidebar(props) {
             buildRouteClickHandler={props.buildRouteClickHandler}
             clearMarkersClickHandler={props.clearMarkersClickHandler}
             updatePlanFlightParameters={props.updatePlanFlightParameters}
-            validatePlanFlightParameters={props.validatePlanFlightParameters}
+            updateValidatePlanFlightParameters={props.updateValidatePlanFlightParameters}
             stagingPlanFlightParameters={props.stagingPlanFlightParameters}
             updateSelectedMarker={props.updateSelectedMarker}
-            validateMarker={props.validateMarker}
+            updateValidatedMarker={props.updateValidatedMarker}
             removeMarkerClickHandler={props.removeMarkerClickHandler}
           />
           <FlightPlanInfoCalcs
