@@ -34,10 +34,10 @@ function FlightPlanInfoCalcs(props) {
 
   const routeAscent = () => {
     var ascent = 0
-    if (props.planRouteMarkers && props.planTakeoff) {
+    if (props.planRouteMarkers.length > 0 && props.planTakeoff) {
       var marker1 = props.planTakeoff
       var h
-      for (let marker2 of [...props.planRouteMarkers, props.planTakeoff]) {
+      for (let marker2 of [...props.planRouteMarkers]) {
         h = Math.max(marker2.elevation - marker1.elevation, 0) + props.planFlightParameters.altitude
         ascent += h
         marker1 = marker2

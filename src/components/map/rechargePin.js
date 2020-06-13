@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as Recharge } from './recharge.svg';
 
 const width = 15;
@@ -8,13 +8,9 @@ const pinStyle = {
   transform: `translate(${-width/2}px,${-height/2}px)`
 };
 
-export default class rechargePin extends PureComponent {
-
-  state = {
-    hovered: false,
-  };
-
-  pinColour(mode) {
+export default function RechargePin(props) {
+  const [hovered, setHovered] = useState(false)
+  const pinColour = (mode) => {
     if (mode === 'view') {
       return ('#FF0000')
     } else {
@@ -22,33 +18,31 @@ export default class rechargePin extends PureComponent {
     }
   }
 
-  render() {
-    const {sensor = null, clickHandler = null, mode = 'view'} = this.props;
+  const {sensor = null, clickHandler = null, mode = 'view'} = props;
 
-    return (
-      <div className="pin-object">
-        {(this.props.selected) ? <span className="central-dot"></span> : <></>}
-        <div
-          style={{...pinStyle}}
-          onMouseOver={(e) => {
-            this.setState({ hovered: true});
-          }}
-          onMouseOut={(e) => {
-            this.setState({ hovered: false});
-          }}
-          onClick={(e) => {
-            clickHandler(sensor);
-          }}
-        >        
-          {
-            (this.state.hovered && !this.props.selected) &&
-            <div id="pin-label">
-              {sensor.name}
-            </div>
-          }
-          <Recharge style={{fill: this.pinColour(mode)}}/>
-        </div>
+  return (
+    <div className="pin-object">
+      {(props.selected) ? <span className="central-dot"></span> : <></>}
+      <div
+        style={{...pinStyle}}
+        onMouseOver={(e) => {
+            setHovered(true)
+        }}
+        onMouseOut={(e) => {
+            setHovered(false)
+        }}
+        onClick={(e) => {
+          clickHandler(sensor);
+        }}
+      >        
+        {
+          (hovered && !props.selected) &&
+          <div id="pin-label">
+            {sensor.name}
+          </div>
+        }
+        <Recharge style={{fill: pinColour(mode)}}/>
       </div>
-    );
-  }
+    </div>
+  );
 }

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {WebMercatorViewport, FlyToInterpolator} from "react-map-gl";
 import * as d3 from 'd3-ease';
-import './App.css';
+import './app.css';
 import Map from './components/map';
 import Sidebar from './components/sidebar';
 import schemas from './schemas';
 const { ipcRenderer } = require('electron');
+
 
 export function validateParameter(value, schemaParameter) {
   var newValue = isNaN(parseFloat(value)) ? 0.0 : parseFloat(value)
@@ -13,7 +14,6 @@ export function validateParameter(value, schemaParameter) {
   newValue = (newValue > schemaParameter.max) ? schemaParameter.max : newValue
   return newValue
 }
-
 
 function App() {
   const defaultPlanFlightParameters = {}
@@ -182,8 +182,8 @@ function App() {
     setViewport(newViewport)
   }
 
-  const mapClickHandler = (e) => {
-    if(e.leftButton) {
+  const deselectMarker = (e) => {
+    if(e === 'exit' || e.leftButton) {
       resetSelectedMarker()
       setPinPrompt({
         'enabled': false,
@@ -196,8 +196,8 @@ function App() {
   const updateMouseCoords = (lngLat) => {
     if(lngLat[0]) {
       setMouseCoords({
-        longitude: lngLat[0].toFixed(7),
-        latitude: lngLat[1].toFixed(7)
+        longitude: lngLat[0].toPrecision(8),
+        latitude: lngLat[1].toPrecision(8)
       })
     }
   }
@@ -377,7 +377,7 @@ function App() {
           buildRouteMode={buildRouteMode}
           mouseCoords={mouseCoords}
           pinPromptClickHandler={pinPromptClickHandler}
-          mapClickHandler={mapClickHandler}
+          deselectMarker={deselectMarker}
         />
       </div>
       <aside>
@@ -408,6 +408,7 @@ function App() {
           viewFlightInfo={viewFlightInfo}
           switchIsOn={switchIsOn}
           mode={mode}
+          deselectMarker={deselectMarker}
         />
       </aside>
     </div>

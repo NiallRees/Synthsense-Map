@@ -1,3 +1,5 @@
+// From https://kilianvalkhof.com/2019/electron/notarizing-your-electron-application/
+
 require('dotenv').config();
 const { notarize } = require('electron-notarize');
 

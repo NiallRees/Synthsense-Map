@@ -17,6 +17,7 @@ function Sidebar(props) {
             viewMarkers={props.viewMarkers}
             importViewDataClickHandler={props.importViewDataClickHandler}
             viewDataClickHandler={props.viewDataClickHandler}
+            deselectMarker={props.deselectMarker}
           />
           <ViewFlightInfo 
             flightInfo={props.viewFlightInfo}
@@ -47,6 +48,7 @@ function Sidebar(props) {
             updateSelectedMarker={props.updateSelectedMarker}
             updateValidatedMarker={props.updateValidatedMarker}
             removeMarkerClickHandler={props.removeMarkerClickHandler}
+            deselectMarker={props.deselectMarker}
           />
           <FlightPlanInfoCalcs
             planRouteMarkers={props.planRouteMarkers}

@@ -36,12 +36,21 @@ function PlanSideBar(props) {
     )
   } else {
     return(
-      <EditMarker
-        selectedMarker={props.selectedMarker}
-        updateSelectedMarker={props.updateSelectedMarker}
-        updateValidatedMarker={props.updateValidatedMarker}
-        removeMarkerClickHandler={props.removeMarkerClickHandler}
-      />
+      <>
+        <EditMarker
+          selectedMarker={props.selectedMarker}
+          updateSelectedMarker={props.updateSelectedMarker}
+          updateValidatedMarker={props.updateValidatedMarker}
+          removeMarkerClickHandler={props.removeMarkerClickHandler}
+        />
+        <button className="sidebar-button" type="button"
+          onClick={() => {
+            props.deselectMarker('exit');
+          }}
+        >
+          Exit
+        </button>
+      </>
     )
   }
 
