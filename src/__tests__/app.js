@@ -8,8 +8,6 @@ describe('Test App', () => {
     expect(component.exists()).toBe(true);
     expect(component).toMatchSnapshot();
   })
-
-
 })
 
 describe ('Test validateParameter', () => {

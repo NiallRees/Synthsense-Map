@@ -51,6 +51,13 @@ function ViewSideBar(props) {
         >
           View Data
         </button>
+        <button className="sidebar-button" type="button"
+          onClick={() => {
+            props.deselectMarker('exit');
+          }}
+        >
+          Exit
+        </button>
       </>
     )
   }

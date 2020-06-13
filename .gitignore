@@ -13,6 +13,9 @@
 /build
 /dist
 
+# Apple ID and Password env variables for signing
+.env
+
 # misc
 .DS_Store
 .env.local

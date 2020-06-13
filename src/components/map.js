@@ -5,6 +5,7 @@ import config from '../config';
 import SensorPin from './map/sensorPin';
 import TakeoffPin from './map/takeoffPin';
 import RechargePin from './map/rechargePin';
+import MouseCoords from './map/mouseCoords';
 import PinPrompt from './map/pinPrompt';
 import PolylineOverlay from './map/polylineOverlay';
 
@@ -12,6 +13,22 @@ import PolylineOverlay from './map/polylineOverlay';
 const TOKEN=config.MAPBOX_TOKEN;
 const GEOCODEURL='https://api.mapbox.com/geocoding/v5/mapbox.places/'
 const MAPSEARCHINTERVAL=1500
+
+function searchForLocation(searchLocation, lastSearchLocation, setSearchResults, setLastSearchLocation) {
+  if(searchLocation === '') { // Removes the results when search box is cleared
+    setSearchResults([])
+  }
+  if ((searchLocation !== lastSearchLocation) && searchLocation !== '') {
+
+    fetch(GEOCODEURL.concat(searchLocation, '.json?access_token=', TOKEN))
+    .then(res => res.json())
+    .then((data) => {
+      setSearchResults(data.features)
+    })
+    .catch(console.log)
+    setLastSearchLocation(searchLocation)
+  }
+}
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -36,7 +53,7 @@ function useInterval(callback, delay) {
 function Map(props) {
 
   useInterval(() => {
-    searchForLocation()
+    searchForLocation(props.searchLocation, props.lastSearchLocation, props.setSearchResults, props.setLastSearchLocation)
   }, MAPSEARCHINTERVAL);
 
   const renderMarkers = () => {
@@ -96,16 +113,6 @@ function Map(props) {
     }
   }
 
-  const renderPinPrompt = () => {
-    if (props.pinPrompt.enabled) {
-      return (
-        <Marker key={99} latitude={props.pinPrompt.latitude} longitude={props.pinPrompt.longitude}>
-          <PinPrompt PinPrompt={props.pinPrompt} pinPromptClickHandler={props.pinPromptClickHandler}/>
-        </Marker>
-      )
-    }
-  }
-
   const planPath = () => {
     if (props.mode === 'plan' && props.planRouteMarkers && props.takeoff && props.planRouteMarkers.length > 0) {
       var lineCoords = props.planRouteMarkers.map(sensor =>
@@ -118,30 +125,14 @@ function Map(props) {
     }
   }
 
-  const searchForLocation = () => {
-    const searchLocation = props.searchLocation;
-    if(searchLocation === '') { // Removes the results when search box is cleared
-      props.setSearchResults([])
-    }
-    if ((searchLocation !== props.lastSearchLocation) && searchLocation !== '') {
-
-      fetch(GEOCODEURL.concat(searchLocation, '.json?access_token=', TOKEN))
-      .then(res => res.json())
-      .then((data) => {
-        props.setSearchResults(data.features)
-      })
-      .catch(console.log)
-      props.setLastSearchLocation(searchLocation)
-    }
-  }
-
   const searchResultClickHandler = (result) => {
+    var longitude, latitude, zoom
     if (result.bbox) {
-      var {longitude, latitude, zoom} = props.centeredViewport(result.bbox[1], result.bbox[0], result.bbox[3], result.bbox[2])
+      ({longitude, latitude, zoom} = props.centeredViewport(result.bbox[1], result.bbox[0], result.bbox[3], result.bbox[2]))
     } else { // In case the result doesn't have a bbox eg a street
-      var longitude = result.center[0]
-      var latitude = result.center[1]
-      var zoom = 16
+      longitude = result.center[0]
+      latitude = result.center[1]
+      zoom = 16
     }
     const viewport = {
       ...props.viewport,
@@ -211,7 +202,7 @@ function Map(props) {
           e.preventDefault();
         }}
         onClick={(e) => {
-          props.mapClickHandler(e);
+          props.deselectMarker(e);
           props.setShowSearchResults(false)
         }}
         onMouseMove={(e) => {
@@ -227,11 +218,11 @@ function Map(props) {
         {planPath()}
         {renderMarkers()}
         {renderTakeoffPin()}
-        {renderPinPrompt()}
-        <div className="coords-box">
-          <pre className="coord">Latitude: {props.mouseCoords.latitude}</pre>
-          <pre className="coord">Longitude: {props.mouseCoords.longitude}</pre>
-        </div>
+        <PinPrompt
+          pinPromptClickHandler={props.pinPromptClickHandler}
+          pinPrompt={props.pinPrompt}
+        />
+        <MouseCoords mouseCoords={props.mouseCoords} />
       </ReactMapGL>
       {renderSearchBox()}
     </>

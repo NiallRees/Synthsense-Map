@@ -1,7 +1,7 @@
 {
   "name": "synthsense-map",
   "description": "Accompanying application to the Synthsense project of the Wireless Power Lab at Imperial College London",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "author": {
     "name": "Niall Rees Woodward",
@@ -12,13 +12,13 @@
     "appId": "com.niallrees.synthsense-map",
     "productName": "Synthsense Map",
     "copyright": "Copyright © 2020 ${author}",
+    "afterSign": "scripts/notarize.js",
     "mac": {
       "hardenedRuntime": true,
       "category": "public.app-category.utilities",
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist",
-      "gatekeeperAssess": false,
-      "afterSign": "scripts/notarize.js"
+      "entitlements": "buildResources/entitlements.mac.plist",
+      "entitlementsInherit": "buildResources/entitlements.mac.plist",
+      "gatekeeperAssess": false
     },
     "files": [
       "build/**/*",

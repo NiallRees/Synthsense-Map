@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 import { CanvasOverlay } from 'react-map-gl'
 
 // From https://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
@@ -16,10 +16,10 @@ function addArrow(ctx, fromx, fromy, tox, toy) {
   ctx.moveTo(tox, toy);
 }
 
-// From https://github.com/uber/react-map-gl/issues/591#issuecomment-454307294
-export default class PolylineOverlay extends PureComponent {
-  _redraw ({ width, height, ctx, isDragging, project, unproject }) {
-    const { points, color = 'red', lineWidth = 2, renderWhileDragging = true } = this.props
+// Inspired by https://github.com/uber/react-map-gl/issues/591#issuecomment-454307294
+export default function PolylineOverlay (props) {
+  const redraw = ({ width, height, ctx, isDragging, project }) => {
+    const { points, color = 'red', lineWidth = 2, renderWhileDragging = true } = props
     var lastPixel = null
     ctx.clearRect(0, 0, width, height)
     ctx.globalCompositeOperation = 'lighter'
@@ -40,7 +40,5 @@ export default class PolylineOverlay extends PureComponent {
     }
   }
 
-  render () {
-    return <CanvasOverlay redraw={this._redraw.bind(this)} />
-  }
+  return <CanvasOverlay redraw={redraw} />
 }

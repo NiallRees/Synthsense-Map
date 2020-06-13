@@ -5,5 +5,3 @@ exports[`Test FlightPlanInfoCalcs Matches snapshot with no takeoff or sensors 1`
 exports[`Test FlightPlanInfoCalcs Matches values and snapshot with arbitrary takeoff and sensors 1`] = `ShallowWrapper {}`;
 
 exports[`Test FlightPlanInfoCalcs Matches values with no takeoff or sensors 1`] = `ShallowWrapper {}`;
-
-exports[`Test FlightPlanInfoCalcs Renders correctly without props 1`] = `ShallowWrapper {}`;
