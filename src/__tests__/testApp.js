@@ -1,4 +1,4 @@
-import App, { validateParameter } from '../App';
+import App, { validateParameter } from '../app';
 import React from 'react';
 var enzyme = require('enzyme');
 
