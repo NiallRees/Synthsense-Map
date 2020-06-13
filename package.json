@@ -13,7 +13,12 @@
     "productName": "Synthsense Map",
     "copyright": "Copyright © 2020 ${author}",
     "mac": {
-      "category": "public.app-category.utilities"
+      "hardenedRuntime": true,
+      "category": "public.app-category.utilities",
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "gatekeeperAssess": false,
+      "afterSign": "scripts/notarize.js"
     },
     "files": [
       "build/**/*",
@@ -70,9 +75,11 @@
     "@rescripts/cli": "^0.0.14",
     "@rescripts/rescript-env": "^0.0.12",
     "concurrently": "^5.1.0",
+    "dotenv": "^8.2.0",
     "electron": "^8.0.0",
     "electron-builder": "^22.4.1",
     "electron-context-menu": "^0.16.0",
+    "electron-notarize": "^0.3.0",
     "wait-on": "^4.0.0"
   }
 }

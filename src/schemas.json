@@ -7,7 +7,7 @@
         "chargeRate": {"human_readable": "Charge Rate (C)", "default": 1, "min": 0, "max": 100000},
         "capacity": {"human_readable": "Capacity (mAh)", "default": 6000, "min": 0, "max": 100000},
         "desiredCharge": {"human_readable": "Desired Charge (mAh)", "default": 0, "min": 0, "max": 100000},
-        "maxChargeTime": {"human_readable": "max Charge Time (s)", "default": 60, "min": 0, "max": 360}
+        "maxChargeTime": {"human_readable": "Max Charge Time (s)", "default": 60, "min": 0, "max": 360}
     },
     "recharge": {
         "name": {"human_readable": "Name", "default": "New Recharge"}, 
