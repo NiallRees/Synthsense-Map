@@ -4,15 +4,15 @@ Synthsense Map is a cross-platform desktop mapping application for Synthsense, t
 
 ![Screenshot](mac_screenshot.png)
 
-## To Build
+## To Build Mac and Windows Installation Files
 
-Clone the repo, and make sure you have [yarn](https://yarnpkg.com/getting-started/install) installed. Acquire a mapbox API key from [here](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/) and add it to `config.json` within the `/src` directory.
+Clone the repo, and make sure you have [yarn](https://yarnpkg.com/getting-started/install) installed. Acquire a mapbox API key from [here](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/) and add it to `config.json` within the `/src` directory. Rename the `example.env` file to `.env`, and complete it with Apple application credentials to facilitate the notarizing process. The process used is from [here](https://kilianvalkhof.com/2019/electron/notarizing-your-electron-application/).
 
-cd into the root folder, and run `yarn` to install all the required packages, followed by `yarn electron-pack` which will build the application into Windows and Mac installers in the dist directory. Acquire a mapbox API key from [here](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/) and add it to `config.json` within the `/src` directory.
+cd into the root folder, and run `yarn` to install all the required packages, followed by `yarn electron-pack` which will build the application into Windows and Mac installers in the dist directory.
 
 ## Development
-
 With all the required packages installed per the above, run `yarn electron-dev` to launch the main and renderer processes. The renderer process is in hot reload mode and will reflect any new changes immediately. Acquire a mapbox API key from [here](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/) and add it to `config.json` within the `/src` directory.
+
 ## Application Overview
 The application uses two core libraries - [React](https://reactjs.org/) and [Electron](https://www.electronjs.org/). React powers the front end, and Electron allows the application to interact with OS level functionality, such as native menus and the local filesystem.
 

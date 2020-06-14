@@ -67,7 +67,7 @@ function Sidebar(props) {
       <div className="mode-element" id="mode-left">View</div>
       <div className="mode-element">
       <Switch
-        isOn={props.switchIsOn}
+        isOn={(props.mode === 'plan')}
         handleModeToggle={props.handleModeToggle}
       />
       </div>

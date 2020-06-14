@@ -39,7 +39,6 @@ function App() {
   const [planFlightParameters, setPlanFlightParameters] = useState(defaultPlanFlightParameters)
   const [stagingPlanFlightParameters, setStagingPlanFlightParameters] = useState(defaultPlanFlightParameters)
   const [selectedMarker, setSelectedMarker] = useState(null)
-  const [switchIsOn, setSwitchIsOn] = useState(false)
   const [mode, setMode] = useState('view')
   const [buildRouteMode, setBuildRouteMode] = useState(false)
   const [mouseCoords, setMouseCoords] = useState({
@@ -320,9 +319,8 @@ function App() {
   }
 
   const handleModeToggle = () => {
-    if (!switchIsOn) {
+    if (mode === 'view') {
       setMode('plan')
-      setSwitchIsOn(true)
       if (planMarkers.length === 0) {
         setPlanMarkers(viewMarkers.map(sensor => (
           {
@@ -335,12 +333,9 @@ function App() {
           }
         )))
       }
-    }
-
-    if (switchIsOn) {
+    } else {
       setMode('view')
       setBuildRouteMode(false)
-      setSwitchIsOn(false)
     }      
     
     setSelectedMarker(null)
@@ -362,16 +357,15 @@ function App() {
           viewport={viewport}
           setViewport={setViewport}
           onViewportChange={onViewportChange}
-          markers={switchIsOn ? planMarkers : viewMarkers}
+          markers={(mode === 'view') ? viewMarkers : planMarkers}
           planRouteMarkers={planRouteMarkers}
-          takeoff={switchIsOn ? planTakeoff : null}
+          takeoff={(mode === 'plan') ? planTakeoff : null}
           selectedMarker={selectedMarker} 
           markerClickHandler={markerClickHandler}
           addPlanPin={addPlanPin}
           resetSelectedMarker={resetSelectedMarker}
           enablePinPrompt={enablePinPrompt}
           pinPrompt={pinPrompt}
-          switchIsOn={switchIsOn}
           updateMouseCoords={updateMouseCoords}
           mode={mode}
           buildRouteMode={buildRouteMode}
@@ -406,7 +400,6 @@ function App() {
           stagingPlanFlightParameters={stagingPlanFlightParameters}
           planFlightParameters={planFlightParameters}
           viewFlightInfo={viewFlightInfo}
-          switchIsOn={switchIsOn}
           mode={mode}
           deselectMarker={deselectMarker}
         />
